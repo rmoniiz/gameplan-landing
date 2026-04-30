@@ -1053,22 +1053,6 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-.pricing-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  min-height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.68rem;
-  font-weight: 900;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  backdrop-filter: blur(8px);
-}
-
 .pricing-plan-head {
   height: 72px;
   padding: 8px 14px 6px;

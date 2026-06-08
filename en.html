@@ -4,81 +4,188 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GamePlan | Football coaching platform</title>
-  <meta name="description" content="GamePlan helps football coaches connect game model, exercises, weekly planning, player development, tactical tests and match analysis in one workflow." />
+  <meta name="description" content="GamePlan helps football coaches connect game model, exercises, weekly and monthly planning, player development, tactical testing and match analysis in one clear routine." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="loader" aria-hidden="true"><div class="loader-box"><img class="loader-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><strong>GAMEPLAN</strong><p>Loading coaching experience...</p></div></div>
-  <div class="bg-grid"></div><div class="bg-blur blur-a"></div><div class="bg-blur blur-b"></div><div class="bg-blur blur-c"></div>
+  <div id="loader" aria-hidden="true">
+    <div class="loader-box">
+      <img class="loader-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" />
+      <strong>GAMEPLAN</strong>
+      <p>Loading the coaching experience...</p>
+    </div>
+  </div>
+
+  <div class="bg-grid"></div>
+  <div class="bg-blur blur-a"></div>
+  <div class="bg-blur blur-b"></div>
+  <div class="bg-blur blur-c"></div>
 
   <header class="site-header">
-    <a href="#top" class="brand" aria-label="GamePlan home"><img class="brand-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div class="brand-text"><strong>GamePlan</strong><span>Coaching platform</span></div></a>
-    <nav class="nav" aria-label="Main navigation"><a href="#workflow">Workflow</a><a href="#features">Features</a><a href="#demo">Video</a><a href="#pricing">Plans</a><a href="#timeline">Journey</a></nav>
-    <div class="header-actions"><div class="language-switcher"><button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇺🇸</span><span class="language-label">EN</span><span class="language-caret">▾</span></button><div class="language-menu" id="languageMenu"><a href="index.html" class="language-option"><span class="flag">🇧🇷</span><span>Português</span></a><a href="en.html" class="language-option active"><span class="flag">🇺🇸</span><span>English</span></a></div></div><a class="btn btn-ghost compact-btn" href="https://game-plan.bolt.host/login">Log in</a><a class="btn btn-primary compact-btn" href="https://game-plan.bolt.host/signup?trial=7">Free trial</a></div>
+    <a href="#top" class="brand" aria-label="GamePlan home">
+      <img class="brand-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" />
+      <div class="brand-text">
+        <strong>GamePlan</strong>
+        <span>Coaching platform</span>
+      </div>
+    </a>
+
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#connection">Connection</a>
+      <a href="#features">Features</a>
+      <a href="#demo">Video</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#about">About</a>
+      <a href="#timeline">Journey</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="language-switcher">
+        <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="flag">🇺🇸</span>
+          <span class="language-label">EN</span>
+          <span class="language-caret">▾</span>
+        </button>
+        <div class="language-menu" id="languageMenu">
+          <a href="index.html" class="language-option"><span class="flag">🇧🇷</span><span>Português</span></a>
+          <a href="en.html" class="language-option active"><span class="flag">🇺🇸</span><span>English</span></a>
+        </div>
+      </div>
+      <a class="btn btn-ghost compact-btn" href="https://game-plan.bolt.host/login">Log in</a>
+      <a class="btn btn-primary compact-btn" href="https://game-plan.bolt.host/signup?trial=7">Free trial</a>
+    </div>
   </header>
 
   <main id="top">
     <section class="hero section">
-      <div class="hero-copy reveal"><div class="hero-kicker">Methodology, training and analysis platform for football coaches</div><h1>From game model to the pitch.<span>Plan, coach and analyze in one workflow.</span></h1><p class="hero-description">GamePlan helps coaches turn ideas into routine: structure principles, build exercises, plan the week, evaluate players, run tactical tests and check whether trained behaviours appeared in the match.</p><div class="hero-actions"><a class="btn btn-primary btn-large" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a><a class="btn btn-ghost btn-large" href="#demo">Watch demo</a></div><p class="microcopy">No payment now. New users get 7 days to test the full app after registration.</p><div class="hero-flow"><span>Game model</span><span>Exercises</span><span>Planning</span><span>Players</span><span>Match</span></div></div>
-      <div class="mainmenu-preview reveal" aria-label="GamePlan main menu preview"><div class="mock-top"><div class="mock-brand"><img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div><strong>GamePlan</strong><div class="mock-subtitle">Main menu</div></div></div><div class="mock-badge">Active trial · 7 days</div></div><div class="mock-top compact"><div class="mock-search">🔍 Search modules...</div><div class="mock-filter"><span class="active">All</span><span>Planning</span><span>Squad</span><span>Match</span><span>Methodology</span></div></div><div class="mock-modules"><div class="module-card"><div class="module-dot m-slate">Σ</div><strong>Game Model</strong><span>Identity, principles and behaviours.</span></div><div class="module-card"><div class="module-dot m-green">⚽</div><strong>Exercises</strong><span>Create and reuse tasks.</span></div><div class="module-card"><div class="module-dot m-blue">▣</div><strong>Weekly Plan</strong><span>Objectives, sessions and review.</span></div><div class="module-card"><div class="module-dot m-violet">◷</div><strong>Monthly Plan</strong><span>Organize the larger cycle.</span></div><div class="module-card"><div class="module-dot m-orange">＋</div><strong>Players</strong><span>Register and track the squad.</span></div><div class="module-card"><div class="module-dot m-indigo">◎</div><strong>Development</strong><span>Review individual progress.</span></div><div class="module-card"><div class="module-dot m-cyan">🧠</div><strong>Tactical Test</strong><span>Assess decision-making.</span></div><div class="module-card"><div class="module-dot m-pink">▥</div><strong>Statistics</strong><span>Analyze the match.</span></div><div class="module-card"><div class="module-dot m-red">▤</div><strong>Questions</strong><span>Manage tactical tests.</span></div></div></div>
+      <div class="hero-copy reveal">
+        <div class="hero-kicker">Methodology, training and analysis for football coaches</div>
+        <h1>From game model to the pitch.<span>Plan, coach and analyze in one place.</span></h1>
+        <p class="hero-description">
+          GamePlan helps coaches organize their own process: game model, exercises, planning,
+          players, tactical testing and match statistics working together in one clear routine.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-large" href="https://game-plan.bolt.host/signup?trial=7">Try GamePlan for 7 days</a>
+          <a class="btn btn-ghost btn-large" href="#demo">Watch demo</a>
+        </div>
+        <p class="microcopy">New users can try the full GamePlan experience for 7 days. After the free trial, simply choose the plan that fits your coaching routine.</p>
+      </div>
+
+      <div class="mainmenu-preview reveal" aria-label="GamePlan main menu preview">
+        <div class="mock-top">
+          <div class="mock-brand">
+            <img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" />
+            <div><strong>GamePlan</strong><div class="mock-subtitle">Main menu</div></div>
+          </div>
+          <div class="mock-badge">Free trial · 7 days</div>
+        </div>
+        <div class="mock-top compact">
+          <div class="mock-search">Search modules...</div>
+          <div class="mock-filter"><span class="active">All</span><span>Planning</span><span>Squad</span><span>Match</span><span>Methodology</span></div>
+        </div>
+        <div class="mock-modules">
+          <div class="module-card"><div class="module-dot m-slate">Σ</div><strong>Game Model</strong><span>Identity, principles and behaviours.</span></div>
+          <div class="module-card"><div class="module-dot m-green">⚽</div><strong>Exercises</strong><span>Create and reuse tasks.</span></div>
+          <div class="module-card"><div class="module-dot m-blue">▣</div><strong>Weekly Plan</strong><span>Objectives, sessions and review.</span></div>
+          <div class="module-card"><div class="module-dot m-violet">◷</div><strong>Monthly Plan</strong><span>Organize the bigger cycle.</span></div>
+          <div class="module-card"><div class="module-dot m-orange">＋</div><strong>Players</strong><span>Register and follow your squad.</span></div>
+          <div class="module-card"><div class="module-dot m-indigo">◎</div><strong>Development</strong><span>Review individual progress.</span></div>
+          <div class="module-card"><div class="module-dot m-cyan">🧠</div><strong>Tactical Test</strong><span>Assess decision-making.</span></div>
+          <div class="module-card"><div class="module-dot m-pink">▥</div><strong>Statistics</strong><span>Analyze the match.</span></div>
+          <div class="module-card"><div class="module-dot m-red">▤</div><strong>Questions</strong><span>Manage tactical tests.</span></div>
+        </div>
+      </div>
     </section>
 
-    <section id="workflow" class="section workflow-section"><div class="section-heading reveal"><div class="eyebrow">Coach workflow</div><h2>A connected routine from idea to match day</h2><p>GamePlan reduces scattered spreadsheets, lost notes and disconnected decisions between training, players and the match.</p></div><div class="workflow-grid"><article class="workflow-card glass reveal"><span>01</span><h3>Define the idea</h3><p>Organize game model, principles, sub-principles, behaviours by phase and methodological references.</p></article><article class="workflow-card glass reveal"><span>02</span><h3>Build training</h3><p>Create your own exercises with objectives, player decisions, perception cues, constraints and match transfer.</p></article><article class="workflow-card glass reveal"><span>03</span><h3>Connect the week</h3><p>Link weekly objective, main principle, sessions, workload and microcycle review.</p></article><article class="workflow-card glass reveal"><span>04</span><h3>Review the pitch</h3><p>Use match statistics, tactical tests and evaluations to see whether development appears in competition.</p></article></div></section>
+    <section id="connection" class="section connection-section">
+      <div class="section-heading reveal center-block">
+        <div class="eyebrow">The connection behind the work</div>
+        <h2>Everything a coach builds should speak the same language</h2>
+        <p>
+          Game model, exercises, planning, players and match analysis should not live as disconnected pieces.
+          GamePlan brings them together so coaches can keep consistency between what they believe, what they train and what they review.
+        </p>
+      </div>
+      <div class="connection-board reveal">
+        <div class="connection-center glass"><span>GamePlan</span><strong>Coach process</strong></div>
+        <div class="connection-item item-a glass"><small>01</small><strong>Game model</strong><span>Ideas, principles and behaviours.</span></div>
+        <div class="connection-item item-b glass"><small>02</small><strong>Exercises</strong><span>Tasks connected to what the team needs to develop.</span></div>
+        <div class="connection-item item-c glass"><small>03</small><strong>Planning</strong><span>Weeks and months with clearer objectives.</span></div>
+        <div class="connection-item item-d glass"><small>04</small><strong>Players</strong><span>Notes, evaluations and individual progress.</span></div>
+        <div class="connection-item item-e glass"><small>05</small><strong>Match</strong><span>Indicators to review the game with more clarity.</span></div>
+      </div>
+    </section>
 
-    <section id="features" class="section features-section"><div class="section-heading reveal"><div class="eyebrow">Features</div><h2>Everything that supports the coach’s routine</h2></div><div class="features-grid"><article class="feature-card glass reveal"><div class="feature-tag green">Methodology</div><h3>Game Model</h3><p>Turn your game idea into principles, behaviours, positional roles and training references.</p></article><article class="feature-card glass reveal"><div class="feature-tag blue">Planning</div><h3>Weekly and monthly plan</h3><p>Organize microcycles, objectives, sessions and reviews connected to exercises.</p></article><article class="feature-card glass reveal"><div class="feature-tag purple">Training</div><h3>Exercise database</h3><p>Create, save and reuse your own tasks with clear methodology and match transfer.</p></article><article class="feature-card glass reveal"><div class="feature-tag orange">Players</div><h3>Individual development</h3><p>Register players, evaluations, notes and progress throughout the season.</p></article><article class="feature-card glass reveal"><div class="feature-tag cyan">Learning</div><h3>Tactical test</h3><p>Assess game reading, decision-making and understanding of tactical principles.</p></article><article class="feature-card glass reveal"><div class="feature-tag pink">Match</div><h3>Match statistics</h3><p>Record match actions and compare training behaviours with what appeared on the pitch.</p></article></div></section>
+    <section id="features" class="section features-section">
+      <div class="section-heading reveal center-block"><div class="eyebrow">Features</div><h2>Tools to turn coaching ideas into routine</h2></div>
+      <div class="features-grid">
+        <article class="feature-card glass reveal"><div class="feature-tag green">Methodology</div><h3>Game Model</h3><p>Turn your idea into principles, behaviours, positional roles and training references.</p></article>
+        <article class="feature-card glass reveal"><div class="feature-tag blue">Planning</div><h3>Weekly and monthly planning</h3><p>Organize microcycles, objectives, sessions and reviews connected to your exercises.</p></article>
+        <article class="feature-card glass reveal"><div class="feature-tag purple">Training</div><h3>Exercise database</h3><p>Create, save and reuse your own tasks with methodology and match transfer in mind.</p></article>
+        <article class="feature-card glass reveal"><div class="feature-tag orange">Players</div><h3>Individual development</h3><p>Register players, evaluations, observations and progress throughout the season.</p></article>
+        <article class="feature-card glass reveal"><div class="feature-tag cyan">Learning</div><h3>Tactical test</h3><p>Assess game reading, decision-making and understanding of tactical principles.</p></article>
+        <article class="feature-card glass reveal"><div class="feature-tag pink">Match</div><h3>Match statistics</h3><p>Record match actions and compare what was trained with what appeared on the pitch.</p></article>
+      </div>
+    </section>
 
-    <section id="demo" class="section demo-section"><div class="section-heading reveal"><div class="eyebrow">Video demo</div><h2>See GamePlan in action</h2><p>Add a short screen recording showing the real app flow: menu, game model, exercises, planning, players, tactical test and match statistics.</p></div><div class="demo-shell glass reveal"><div class="video-frame"><video controls preload="metadata" poster="assets/images/home.png"><source src="assets/videos/gameplan-demo.mp4" type="video/mp4" />Your browser could not load the demo video.</video></div><div class="demo-copy"><h3>Ideal demo: 60 to 90 seconds</h3><p>Record a clean screen flow showing how the coach moves from game model to tasks, weekly planning and match review. The video should sell clarity, not complexity.</p><a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a></div></div></section>
+    <section id="demo" class="section demo-section">
+      <div class="section-heading reveal center-block"><div class="eyebrow">Demo video</div><h2>See GamePlan in action</h2><p>See how GamePlan brings the main parts of a coach’s work into one simple and visual experience.</p></div>
+      <div class="demo-shell glass reveal">
+        <div class="video-frame"><video controls preload="metadata" poster="assets/images/home.png"><source src="assets/videos/gameplan-demo.mp4" type="video/mp4" />Your browser could not load the demo video.</video></div>
+        <div class="demo-copy"><h3>From game idea to match review</h3><p>In a few minutes, see how a coach organizes the game model, creates exercises, plans the week and reviews the match inside the same environment.</p><a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a></div>
+      </div>
+    </section>
 
     <section id="pricing" class="section pricing-section">
-      <div class="section-heading reveal">
-        <div class="eyebrow">Plans</div>
-        <h2>Test the full app for 7 days. Then choose your plan.</h2>
-        <p>GamePlan is designed to grow with the coach’s routine: test the platform first, then continue with the plan that fits your work.</p>
-      </div>
+      <div class="section-heading reveal center-block"><div class="eyebrow">Pricing</div><h2>Try the full app for 7 days. Then choose your plan.</h2><p>GamePlan is built to grow with your coaching routine: start by testing the platform, then continue with the plan that fits your work.</p></div>
       <div class="pricing-cards">
-        <article class="price-card glass reveal">
-          <div class="plan-label">Starter</div>
-          <h3>€9.99 <span>/ month</span></h3>
-          <p>After the free trial, this plan covers the essential workflow for planning, exercises and player follow-up.</p>
-          <ul>
-            <li>Weekly planning</li>
-            <li>Monthly planning</li>
-            <li>Exercise database</li>
-            <li>Player registration</li>
-            <li>Player development</li>
-          </ul>
-          <a class="btn btn-ghost" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a>
-        </article>
-        <article class="price-card price-card-featured glass reveal">
-          <div class="recommended-badge">Recommended</div>
-          <div class="plan-label">Pro</div>
-          <h3>€19.99 <span>/ month</span></h3>
-          <p>For unlocking the full methodology, training, match analysis and evaluation experience.</p>
-          <ul>
-            <li>Everything in Starter</li>
-            <li>Game Model & Methodology</li>
-            <li>Match statistics</li>
-            <li>Tactical test</li>
-            <li>AI-assisted coaching insights</li>
-          </ul>
-          <a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a>
-        </article>
+        <article class="price-card glass reveal"><div class="plan-label">Starter</div><h3>€9.99 <span>/ month</span></h3><p>For organizing the essentials of planning, exercises and player follow-up.</p><ul><li>Weekly planning</li><li>Monthly planning</li><li>Exercise database</li><li>Player registration</li><li>Player development</li></ul><a class="btn btn-ghost" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a></article>
+        <article class="price-card price-card-featured glass reveal"><div class="recommended-badge">Recommended</div><div class="plan-label">Pro</div><h3>€19.99 <span>/ month</span></h3><p>For the complete methodology, training, match, evaluation and AI-assisted insight experience.</p><ul><li>Everything in Starter</li><li>Game Model & Methodology</li><li>Match statistics</li><li>Tactical test</li><li>AI-assisted insights</li></ul><a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Start 7-day free trial</a></article>
       </div>
-      <p class="pricing-note reveal">The free trial gives new users access to the full app for 7 days. After that period, the backend should automatically block access if there is no active subscription.</p>
+      <p class="pricing-note reveal">New users can try the full GamePlan experience for 7 days. After the free trial, simply choose the plan that fits your coaching routine.</p>
     </section>
 
-    <section class="section founder-section"><div class="founder-grid"><div class="founder-copy reveal"><div class="eyebrow">Behind the tool</div><h2>Created from the real routine of coaching, observing and adjusting</h2><p>I am a CBF licensed coach, License C, with experience in different football contexts and countries. GamePlan was born from a practical need: organizing training, principles, players and match feedback inside one coherent process.</p><p>The goal is not to replace the coach, but to give structure so the coach can think, plan, track and decide better.</p></div><div class="founder-box glass reveal"><h3>What improves day to day</h3><ul class="founder-list"><li>Control over what was trained</li><li>Organization of your own exercise database</li><li>Comparison between training and match</li><li>Tracking player development</li></ul></div></div></section>
+    <section id="about" class="section about-section">
+      <div class="about-grid">
+        <div class="founder-card glass reveal">
+          <img src="assets/images/renan-founder.png" alt="Renan Moniz, founder of GamePlan" />
+          <div class="founder-card-body"><span>Founder of GamePlan</span><h3>Renan Moniz</h3><p>CBF-certified coach, Football License C.</p></div>
+        </div>
+        <div class="about-copy reveal">
+          <div class="eyebrow">About us</div>
+          <h2>Built by someone who lived the pitch before building the product.</h2>
+          <p>My relationship with football started long before any platform. My grandfather, Adão, was an amateur football coach, and one idea from him stayed with me: running without intelligence can hurt the team more than it helps.</p>
+          <p>For him, football was also about cooperation, joy and belonging. The boys had to play well, feel good and leave the pitch wanting to come back. After wins, everyone shared a crate of soda. That picture shaped how I see the game.</p>
+          <p>I started my coaching journey in 2017, working in football summer camps in the United States. Since then, I have lived different countries, clubs and football cultures. When I moved to the Netherlands, I felt the need to improve my process even more: keep better records, recover older ideas and understand more clearly whether training was showing up on match day.</p>
+          <p>GamePlan was born from that path. Not to replace the coach’s eye, but to give more structure to what coaches already build every day.</p>
+        </div>
+      </div>
+    </section>
 
-    <section id="timeline" class="section timeline-section"><div class="section-heading reveal"><div class="eyebrow">Journey</div><h2>Experience built on the pitch</h2><p>Practical coaching experience across different football cultures and environments.</p></div><div class="timeline"><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/tetrabrazil.png" alt="TetraBrazil"></div><div class="timeline-dot"></div><div class="club-info"><h4>TetraBrazil</h4><span>USA</span><small>2017–2019</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/psgacademy.png" alt="PSG Academy"></div><div class="timeline-dot"></div><div class="club-info"><h4>PSG Academy</h4><span>Brazil</span><small>2020</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/boavista.png" alt="Boavista"></div><div class="timeline-dot"></div><div class="club-info"><h4>Boavista</h4><span>Portugal</span><small>2021</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/fcdafoz.png" alt="FC da Foz"></div><div class="timeline-dot"></div><div class="club-info"><h4>FC da Foz</h4><span>Portugal</span><small>2022</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/pantherforce.png" alt="Panther Force"></div><div class="timeline-dot"></div><div class="club-info"><h4>Panther Force</h4><span>Portugal</span><small>2023</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/koninklijkehfc.png" alt="Koninklijke HFC"></div><div class="timeline-dot"></div><div class="club-info"><h4>Koninklijke HFC</h4><span>Netherlands</span><small>2024–2025</small></div></div></div></section>
+    <section id="timeline" class="section timeline-section">
+      <div class="section-heading reveal center-block"><div class="eyebrow">Journey</div><h2>Experience built on the pitch</h2><p>Practical experience across different football cultures and environments.</p></div>
+      <div class="timeline reveal">
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/tetrabrazil.png" alt="TetraBrazil"></div><div class="timeline-dot"></div><div class="club-info"><h4>TetraBrazil</h4><span>USA</span><small>2017–2019</small></div></div>
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/psgacademy.png" alt="PSG Academy"></div><div class="timeline-dot"></div><div class="club-info"><h4>PSG Academy</h4><span>Brazil</span><small>2020</small></div></div>
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/boavista.png" alt="Boavista"></div><div class="timeline-dot"></div><div class="club-info"><h4>Boavista</h4><span>Portugal</span><small>2021</small></div></div>
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/fcdafoz.png" alt="FC da Foz"></div><div class="timeline-dot"></div><div class="club-info"><h4>FC da Foz</h4><span>Portugal</span><small>2022</small></div></div>
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/pantherforce.png" alt="Panther Force"></div><div class="timeline-dot"></div><div class="club-info"><h4>Panther Force</h4><span>Portugal</span><small>2023</small></div></div>
+        <div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/koninklijkehfc.png" alt="Koninklijke HFC"></div><div class="timeline-dot"></div><div class="club-info"><h4>Koninklijke HFC</h4><span>Netherlands</span><small>2024–2025</small></div></div>
+        <div class="timeline-item timeline-item-current"><div class="club-logo gameplan-mark"><img src="assets/images/gameplan-logo.png" alt="GamePlan"></div><div class="timeline-dot"></div><div class="club-info"><h4>GamePlan</h4><span>Founder</span><small>2026</small></div></div>
+      </div>
+    </section>
 
-    <section id="feedback" class="section cta-section"><div class="cta-box glass reveal"><div class="cta-copy"><div class="eyebrow">Next step</div><h2>Test the platform and see if it fits your routine</h2><p>Start with 7 days to test the full app. After the trial, choose the plan that best fits your coaching routine.</p></div><div class="cta-actions"><a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Start free trial</a><a class="btn btn-ghost" href="https://game-plan.bolt.host/login">Log in</a></div></div></section>
+    <section id="feedback" class="section cta-section"><div class="cta-box glass reveal"><div class="cta-copy"><div class="eyebrow">Next step</div><h2>Try the platform and see if it fits your coaching routine</h2><p>Start with 7 free days to test the full app. After that, choose the plan that fits your coaching work.</p></div><div class="cta-actions"><a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Try GamePlan for 7 days</a><a class="btn btn-ghost" href="https://game-plan.bolt.host/login">Log in</a></div></div></section>
   </main>
 
-  <a class="floating-whatsapp" href="https://wa.me/31643759823" target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.62 2 2.2 6.41 2.2 11.84c0 1.74.46 3.45 1.32 4.95L2 22l5.37-1.41a9.82 9.82 0 0 0 4.67 1.19h.01c5.42 0 9.84-4.41 9.84-9.84 0-2.63-1.02-5.09-2.84-6.99ZM12.05 20.1h-.01a8.15 8.15 0 0 1-4.15-1.14l-.3-.18-3.19.84.85-3.11-.2-.32a8.13 8.13 0 0 1-1.25-4.35c0-4.51 3.67-8.18 8.19-8.18 2.18 0 4.22.85 5.76 2.4a8.12 8.12 0 0 1 2.39 5.78c0 4.51-3.67 8.18-8.19 8.18Zm4.49-6.11c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.55.12-.16.24-.63.77-.77.93-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.43-1.35-1.67-.14-.24-.01-.37.1-.49.11-.11.24-.29.37-.43.12-.14.16-.24.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.31-.75-1.79-.2-.47-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.39.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.13.2-.55.2-1.02.14-1.13-.06-.1-.22-.16-.46-.28Z"/></svg></a>
-  <footer class="site-footer"><div class="footer-brand"><img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div><strong>GamePlan</strong><span>Coaching platform</span></div></div><div class="footer-links"><a href="https://game-plan.bolt.host/signup?trial=7">Free trial</a><a href="https://game-plan.bolt.host/login">Log in</a><a href="terms-en.html">Terms</a><a href="privacy-en.html">Privacy</a><a href="mailto:renan.moniiz@gmail.com?subject=Contact%20GamePlan">Contact</a></div></footer>
+  <a class="floating-whatsapp" href="https://wa.me/31643759823" target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.62 2 2.2 6.41 2.2 11.84c0 1.74.46 3.45 1.32 4.95L2 22l5.37-1.41a9.82 9.82 0 0 0 4.67 1.19h.01c5.42 0 9.84-4.41 9.84-9.84 0-2.63-1.02-5.09-2.84-6.99ZM12.05 20.1h-.01a8.15 8.15 0 0 1-4.15-1.14l-.3-.18-3.19.84.85-3.11-.2-.32a8.13 8.13 0 0 1-1.25-4.35c0-4.51 3.67-8.18 8.19-8.18 2.18 0 4.22.85 5.76 2.4a8.12 8.12 0 0 1 2.39 5.78c0 4.51-3.67 8.18-8.19 8.18Zm4.49-6.11c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.55.12-.16.24-.63.77-.77.93-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.43-1.35-1.67-.14-.24-.01-.37.1-.49.11-.11.24-.29.37-.43.12-.14.16-.24.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.31-.75-1.79-.2-.47-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.39.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.13.2-.55.2-1.02.14-1.13-.06-.1-.22-.16-.46-.28Z" /></svg></a>
+
+  <footer class="site-footer"><div class="footer-brand"><img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div><strong>GamePlan</strong><span>Coaching platform</span></div></div><div class="footer-links"><a href="privacy-en.html">Privacy</a><a href="terms-en.html">Terms</a><a href="mailto:renan.moniiz@gmail.com?subject=GamePlan%20Contact">Contact</a></div></footer>
+
   <script src="script.js"></script>
 </body>
 </html>

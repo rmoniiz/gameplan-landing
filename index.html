@@ -34,11 +34,11 @@
     </a>
 
     <nav class="nav" aria-label="Navegação principal">
-      <a href="#connection">Conexão</a>
+      <a href="#connection">Processo</a>
       <a href="#features">Funcionalidades</a>
       <a href="#demo">Vídeo</a>
       <a href="#pricing">Planos</a>
-      <a href="#about">Sobre</a>
+      <a href="#about">Fundador</a>
       <a href="#timeline">Trajetória</a>
     </nav>
 
@@ -46,12 +46,12 @@
       <div class="language-switcher">
         <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false">
           <span class="flag">🇧🇷</span>
-          <span class="language-label">PT</span>
+          <span class="language-label">PT-BR</span>
           <span class="language-caret">▾</span>
         </button>
         <div class="language-menu" id="languageMenu">
-          <a href="index.html" class="language-option active"><span class="flag">🇧🇷</span><span>Português</span></a>
-          <a href="en.html" class="language-option"><span class="flag">🇺🇸</span><span>English</span></a>
+          <a href="index.html" class="language-option active"><span class="flag">🇧🇷</span><span>Português (Brasil)</span></a>
+          <a href="en.html" class="language-option"><span class="flag">🇺🇸</span><span>English (US)</span></a>
         </div>
       </div>
       <a class="btn btn-ghost compact-btn" href="https://game-plan.bolt.host/login">Entrar</a>
@@ -60,57 +60,47 @@
   </header>
 
   <main id="top">
-    <section class="hero section">
+    <section class="hero section hero-centered" aria-labelledby="hero-title">
       <div class="hero-copy reveal">
         <div class="hero-kicker">Metodologia, treino e análise para treinadores de futebol</div>
-        <h1>Do modelo de jogo ao campo.<span>Planeje, treine e analise em um único lugar.</span></h1>
+        <h1 id="hero-title">Do modelo ao campo.<span>Planeje, conduza e analise em um só lugar.</span></h1>
         <p class="hero-description">
           O GamePlan ajuda o treinador a organizar o próprio processo: modelo de jogo, exercícios, planejamento,
-          atletas, teste tático e estatísticas da partida trabalhando juntos em uma rotina clara.
+          desenvolvimento dos atletas, teste tático e estatísticas da partida trabalhando juntos em uma rotina clara.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary btn-large" href="https://game-plan.bolt.host/signup?trial=7">Testar o GamePlan por 7 dias</a>
           <a class="btn btn-ghost btn-large" href="#demo">Ver demonstração</a>
-        </div>
-        <p class="microcopy">Novos usuários podem testar o GamePlan completo por 7 dias. Depois do período gratuito, basta escolher o plano que melhor combina com sua rotina de treinador.</p>
-      </div>
-
-      <div class="mainmenu-preview reveal" aria-label="Prévia visual do menu principal GamePlan">
-        <div class="mock-top">
-          <div class="mock-brand">
-            <img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="Logo GamePlan" />
-            <div><strong>GamePlan</strong><div class="mock-subtitle">Menu principal</div></div>
-          </div>
-          <div class="mock-badge">Teste grátis · 7 dias</div>
-        </div>
-        <div class="mock-top compact">
-          <div class="mock-search">Buscar módulos...</div>
-          <div class="mock-filter"><span class="active">Todos</span><span>Planejamento</span><span>Elenco</span><span>Jogo</span><span>Metodologia</span></div>
-        </div>
-        <div class="mock-modules">
-          <div class="module-card"><div class="module-dot m-slate">Σ</div><strong>Modelo de Jogo</strong><span>Identidade, princípios e comportamentos.</span></div>
-          <div class="module-card"><div class="module-dot m-green">⚽</div><strong>Exercícios</strong><span>Crie e reutilize tarefas.</span></div>
-          <div class="module-card"><div class="module-dot m-blue">▣</div><strong>Plano Semanal</strong><span>Objetivos, sessões e revisão.</span></div>
-          <div class="module-card"><div class="module-dot m-violet">◷</div><strong>Plano Mensal</strong><span>Organize o ciclo maior.</span></div>
-          <div class="module-card"><div class="module-dot m-orange">＋</div><strong>Atletas</strong><span>Cadastre e acompanhe o elenco.</span></div>
-          <div class="module-card"><div class="module-dot m-indigo">◎</div><strong>Desenvolvimento</strong><span>Revise evolução individual.</span></div>
-          <div class="module-card"><div class="module-dot m-cyan">🧠</div><strong>Teste Tático</strong><span>Avalie tomada de decisão.</span></div>
-          <div class="module-card"><div class="module-dot m-pink">▥</div><strong>Estatísticas</strong><span>Analise o jogo.</span></div>
-          <div class="module-card"><div class="module-dot m-red">▤</div><strong>Perguntas</strong><span>Gerencie testes táticos.</span></div>
         </div>
       </div>
     </section>
 
     <section id="connection" class="section connection-section">
       <div class="section-heading reveal center-block">
-        <div class="eyebrow">A conexão que sustenta o trabalho</div>
-        <h2>Tudo que o treinador constrói precisa conversar entre si</h2>
+        <div class="eyebrow">Tabela tática do processo</div>
+        <h2>Cada parte do trabalho ocupa uma posição no mesmo campo</h2>
         <p>
           Modelo de jogo, exercícios, planejamento, atletas e análise da partida não devem viver como partes soltas.
-          O GamePlan reúne essas peças para ajudar o treinador a manter coerência entre o que pensa, o que treina e o que revisa.
+          O GamePlan conecta essas peças como uma estrutura tática: cada decisão alimenta a próxima e torna a revisão do trabalho mais clara.
         </p>
       </div>
       <div class="connection-board reveal">
+        <div class="pitch-markings" aria-hidden="true">
+          <span class="pitch-halfway"></span>
+          <span class="pitch-circle"></span>
+          <span class="pitch-box pitch-box-left"></span>
+          <span class="pitch-box pitch-box-right"></span>
+          <span class="pitch-goal pitch-goal-left"></span>
+          <span class="pitch-goal pitch-goal-right"></span>
+        </div>
+        <svg class="connection-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="50" y1="50" x2="18" y2="22"></line>
+          <line x1="50" y1="50" x2="82" y2="22"></line>
+          <line x1="50" y1="50" x2="18" y2="58"></line>
+          <line x1="50" y1="50" x2="82" y2="58"></line>
+          <line x1="50" y1="50" x2="50" y2="82"></line>
+          <circle cx="50" cy="50" r="1.25"></circle>
+        </svg>
         <div class="connection-center glass">
           <span>GamePlan</span>
           <strong>Processo do treinador</strong>
@@ -146,12 +136,13 @@
       </div>
       <div class="demo-shell glass reveal">
         <div class="video-frame">
-          <video controls preload="metadata" poster="assets/images/home.png">
+          <video controls preload="metadata" poster="assets/images/gameplan-logo.png">
             <source src="assets/videos/gameplan-demo.mp4" type="video/mp4" />
             Seu navegador não conseguiu carregar o vídeo de demonstração.
           </video>
         </div>
         <div class="demo-copy">
+          <div class="demo-duration">Vídeo de 1 minuto</div>
           <h3>Da ideia ao jogo, sem perder o caminho</h3>
           <p>Em poucos minutos, veja como o treinador organiza o modelo de jogo, cria exercícios, planeja a semana e revisa a partida dentro do mesmo ambiente.</p>
           <a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Testar grátis por 7 dias</a>
@@ -200,11 +191,10 @@
     <section id="about" class="section about-section">
       <div class="about-grid">
         <div class="founder-card glass reveal">
-          <img src="assets/images/renan-founder.png" alt="Renan Moniz, fundador do GamePlan" />
+          <div class="founder-photo"><img src="assets/images/renan-founder-updated.png" alt="Renan Moniz, fundador do GamePlan" width="1122" height="1402" /></div>
           <div class="founder-card-body">
             <span>Fundador do GamePlan</span>
             <h3>Renan Moniz</h3>
-            <p>Treinador formado pela CBF, Licença C de futebol.</p>
           </div>
         </div>
         <div class="about-copy reveal">

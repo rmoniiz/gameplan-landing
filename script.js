@@ -86,6 +86,21 @@
   const languageButton = document.getElementById("languageButton");
   const languageMenu = document.getElementById("languageMenu");
   if (languageButton && languageMenu) {
+    const flagSvg = {
+      br: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" rx="2" fill="#009B3A"/><path d="M14 3 24 10 14 17 4 10Z" fill="#FFDF00"/><circle cx="14" cy="10" r="4" fill="#002776"/><path d="M10.7 9.8c2.2-.8 4.4-.5 6.6.8" fill="none" stroke="#fff" stroke-width=".65"/></svg>',
+      us: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" rx="2" fill="#fff"/><path d="M0 0h28v2H0zm0 4h28v2H0zm0 8h28v2H0zm0 8h28v2H0zm0-4h28v2H0z" fill="#B22234"/><rect width="12" height="10.8" rx="1" fill="#3C3B6E"/><g fill="#fff"><circle cx="2" cy="2" r=".55"/><circle cx="5" cy="2" r=".55"/><circle cx="8" cy="2" r=".55"/><circle cx="10.5" cy="2" r=".55"/><circle cx="3.5" cy="4.4" r=".55"/><circle cx="6.5" cy="4.4" r=".55"/><circle cx="9.5" cy="4.4" r=".55"/><circle cx="2" cy="6.8" r=".55"/><circle cx="5" cy="6.8" r=".55"/><circle cx="8" cy="6.8" r=".55"/><circle cx="10.5" cy="6.8" r=".55"/><circle cx="3.5" cy="9" r=".55"/><circle cx="6.5" cy="9" r=".55"/><circle cx="9.5" cy="9" r=".55"/></g></svg>',
+    };
+    const replaceFlag = (container, country) => {
+      const flag = container?.querySelector(".flag, .flag-svg");
+      if (!flag || !flagSvg[country]) return;
+      flag.outerHTML = flagSvg[country];
+    };
+
+    replaceFlag(languageButton, locale === "en" ? "us" : "br");
+    languageMenu.querySelectorAll("a").forEach((option) => {
+      replaceFlag(option, option.getAttribute("href")?.includes("en.html") ? "us" : "br");
+    });
+
     languageButton.setAttribute("aria-controls", "languageMenu");
     languageMenu.setAttribute("role", "menu");
     const options = [...languageMenu.querySelectorAll("a")];
@@ -110,6 +125,11 @@
         languageButton.setAttribute("aria-expanded", "false");
       }
     });
+  }
+
+  const connectionEyebrow = document.querySelector("#connection .eyebrow");
+  if (connectionEyebrow) {
+    connectionEyebrow.textContent = locale === "en" ? "How it connects" : "Como tudo se conecta";
   }
 
   document.addEventListener("keydown", (event) => {

@@ -86,21 +86,6 @@
   const languageButton = document.getElementById("languageButton");
   const languageMenu = document.getElementById("languageMenu");
   if (languageButton && languageMenu) {
-    const flagSvg = {
-      br: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" rx="2" fill="#009B3A"/><path d="M14 3 24 10 14 17 4 10Z" fill="#FFDF00"/><circle cx="14" cy="10" r="4" fill="#002776"/><path d="M10.7 9.8c2.2-.8 4.4-.5 6.6.8" fill="none" stroke="#fff" stroke-width=".65"/></svg>',
-      us: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" rx="2" fill="#fff"/><path d="M0 0h28v2H0zm0 4h28v2H0zm0 8h28v2H0zm0 8h28v2H0zm0-4h28v2H0z" fill="#B22234"/><rect width="12" height="10.8" rx="1" fill="#3C3B6E"/><g fill="#fff"><circle cx="2" cy="2" r=".55"/><circle cx="5" cy="2" r=".55"/><circle cx="8" cy="2" r=".55"/><circle cx="10.5" cy="2" r=".55"/><circle cx="3.5" cy="4.4" r=".55"/><circle cx="6.5" cy="4.4" r=".55"/><circle cx="9.5" cy="4.4" r=".55"/><circle cx="2" cy="6.8" r=".55"/><circle cx="5" cy="6.8" r=".55"/><circle cx="8" cy="6.8" r=".55"/><circle cx="10.5" cy="6.8" r=".55"/><circle cx="3.5" cy="9" r=".55"/><circle cx="6.5" cy="9" r=".55"/><circle cx="9.5" cy="9" r=".55"/></g></svg>',
-    };
-    const replaceFlag = (container, country) => {
-      const flag = container?.querySelector(".flag, .flag-svg");
-      if (!flag || !flagSvg[country]) return;
-      flag.outerHTML = flagSvg[country];
-    };
-
-    replaceFlag(languageButton, locale === "en" ? "us" : "br");
-    languageMenu.querySelectorAll("a").forEach((option) => {
-      replaceFlag(option, option.getAttribute("href")?.includes("en.html") ? "us" : "br");
-    });
-
     languageButton.setAttribute("aria-controls", "languageMenu");
     languageMenu.setAttribute("role", "menu");
     const options = [...languageMenu.querySelectorAll("a")];
@@ -127,11 +112,6 @@
     });
   }
 
-  const connectionEyebrow = document.querySelector("#connection .eyebrow");
-  if (connectionEyebrow) {
-    connectionEyebrow.textContent = locale === "en" ? "How it connects" : "Como tudo se conecta";
-  }
-
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
     languageMenu?.classList.remove("open");
@@ -149,6 +129,120 @@
     heading.replaceWith(replacement);
   });
   document.querySelectorAll('a[target="_blank"]').forEach((link) => { link.rel = "noopener noreferrer"; });
+
+  const svgMarkup = {
+    br: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" fill="#009c3b"></rect><polygon points="14,2 25,10 14,18 3,10" fill="#ffdf00"></polygon><circle cx="14" cy="10" r="4.2" fill="#002776"></circle><path d="M10.1 10.3c1.9-1.2 5.8-1.3 7.9-.1" fill="none" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round"></path></svg>',
+    us: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" fill="#ffffff"></rect><path d="M0 0h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28V20H0z" fill="#b22234"></path><rect width="12" height="10.8" fill="#3c3b6e"></rect><g fill="#ffffff"><circle cx="2" cy="2" r="0.6"></circle><circle cx="4.4" cy="2" r="0.6"></circle><circle cx="6.8" cy="2" r="0.6"></circle><circle cx="9.2" cy="2" r="0.6"></circle><circle cx="11" cy="3.6" r="0.6"></circle><circle cx="8.6" cy="3.6" r="0.6"></circle><circle cx="6.2" cy="3.6" r="0.6"></circle><circle cx="3.8" cy="3.6" r="0.6"></circle><circle cx="2" cy="5.2" r="0.6"></circle><circle cx="4.4" cy="5.2" r="0.6"></circle><circle cx="6.8" cy="5.2" r="0.6"></circle><circle cx="9.2" cy="5.2" r="0.6"></circle><circle cx="11" cy="6.8" r="0.6"></circle><circle cx="8.6" cy="6.8" r="0.6"></circle><circle cx="6.2" cy="6.8" r="0.6"></circle><circle cx="3.8" cy="6.8" r="0.6"></circle><circle cx="2" cy="8.4" r="0.6"></circle><circle cx="4.4" cy="8.4" r="0.6"></circle><circle cx="6.8" cy="8.4" r="0.6"></circle><circle cx="9.2" cy="8.4" r="0.6"></circle></g></svg>'
+  };
+
+  const createFlagSvg = (key) => {
+    const template = document.createElement("template");
+    template.innerHTML = svgMarkup[key].trim();
+    return template.content.firstElementChild;
+  };
+
+  const replaceFlag = (element, key) => {
+    if (!element) return;
+    const current = element.querySelector(".flag, .flag-svg");
+    const nextFlag = createFlagSvg(key);
+    if (current) {
+      current.replaceWith(nextFlag);
+    } else {
+      element.prepend(nextFlag);
+    }
+  };
+
+  const updateFeatureDescription = (matcher, text) => {
+    document.querySelectorAll(".features-grid .feature-card").forEach((card) => {
+      const title = card.querySelector("h3")?.textContent?.trim() || "";
+      if (!matcher.test(title)) return;
+      const description = card.querySelector("p");
+      if (description) description.textContent = text;
+    });
+  };
+
+  const applyRequestedContentRefinements = () => {
+    const isEnglish = locale === "en";
+    const connectionCopy = isEnglish
+      ? {
+          eyebrow: "How it connects",
+          title: "Five areas, one connected coaching routine",
+          description: "Game model, exercises, planning, players and match review stop working as separate pieces. All five connect directly to GamePlan, making the path from the idea to the pitch easier to follow.",
+          centerAlt: "GamePlan logo",
+          centerName: "GamePlan",
+          cards: {
+            a: { number: "01", title: "Game model", text: "Principles and behaviours behind your game idea." },
+            b: { number: "02", title: "Exercises", text: "Your own tasks plus ready-made exercises." },
+            c: { number: "03", title: "Planning", text: "Weekly and monthly goals and sessions." },
+            d: { number: "04", title: "Players", text: "Observations, evaluations and individual progress." },
+            e: { number: "05", title: "Match", text: "Indicators to review what appeared on the pitch." },
+          },
+          featureText: "Create, save and reuse tasks with a library of ready-made exercises.",
+          aboutTitle: "Built to help coaches turn their game idea into a clear process."
+        }
+      : {
+          eyebrow: "Como tudo se conecta",
+          title: "Cinco áreas, uma rotina conectada",
+          description: "Modelo de jogo, exercícios, planejamento, atletas e partida deixam de funcionar como partes separadas. Os cinco pontos se conectam diretamente ao GamePlan, deixando mais claro o caminho entre a ideia, o treino e o que aparece em campo.",
+          centerAlt: "Logo do GamePlan",
+          centerName: "GamePlan",
+          cards: {
+            a: { number: "01", title: "Modelo de jogo", text: "Princípios e comportamentos da sua ideia de jogo." },
+            b: { number: "02", title: "Exercícios", text: "Tarefas próprias e exercícios prontos para usar." },
+            c: { number: "03", title: "Planejamento", text: "Objetivos e sessões da semana e do mês." },
+            d: { number: "04", title: "Atletas", text: "Observações, avaliações e evolução individual." },
+            e: { number: "05", title: "Partida", text: "Indicadores para revisar o que apareceu em campo." },
+          },
+          featureText: "Crie, salve e reutilize tarefas com uma biblioteca de exercícios prontos.",
+          aboutTitle: "Criado para ajudar o treinador a transformar sua ideia de jogo em um processo claro."
+        };
+
+    const eyebrow = document.querySelector("#connection .eyebrow");
+    const connectionTitle = document.querySelector("#connection .section-heading h2");
+    const connectionDescription = document.querySelector("#connection .section-heading p");
+    if (eyebrow) eyebrow.textContent = connectionCopy.eyebrow;
+    if (connectionTitle) connectionTitle.textContent = connectionCopy.title;
+    if (connectionDescription) connectionDescription.textContent = connectionCopy.description;
+
+    const center = document.querySelector(".connection-center");
+    if (center) {
+      center.innerHTML = `
+        <img class="connection-logo" src="assets/images/gameplan-logo.png" alt="${connectionCopy.centerAlt}" width="72" height="72" />
+        <strong>${connectionCopy.centerName}</strong>
+      `;
+    }
+
+    const links = document.querySelector(".connection-links");
+    if (links) {
+      links.innerHTML = `
+        <line x1="50" y1="50" x2="50" y2="18"></line>
+        <line x1="50" y1="50" x2="12.5" y2="82"></line>
+        <line x1="50" y1="50" x2="37.5" y2="82"></line>
+        <line x1="50" y1="50" x2="62.5" y2="82"></line>
+        <line x1="50" y1="50" x2="87.5" y2="82"></line>
+        <circle cx="50" cy="50" r="1.25"></circle>
+      `;
+    }
+
+    Object.entries(connectionCopy.cards).forEach(([key, card]) => {
+      const item = document.querySelector(`.item-${key}`);
+      if (!item) return;
+      item.innerHTML = `<small>${card.number}</small><strong>${card.title}</strong><span>${card.text}</span>`;
+    });
+
+    updateFeatureDescription(isEnglish ? /exercise database|exercises/i : /banco de exercícios/i, connectionCopy.featureText);
+
+    const aboutTitle = document.querySelector("#about .about-copy h2");
+    if (aboutTitle) aboutTitle.textContent = connectionCopy.aboutTitle;
+
+    replaceFlag(languageButton, isEnglish ? "us" : "br");
+    languageMenu?.querySelectorAll(".language-option").forEach((option) => {
+      const href = option.getAttribute("href") || "";
+      replaceFlag(option, href.includes("en") ? "us" : "br");
+    });
+  };
+
+  applyRequestedContentRefinements();
 
   const eventFor = (href) => {
     if (href.includes("signup?trial=7")) return ["landing_try_platform_clicked", "cta"];

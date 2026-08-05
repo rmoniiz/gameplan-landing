@@ -354,7 +354,7 @@
       const lineItems = preview?.data?.details?.lineItems || [];
       lineItems.forEach((lineItem, index) => {
         const priceId = lineItem?.price?.id || lineItem?.priceId || requestedPrices[index];
-        const total = lineItem?.formattedTotals?.subtotal;
+        const total = lineItem?.formattedTotals?.total;
         if (priceId && total) formattedTotals[priceId] = total;
       });
 

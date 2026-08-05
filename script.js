@@ -245,7 +245,7 @@
   applyRequestedContentRefinements();
 
   const eventFor = (href) => {
-    if (href.includes("signup?trial=7")) return ["landing_try_platform_clicked", "cta"];
+    if (href.includes("signup?trial=7") || href.startsWith("https://gameplan-app-zeta.vercel.app/?lang=")) return ["landing_try_platform_clicked", "cta"];
     if (href.includes("/login")) return ["landing_login_clicked", "login"];
     if (href.startsWith("mailto:") || href.includes("wa.me")) return ["landing_contact_clicked", "contact"];
     if (href.endsWith("index.html") || href.endsWith("en.html")) return ["landing_language_selected", "language"];

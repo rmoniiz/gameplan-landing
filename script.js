@@ -244,6 +244,155 @@
 
   applyRequestedContentRefinements();
 
+  const setupPaddleCheckout = async () => {
+    const pricingSection = document.getElementById("pricing");
+    const pricingCards = pricingSection?.querySelector(".pricing-cards");
+    const subscribeButtons = [...document.querySelectorAll(".paddle-subscribe")];
+    if (!pricingSection || !pricingCards || subscribeButtons.length === 0) return;
+
+    const isEnglish = locale === "en";
+    const pricingCopy = isEnglish
+      ? {
+          month: "Monthly",
+          year: "Yearly",
+          monthInterval: "/ month",
+          yearInterval: "/ year",
+          unavailable: "Price unavailable",
+          loadingError: "We couldn't load checkout right now. Please try again shortly.",
+        }
+      : {
+          month: "Mensal",
+          year: "Anual",
+          monthInterval: "/ mês",
+          yearInterval: "/ ano",
+          unavailable: "Preço indisponível",
+          loadingError: "Não foi possível carregar o checkout agora. Tente novamente em instantes.",
+        };
+
+    let selectedPeriod = "month";
+    let paddleConfig;
+    let formattedTotals = {};
+
+    const toggle = document.createElement("div");
+    toggle.className = "billing-toggle reveal";
+    toggle.setAttribute("role", "group");
+    toggle.setAttribute("aria-label", isEnglish ? "Billing frequency" : "Frequência de cobrança");
+    toggle.innerHTML = `
+      <button type="button" class="billing-toggle-button active" data-billing-period="month" aria-pressed="true">${pricingCopy.month}</button>
+      <button type="button" class="billing-toggle-button" data-billing-period="year" aria-pressed="false">${pricingCopy.year}</button>
+    `;
+    pricingCards.before(toggle);
+
+    const status = document.createElement("p");
+    status.className = "paddle-status";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    pricingCards.after(status);
+
+    const priceIdFor = (plan, period) => paddleConfig?.prices?.[plan]?.[period];
+
+    const updateDisplayedPrices = () => {
+      subscribeButtons.forEach((button) => {
+        const plan = button.dataset.paddlePlan;
+        const card = button.closest(".price-card");
+        const priceValue = card?.querySelector(".paddle-price-value");
+        const interval = card?.querySelector(".paddle-price-interval");
+        const priceId = priceIdFor(plan, selectedPeriod);
+        if (priceValue) priceValue.textContent = formattedTotals[priceId] || pricingCopy.unavailable;
+        if (interval) interval.textContent = selectedPeriod === "year" ? pricingCopy.yearInterval : pricingCopy.monthInterval;
+        button.disabled = !formattedTotals[priceId];
+      });
+    };
+
+    toggle.querySelectorAll("[data-billing-period]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedPeriod = button.dataset.billingPeriod;
+        toggle.querySelectorAll("[data-billing-period]").forEach((option) => {
+          const active = option === button;
+          option.classList.toggle("active", active);
+          option.setAttribute("aria-pressed", String(active));
+        });
+        updateDisplayedPrices();
+        window.posthog?.capture?.("landing_billing_period_selected", {
+          page_language: locale,
+          billing_period: selectedPeriod,
+        });
+      });
+    });
+
+    try {
+      const response = await fetch("/api/paddle-config", {
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error(`Paddle configuration returned ${response.status}`);
+
+      paddleConfig = await response.json();
+      if (paddleConfig.environment !== "sandbox") throw new Error("Paddle environment must be sandbox");
+      if (!paddleConfig.clientToken?.startsWith("test_")) throw new Error("Invalid Paddle sandbox client token");
+      if (!window.Paddle) throw new Error("Paddle.js failed to load");
+
+      window.Paddle.Environment.set("sandbox");
+      window.Paddle.Initialize({
+        token: paddleConfig.clientToken,
+        eventCallback(event) {
+          if (!event?.name) return;
+          window.posthog?.capture?.(`paddle_${event.name.replaceAll(".", "_")}`, {
+            page_language: locale,
+            billing_period: selectedPeriod,
+          });
+        },
+      });
+
+      const requestedPrices = Object.values(paddleConfig.prices).flatMap((plan) => [plan.month, plan.year]);
+      const previewRequest = {
+        items: requestedPrices.map((priceId) => ({ priceId, quantity: 1 })),
+      };
+      if (paddleConfig.country) previewRequest.address = { countryCode: paddleConfig.country };
+
+      const preview = await window.Paddle.PricePreview(previewRequest);
+      const lineItems = preview?.data?.details?.lineItems || [];
+      lineItems.forEach((lineItem, index) => {
+        const priceId = lineItem?.price?.id || lineItem?.priceId || requestedPrices[index];
+        const total = lineItem?.formattedTotals?.subtotal;
+        if (priceId && total) formattedTotals[priceId] = total;
+      });
+
+      updateDisplayedPrices();
+      status.textContent = "";
+    } catch (error) {
+      console.error("GamePlan Paddle checkout initialization failed", error);
+      subscribeButtons.forEach((button) => { button.disabled = true; });
+      status.textContent = pricingCopy.loadingError;
+    }
+
+    subscribeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const plan = button.dataset.paddlePlan;
+        const priceId = priceIdFor(plan, selectedPeriod);
+        if (!priceId || !formattedTotals[priceId]) return;
+
+        window.posthog?.capture?.("landing_checkout_opened", {
+          page_language: locale,
+          plan,
+          billing_period: selectedPeriod,
+          price_id: priceId,
+        });
+
+        window.Paddle.Checkout.open({
+          items: [{ priceId, quantity: 1 }],
+          settings: {
+            displayMode: "overlay",
+            variant: "one-page",
+            successUrl: new URL("/welcome", window.location.origin).href,
+          },
+        });
+      });
+    });
+  };
+
+  setupPaddleCheckout();
+
   const eventFor = (href) => {
     if (href.includes("signup?trial=7")) return ["landing_try_platform_clicked", "cta"];
     if (href.includes("/login")) return ["landing_login_clicked", "login"];

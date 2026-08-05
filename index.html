@@ -159,7 +159,7 @@
       <div class="pricing-cards">
         <article class="price-card glass reveal">
           <div class="plan-label">Starter</div>
-          <h3>€9.99 <span>/ mês</span></h3>
+          <h3><span class="paddle-price-value" aria-live="polite">Carregando preço…</span> <span class="paddle-price-interval">/ mês</span></h3>
           <p>Para organizar o essencial de planejamento, exercícios e acompanhamento dos atletas.</p>
           <ul>
             <li>Planejamento semanal</li>
@@ -168,12 +168,12 @@
             <li>Cadastro de atletas</li>
             <li>Desenvolvimento dos atletas</li>
           </ul>
-          <a class="btn btn-ghost" href="https://game-plan.bolt.host/signup?trial=7">Começar teste grátis de 7 dias</a>
+          <button class="btn btn-ghost paddle-subscribe" type="button" data-paddle-plan="starter" disabled>Começar teste grátis de 7 dias</button>
         </article>
         <article class="price-card price-card-featured glass reveal">
           <div class="recommended-badge">Recomendado</div>
           <div class="plan-label">Pro</div>
-          <h3>€19.99 <span>/ mês</span></h3>
+          <h3><span class="paddle-price-value" aria-live="polite">Carregando preço…</span> <span class="paddle-price-interval">/ mês</span></h3>
           <p>Para uma experiência completa de metodologia, treino, jogo, avaliação e insights com apoio de IA.</p>
           <ul>
             <li>Tudo do Starter</li>
@@ -182,7 +182,7 @@
             <li>Teste tático</li>
             <li>Insights com apoio de IA</li>
           </ul>
-          <a class="btn btn-primary" href="https://game-plan.bolt.host/signup?trial=7">Começar teste grátis de 7 dias</a>
+          <button class="btn btn-primary paddle-subscribe" type="button" data-paddle-plan="pro" disabled>Começar teste grátis de 7 dias</button>
         </article>
       </div>
       <p class="pricing-note reveal">Novos usuários podem testar o GamePlan completo por 7 dias. Depois do período gratuito, basta escolher o plano que melhor combina com sua rotina de treinador.</p>
@@ -269,6 +269,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

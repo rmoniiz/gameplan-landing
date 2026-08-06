@@ -4,7 +4,8 @@
   const root = document.documentElement;
   const body = document.body;
   const locale = root.lang === "en" ? "en" : "pt-BR";
-  const copy = locale === "en"
+  const isEnglish = locale === "en";
+  const copy = isEnglish
     ? { skip: "Skip to main content", open: "Open navigation menu", close: "Close navigation menu", copyright: "All rights reserved." }
     : { skip: "Pular para o conteúdo principal", open: "Abrir menu de navegação", close: "Fechar menu de navegação", copyright: "Todos os direitos reservados." };
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -130,116 +131,103 @@
   });
   document.querySelectorAll('a[target="_blank"]').forEach((link) => { link.rel = "noopener noreferrer"; });
 
-  const svgMarkup = {
+  const flagMarkup = {
     br: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" fill="#009c3b"></rect><polygon points="14,2 25,10 14,18 3,10" fill="#ffdf00"></polygon><circle cx="14" cy="10" r="4.2" fill="#002776"></circle><path d="M10.1 10.3c1.9-1.2 5.8-1.3 7.9-.1" fill="none" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round"></path></svg>',
-    us: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" fill="#ffffff"></rect><path d="M0 0h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28V20H0z" fill="#b22234"></path><rect width="12" height="10.8" fill="#3c3b6e"></rect><g fill="#ffffff"><circle cx="2" cy="2" r="0.6"></circle><circle cx="4.4" cy="2" r="0.6"></circle><circle cx="6.8" cy="2" r="0.6"></circle><circle cx="9.2" cy="2" r="0.6"></circle><circle cx="11" cy="3.6" r="0.6"></circle><circle cx="8.6" cy="3.6" r="0.6"></circle><circle cx="6.2" cy="3.6" r="0.6"></circle><circle cx="3.8" cy="3.6" r="0.6"></circle><circle cx="2" cy="5.2" r="0.6"></circle><circle cx="4.4" cy="5.2" r="0.6"></circle><circle cx="6.8" cy="5.2" r="0.6"></circle><circle cx="9.2" cy="5.2" r="0.6"></circle><circle cx="11" cy="6.8" r="0.6"></circle><circle cx="8.6" cy="6.8" r="0.6"></circle><circle cx="6.2" cy="6.8" r="0.6"></circle><circle cx="3.8" cy="6.8" r="0.6"></circle><circle cx="2" cy="8.4" r="0.6"></circle><circle cx="4.4" cy="8.4" r="0.6"></circle><circle cx="6.8" cy="8.4" r="0.6"></circle><circle cx="9.2" cy="8.4" r="0.6"></circle></g></svg>'
+    us: '<svg class="flag-svg" viewBox="0 0 28 20" aria-hidden="true" focusable="false"><rect width="28" height="20" fill="#ffffff"></rect><path d="M0 0h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28v1.54H0zm0 3.08h28V20H0z" fill="#b22234"></path><rect width="12" height="10.8" fill="#3c3b6e"></rect></svg>'
   };
-
-  const createFlagSvg = (key) => {
-    const template = document.createElement("template");
-    template.innerHTML = svgMarkup[key].trim();
-    return template.content.firstElementChild;
-  };
-
   const replaceFlag = (element, key) => {
     if (!element) return;
+    const template = document.createElement("template");
+    template.innerHTML = flagMarkup[key].trim();
     const current = element.querySelector(".flag, .flag-svg");
-    const nextFlag = createFlagSvg(key);
-    if (current) {
-      current.replaceWith(nextFlag);
-    } else {
-      element.prepend(nextFlag);
-    }
+    if (current) current.replaceWith(template.content.firstElementChild);
   };
 
   const updateFeatureDescription = (matcher, text) => {
     document.querySelectorAll(".features-grid .feature-card").forEach((card) => {
       const title = card.querySelector("h3")?.textContent?.trim() || "";
-      if (!matcher.test(title)) return;
       const description = card.querySelector("p");
-      if (description) description.textContent = text;
+      if (matcher.test(title) && description) description.textContent = text;
     });
   };
 
-  const applyRequestedContentRefinements = () => {
-    const isEnglish = locale === "en";
+  const applyContentRefinements = () => {
     const connectionCopy = isEnglish
       ? {
-          eyebrow: "How it connects",
-          title: "Five areas, one connected coaching routine",
-          description: "Game model, exercises, planning, players and match review stop working as separate pieces. All five connect directly to GamePlan, making the path from the idea to the pitch easier to follow.",
+          eyebrow: "From the game model to the pitch",
+          title: "One connected path for the coach’s decisions",
+          description: "GamePlan links the coaching process without imposing one methodology: define the game idea, turn priorities into exercises, organize the plan, follow players and review what appeared in the match.",
+          boardLabel: "GamePlan connected coaching process: game model, exercises, planning, players, match and reflection",
           centerAlt: "GamePlan logo",
           centerName: "GamePlan",
+          centerLabel: "Connected process",
           cards: {
-            a: { number: "01", title: "Game model", text: "Principles and behaviours behind your game idea." },
-            b: { number: "02", title: "Exercises", text: "Your own tasks plus ready-made exercises." },
-            c: { number: "03", title: "Planning", text: "Weekly and monthly goals and sessions." },
-            d: { number: "04", title: "Players", text: "Observations, evaluations and individual progress." },
-            e: { number: "05", title: "Match", text: "Indicators to review what appeared on the pitch." },
+            a: { number: "01", title: "Game model", text: "Record your idea, principles and observable behaviours." },
+            b: { number: "02", title: "Exercises", text: "Turn priorities into your own tasks or ready-made exercises." },
+            c: { number: "03", title: "Planning", text: "Distribute objectives and sessions across the week and month." },
+            d: { number: "04", title: "Players", text: "Organize the squad and follow development evidence." },
+            e: { number: "05", title: "Match", text: "Compare what was planned with what appeared on the pitch." },
           },
-          featureText: "Create, save and reuse tasks with a library of ready-made exercises.",
-          aboutTitle: "Built to help coaches turn their game idea into a clear process."
+          featureText: "Create, save and reuse your own tasks, with a ready-made library to support your planning.",
+          aboutTitle: "Built by a coach to give structure to the path from an idea to the pitch."
         }
       : {
-          eyebrow: "Como tudo se conecta",
-          title: "Cinco áreas, uma rotina conectada",
-          description: "Modelo de jogo, exercícios, planejamento, atletas e partida deixam de funcionar como partes separadas. Os cinco pontos se conectam diretamente ao GamePlan, deixando mais claro o caminho entre a ideia, o treino e o que aparece em campo.",
+          eyebrow: "Do modelo de jogo ao campo",
+          title: "Um caminho conectado para as decisões do treinador",
+          description: "O GamePlan conecta o processo sem impor uma metodologia: defina a ideia de jogo, transforme prioridades em exercícios, organize o planejamento, acompanhe os atletas e revise o que apareceu na partida.",
+          boardLabel: "Processo conectado do GamePlan: modelo de jogo, exercícios, planejamento, atletas, partida e reflexão",
           centerAlt: "Logo do GamePlan",
           centerName: "GamePlan",
+          centerLabel: "Processo conectado",
           cards: {
-            a: { number: "01", title: "Modelo de jogo", text: "Princípios e comportamentos da sua ideia de jogo." },
-            b: { number: "02", title: "Exercícios", text: "Tarefas próprias e exercícios prontos para usar." },
-            c: { number: "03", title: "Planejamento", text: "Objetivos e sessões da semana e do mês." },
-            d: { number: "04", title: "Atletas", text: "Observações, avaliações e evolução individual." },
-            e: { number: "05", title: "Partida", text: "Indicadores para revisar o que apareceu em campo." },
+            a: { number: "01", title: "Modelo de jogo", text: "Registre sua ideia, princípios e comportamentos observáveis." },
+            b: { number: "02", title: "Exercícios", text: "Transforme prioridades em tarefas próprias ou exercícios prontos." },
+            c: { number: "03", title: "Planejamento", text: "Distribua objetivos e sessões na semana e no mês." },
+            d: { number: "04", title: "Atletas", text: "Organize o elenco e acompanhe evidências de desenvolvimento." },
+            e: { number: "05", title: "Partida", text: "Compare o que foi planejado com o que apareceu em campo." },
           },
-          featureText: "Crie, salve e reutilize tarefas com uma biblioteca de exercícios prontos.",
-          aboutTitle: "Criado para ajudar o treinador a transformar sua ideia de jogo em um processo claro."
+          featureText: "Crie, salve e reutilize tarefas próprias, com uma biblioteca pronta para apoiar o planejamento.",
+          aboutTitle: "Criado por um treinador para dar estrutura ao caminho entre a ideia e o campo."
         };
 
+    const board = document.querySelector(".connection-board");
     const eyebrow = document.querySelector("#connection .eyebrow");
-    const connectionTitle = document.querySelector("#connection .section-heading h2");
-    const connectionDescription = document.querySelector("#connection .section-heading p");
+    const title = document.querySelector("#connection .section-heading h2");
+    const description = document.querySelector("#connection .section-heading p");
+    if (board) board.setAttribute("aria-label", connectionCopy.boardLabel);
     if (eyebrow) eyebrow.textContent = connectionCopy.eyebrow;
-    if (connectionTitle) connectionTitle.textContent = connectionCopy.title;
-    if (connectionDescription) connectionDescription.textContent = connectionCopy.description;
+    if (title) title.textContent = connectionCopy.title;
+    if (description) description.textContent = connectionCopy.description;
 
     const center = document.querySelector(".connection-center");
     if (center) {
-      center.innerHTML = `
-        <img class="connection-logo" src="assets/images/gameplan-logo.png" alt="${connectionCopy.centerAlt}" width="72" height="72" />
-        <strong>${connectionCopy.centerName}</strong>
-      `;
+      center.innerHTML = `<span>${connectionCopy.centerLabel}</span><img class="connection-logo" src="assets/images/gameplan-logo.png" alt="${connectionCopy.centerAlt}" width="72" height="72" /><strong>${connectionCopy.centerName}</strong>`;
     }
 
     const links = document.querySelector(".connection-links");
     if (links) {
       links.innerHTML = `
-        <line x1="50" y1="50" x2="50" y2="18"></line>
-        <line x1="50" y1="50" x2="12.5" y2="82"></line>
-        <line x1="50" y1="50" x2="37.5" y2="82"></line>
-        <line x1="50" y1="50" x2="62.5" y2="82"></line>
-        <line x1="50" y1="50" x2="87.5" y2="82"></line>
-        <circle cx="50" cy="50" r="1.25"></circle>
-      `;
+        <defs><marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>
+        <path class="flow-main" d="M16 35 H24" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-main" d="M36 35 H44" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-main" d="M56 35 H64" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-main" d="M76 35 H84" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-hub" d="M50 47 V66" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-feedback" d="M89 47 C86 72 70 78 59 78" marker-end="url(#flow-arrow)"></path>
+        <path class="flow-feedback" d="M41 78 C27 78 15 68 11 48" marker-end="url(#flow-arrow)"></path>`;
     }
 
     Object.entries(connectionCopy.cards).forEach(([key, card]) => {
       const item = document.querySelector(`.item-${key}`);
-      if (!item) return;
-      item.innerHTML = `<small>${card.number}</small><strong>${card.title}</strong><span>${card.text}</span>`;
+      if (item) item.innerHTML = `<small>${card.number}</small><strong>${card.title}</strong><span>${card.text}</span>`;
     });
 
     updateFeatureDescription(isEnglish ? /exercise database|exercises/i : /banco de exercícios/i, connectionCopy.featureText);
-
     const aboutTitle = document.querySelector("#about .about-copy h2");
     if (aboutTitle) aboutTitle.textContent = connectionCopy.aboutTitle;
 
     replaceFlag(languageButton, isEnglish ? "us" : "br");
-    languageMenu?.querySelectorAll(".language-option").forEach((option) => {
-      const href = option.getAttribute("href") || "";
-      replaceFlag(option, href.includes("en") ? "us" : "br");
-    });
+    languageMenu?.querySelectorAll(".language-option").forEach((option) => replaceFlag(option, (option.getAttribute("href") || "").includes("en") ? "us" : "br"));
   };
 
   const replaceListItems = (list, items) => {
@@ -251,84 +239,43 @@
     }));
   };
 
-  const applyPlanEntitlementCopy = () => {
-    const isEnglish = locale === "en";
+  const applyPlanCopy = () => {
     const [starterCard, proCard] = document.querySelectorAll("#pricing .price-card");
     if (!starterCard || !proCard) return;
-
-    if (!document.getElementById("plan-entitlement-overrides")) {
-      const style = document.createElement("style");
-      style.id = "plan-entitlement-overrides";
-      style.textContent = `
-        .pricing-cards .price-card:first-child > p { font-size: 1rem; }
-        .pricing-cards .price-card:first-child > p::after { content: none; }
-        .pricing-cards .price-card:first-child ul li:last-child { display: list-item; }
-        .pricing-cards .price-card-featured ul::after { display: none; content: none; }
-      `;
-      document.head.appendChild(style);
-    }
-
     const planCopy = isEnglish
       ? {
-          starterPrice: "€9.99",
-          starterInterval: "/ month",
-          starterDescription: "For organizing the essentials of planning, exercises and squad management.",
-          starterFeatures: [
-            "Weekly planning",
-            "Monthly planning",
-            "Exercise database",
-            "Player registration and squad organization",
-          ],
-          proPrice: "€19.99",
-          proInterval: "/ month",
-          proFeatures: [
-            "Everything in Starter",
-            "Game Model & Methodology",
-            "Player development",
-            "Tactical test",
-            "Match statistics",
-            "AI-assisted insights",
-          ],
+          starterPrice: "€9.99", starterInterval: "/ month",
+          starterDescription: "For coaches who want to organize exercises, squad information and planning in one reliable routine.",
+          starterFeatures: ["Weekly planning", "Monthly planning", "Exercise database", "Player registration and squad organization"],
+          proPrice: "€19.99", proInterval: "/ month",
+          proDescription: "For coaches who want the complete connection between methodology, player development and match review.",
+          proFeatures: ["Everything in Starter", "Game Model & Methodology", "Player development", "Tactical test", "Match statistics", "AI-assisted insights reviewed by the coach"],
         }
       : {
-          starterPrice: "€9,99",
-          starterInterval: "/ mês",
-          starterDescription: "Para organizar o essencial de planejamento, exercícios e organização do elenco.",
-          starterFeatures: [
-            "Planejamento semanal",
-            "Planejamento mensal",
-            "Banco de exercícios",
-            "Cadastro e organização do elenco",
-          ],
-          proPrice: "€19,99",
-          proInterval: "/ mês",
-          proFeatures: [
-            "Tudo do Starter",
-            "Modelo de Jogo & Metodologia",
-            "Desenvolvimento dos atletas",
-            "Teste tático",
-            "Estatísticas da partida",
-            "Insights com apoio de IA",
-          ],
+          starterPrice: "€9,99", starterInterval: "/ mês",
+          starterDescription: "Para treinadores que querem organizar exercícios, elenco e planejamento em uma rotina confiável.",
+          starterFeatures: ["Planejamento semanal", "Planejamento mensal", "Banco de exercícios", "Cadastro e organização do elenco"],
+          proPrice: "€19,99", proInterval: "/ mês",
+          proDescription: "Para treinadores que querem conectar metodologia, desenvolvimento dos atletas e revisão da partida.",
+          proFeatures: ["Tudo do Starter", "Modelo de Jogo & Metodologia", "Desenvolvimento dos atletas", "Teste tático", "Estatísticas da partida", "Insights com apoio de IA revisados pelo treinador"],
         };
-
     const starterPrice = starterCard.querySelector("h3");
     const starterDescription = starterCard.querySelector(":scope > p");
     const proPrice = proCard.querySelector("h3");
-
+    const proDescription = proCard.querySelector(":scope > p");
     if (starterPrice) starterPrice.innerHTML = `${planCopy.starterPrice} <span>${planCopy.starterInterval}</span>`;
     if (starterDescription) starterDescription.textContent = planCopy.starterDescription;
     if (proPrice) proPrice.innerHTML = `${planCopy.proPrice} <span>${planCopy.proInterval}</span>`;
-
+    if (proDescription) proDescription.textContent = planCopy.proDescription;
     replaceListItems(starterCard.querySelector("ul"), planCopy.starterFeatures);
     replaceListItems(proCard.querySelector("ul"), planCopy.proFeatures);
   };
 
-  applyRequestedContentRefinements();
-  applyPlanEntitlementCopy();
+  applyContentRefinements();
+  applyPlanCopy();
 
   const eventFor = (href) => {
-    if (href.includes("signup?trial=7")) return ["landing_try_platform_clicked", "cta"];
+    if (href.includes("signup?trial=7") || href.includes("lang=pt-BR") || href.includes("lang=en")) return ["landing_try_platform_clicked", "cta"];
     if (href.includes("/login")) return ["landing_login_clicked", "login"];
     if (href.startsWith("mailto:") || href.includes("wa.me")) return ["landing_contact_clicked", "contact"];
     if (href.endsWith("index.html") || href.endsWith("en.html")) return ["landing_language_selected", "language"];

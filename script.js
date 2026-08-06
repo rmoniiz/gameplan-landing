@@ -242,7 +242,90 @@
     });
   };
 
+  const replaceListItems = (list, items) => {
+    if (!list) return;
+    list.replaceChildren(...items.map((text) => {
+      const item = document.createElement("li");
+      item.textContent = text;
+      return item;
+    }));
+  };
+
+  const applyPlanEntitlementCopy = () => {
+    const isEnglish = locale === "en";
+    const [starterCard, proCard] = document.querySelectorAll("#pricing .price-card");
+    if (!starterCard || !proCard) return;
+
+    if (!document.getElementById("plan-entitlement-overrides")) {
+      const style = document.createElement("style");
+      style.id = "plan-entitlement-overrides";
+      style.textContent = `
+        .pricing-cards .price-card:first-child > p { font-size: 1rem; }
+        .pricing-cards .price-card:first-child > p::after { content: none; }
+        .pricing-cards .price-card:first-child ul li:last-child { display: list-item; }
+        .pricing-cards .price-card-featured ul::after { display: none; content: none; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const planCopy = isEnglish
+      ? {
+          starterPrice: "€9.99",
+          starterInterval: "/ month",
+          starterDescription: "For organizing the essentials of planning, exercises and squad management.",
+          starterFeatures: [
+            "Weekly planning",
+            "Monthly planning",
+            "Exercise database",
+            "Player registration and squad organization",
+          ],
+          proPrice: "€19.99",
+          proInterval: "/ month",
+          proFeatures: [
+            "Everything in Starter",
+            "Game Model & Methodology",
+            "Player development",
+            "Tactical test",
+            "Match statistics",
+            "AI-assisted insights",
+          ],
+        }
+      : {
+          starterPrice: "€9,99",
+          starterInterval: "/ mês",
+          starterDescription: "Para organizar o essencial de planejamento, exercícios e organização do elenco.",
+          starterFeatures: [
+            "Planejamento semanal",
+            "Planejamento mensal",
+            "Banco de exercícios",
+            "Cadastro e organização do elenco",
+          ],
+          proPrice: "€19,99",
+          proInterval: "/ mês",
+          proFeatures: [
+            "Tudo do Starter",
+            "Modelo de Jogo & Metodologia",
+            "Desenvolvimento dos atletas",
+            "Teste tático",
+            "Estatísticas da partida",
+            "Insights com apoio de IA",
+          ],
+        };
+
+    const starterPrice = starterCard.querySelector("h3");
+    const starterDescription = starterCard.querySelector(":scope > p");
+    const proPrice = proCard.querySelector("h3");
+
+    if (starterPrice) starterPrice.innerHTML = `${planCopy.starterPrice} <span>${planCopy.starterInterval}</span>`;
+    if (starterDescription) starterDescription.textContent = planCopy.starterDescription;
+    if (proPrice) proPrice.innerHTML = `${planCopy.proPrice} <span>${planCopy.proInterval}</span>`;
+
+    replaceListItems(starterCard.querySelector("ul"), planCopy.starterFeatures);
+    replaceListItems(proCard.querySelector("ul"), planCopy.proFeatures);
+  };
+
   applyRequestedContentRefinements();
+  applyPlanEntitlementCopy();
 
   const eventFor = (href) => {
     if (href.includes("signup?trial=7")) return ["landing_try_platform_clicked", "cta"];

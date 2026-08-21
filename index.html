@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="landing-latest-connection.css" />
 </head>
 <body>
   <div id="loader" aria-hidden="true">
@@ -130,19 +131,18 @@
 
     <section id="demo" class="section demo-section">
       <div class="section-heading reveal center-block">
-        <div class="eyebrow">Vídeo demo</div>
-        <h2>Veja o GamePlan funcionando</h2>
+        <div class="eyebrow">Demonstração</div>
+        <h2>Por dentro do app</h2>
         <p>Veja como o GamePlan reúne as principais partes do trabalho do treinador em uma experiência simples e visual.</p>
       </div>
       <div class="demo-shell glass reveal">
         <div class="video-frame">
-          <video controls preload="metadata" poster="assets/images/gameplan-logo.png">
-            <source src="assets/videos/gameplan-demo.mp4" type="video/mp4" />
+          <video controls preload="metadata" playsinline poster="assets/images/gameplan-logo.png" aria-label="Demonstração do GamePlan em português brasileiro">
+            <source src="assets/videos/gameplan-demo-ptbr.mp4" type="video/mp4" />
             Seu navegador não conseguiu carregar o vídeo de demonstração.
           </video>
         </div>
         <div class="demo-copy">
-          <div class="demo-duration">Vídeo de 1 minuto</div>
           <h3>Da ideia ao jogo, sem perder o caminho</h3>
           <p>Em poucos minutos, veja como o treinador organiza o modelo de jogo, cria exercícios, planeja a semana e revisa a partida dentro do mesmo ambiente.</p>
           <a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=pt-BR">Testar grátis por 7 dias</a>
@@ -270,5 +270,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="landing-latest-connection.js"></script>
 </body>
 </html>

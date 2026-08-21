@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    {
+      "source": "/assets/videos/gameplan-demo.mp4",
+      "destination": "/api/demo-video"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/videos/gameplan-demo.mp4",
+      "headers": [
+        { "key": "Content-Type", "value": "video/mp4" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    }
+  ]
+}

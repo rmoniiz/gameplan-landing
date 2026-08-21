@@ -5,11 +5,8 @@ import ffmpegPath from 'ffmpeg-static';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
-const TRACK_URL = 'https://assets.mixkit.co/music/130/130.mp3';
-const TRACK_PATH = join(ROOT, '.tmp-tech-house-vibes.mp3');
-const SOURCE_BPM = 130;
-const TARGET_BPM = 126;
-const TEMPO_RATIO = TARGET_BPM / SOURCE_BPM;
+const TRACK_URL = 'https://assets.mixkit.co/music/1077/1077.mp3';
+const TRACK_PATH = join(ROOT, '.tmp-sounds-good.mp3');
 const VIDEO_FILES = [
   'assets/videos/gameplan-demo-ptbr.mp4',
   'assets/videos/gameplan-demo-en.mp4',
@@ -44,12 +41,23 @@ function renderVideo(relativePath) {
   if (!existsSync(input)) throw new Error(`Missing source video: ${relativePath}`);
   mkdirSync(join(output, '..'), { recursive: true });
 
+  const energyCurve = [
+    'if(lt(t,0.5),0.10,',
+    'if(lt(t,7),0.10+(t-0.5)*(0.65/6.5),',
+    'if(lt(t,38),0.75,',
+    'if(lt(t,44),0.75-(t-38)*(0.12/6),',
+    'if(lt(t,45),0.63+(t-44)*0.14,',
+    'if(lt(t,57),0.77+(t-45)*(0.10/12),0.87))))))',
+  ].join('');
+
   const filter = [
-    `[1:a]atrim=start=0:end=64,asetpts=PTS-STARTPTS,atempo=${TEMPO_RATIO.toFixed(6)}`,
-    "volume='if(lt(t,1),0.045,if(lt(t,7.5),0.045+(t-1)*(0.275/6.5),0.32))':eval=frame",
-    'afade=t=in:st=0:d=7.5',
-    'afade=t=out:st=57.5:d=2.5',
-    'loudnorm=I=-20:TP=-1.5:LRA=7[aout]'
+    '[1:a]atrim=start=0:end=60,asetpts=PTS-STARTPTS',
+    'highpass=f=35',
+    'lowpass=f=16500',
+    'loudnorm=I=-16.8:TP=-1.5:LRA=7',
+    `volume='${energyCurve}':eval=frame`,
+    'afade=t=in:st=0:d=7',
+    'afade=t=out:st=57.2:d=2.8[aout]'
   ].join(',');
 
   execFileSync(ffmpegPath, [
@@ -70,4 +78,4 @@ copyProject();
 await downloadTrack();
 for (const video of VIDEO_FILES) renderVideo(video);
 rmSync(TRACK_PATH, { force: true });
-console.log('[gameplan-landing] Preview built with the approved horizontal connected-flow layout and a restrained 126 BPM Tech House vibes soundtrack.');
+console.log('[gameplan-landing] Preview built with the approved landing layout unchanged and the lighter Mixkit Sounds Good soundtrack embedded in both localized MP4s.');

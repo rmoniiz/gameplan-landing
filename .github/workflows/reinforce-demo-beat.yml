@@ -1,0 +1,155 @@
+name: Reinforce demo beat once
+
+on:
+  push:
+    branches:
+      - landing/demo-video-pt-en-05x
+    paths:
+      - .github/workflows/reinforce-demo-beat.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reinforce:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: landing/demo-video-pt-en-05x
+          fetch-depth: 0
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+
+      - name: Generate original 127 BPM percussion layer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import math
+          import random
+          import struct
+          import wave
+
+          sr = 48000
+          duration = 60.0
+          bpm = 127.0
+          beat = 60.0 / bpm
+          total = int(sr * duration)
+          audio = [0.0] * total
+          rng = random.Random(127)
+
+          def add_kick(start, amp=0.80):
+              n0 = int(start * sr)
+              length = int(0.22 * sr)
+              phase = 0.0
+              for n in range(length):
+                  i = n0 + n
+                  if i >= total:
+                      break
+                  t = n / sr
+                  freq = 48.0 + 82.0 * math.exp(-t * 28.0)
+                  phase += 2.0 * math.pi * freq / sr
+                  env = math.exp(-t * 17.5)
+                  click = math.sin(2.0 * math.pi * 1650.0 * t) * math.exp(-t * 95.0)
+                  audio[i] += amp * (0.88 * math.sin(phase) * env + 0.12 * click)
+
+          def add_hat(start, amp=0.13, open_hat=False):
+              n0 = int(start * sr)
+              length = int((0.13 if open_hat else 0.045) * sr)
+              prev = 0.0
+              decay = 26.0 if open_hat else 62.0
+              for n in range(length):
+                  i = n0 + n
+                  if i >= total:
+                      break
+                  t = n / sr
+                  noise = rng.uniform(-1.0, 1.0)
+                  hp = noise - prev * 0.82
+                  prev = noise
+                  env = math.exp(-t * decay)
+                  audio[i] += amp * hp * env
+
+          def add_clap(start, amp=0.10):
+              n0 = int(start * sr)
+              length = int(0.095 * sr)
+              prev = 0.0
+              for n in range(length):
+                  i = n0 + n
+                  if i >= total:
+                      break
+                  t = n / sr
+                  noise = rng.uniform(-1.0, 1.0)
+                  hp = noise - prev * 0.72
+                  prev = noise
+                  env = math.exp(-t * 34.0)
+                  audio[i] += amp * hp * env
+
+          beat_index = 0
+          t = 0.0
+          while t < duration:
+              # Four-on-the-floor kick, slightly stronger in the final drive.
+              amp = 0.76 if t < 45.0 else 0.84
+              add_kick(t, amp)
+              if beat_index % 4 in (1, 3):
+                  add_clap(t, 0.085)
+              # Closed hat on each eighth; open hat on the off-beat.
+              add_hat(t + beat / 2.0, 0.11 if t < 45.0 else 0.13, open_hat=True)
+              add_hat(t + beat / 4.0, 0.055, open_hat=False)
+              beat_index += 1
+              t += beat
+
+          peak = max(max(audio), -min(audio), 1e-9)
+          scale = 0.88 / peak
+          with wave.open('/tmp/gameplan-punch.wav', 'wb') as wf:
+              wf.setnchannels(2)
+              wf.setsampwidth(2)
+              wf.setframerate(sr)
+              frames = bytearray()
+              for x in audio:
+                  s = int(max(-1.0, min(1.0, x * scale)) * 32767)
+                  frames += struct.pack('<hh', s, s)
+              wf.writeframes(frames)
+          PY
+
+      - name: Reinforce PT-BR and EN audio without re-encoding video
+        shell: bash
+        run: |
+          for file in assets/videos/gameplan-demo-ptbr.mp4 assets/videos/gameplan-demo-en.mp4; do
+            out="/tmp/$(basename "$file")"
+            ffmpeg -y -i "$file" -i /tmp/gameplan-punch.wav \
+              -filter_complex "[0:a]highpass=f=28,bass=g=1.8:f=92:w=0.65[base];[1:a]volume=0.25[drums];[base][drums]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-17.5:TP=-1.5:LRA=7[aout]" \
+              -map 0:v:0 -map '[aout]' -t 60 \
+              -c:v copy -c:a aac -b:a 192k -ar 48000 -ac 2 -movflags +faststart "$out"
+            mv "$out" "$file"
+          done
+
+      - name: Verify final media
+        shell: bash
+        run: |
+          for file in assets/videos/gameplan-demo-ptbr.mp4 assets/videos/gameplan-demo-en.mp4; do
+            ffprobe -v error -show_entries format=duration -show_entries stream=codec_type,codec_name,sample_rate,channels -of json "$file"
+          done
+
+      - name: Document the reinforcement layer
+        shell: bash
+        run: |
+          cat >> assets/videos/README.md <<'EOF'
+
+## Groove reinforcement — 21 Aug 2026
+
+The licensed `Deep Urban` bed remains the underlying soundtrack. A small original GamePlan percussion reinforcement layer was synthesized specifically for this demo at 127 BPM: four-on-the-floor kick, restrained clap and off-beat hats. No third-party drum samples, melody, lyrics, hook or arrangement were copied from the musical references. The final mix remains embedded as AAC audio inside each localized MP4 and is normalized to approximately -17.5 LUFS with a -1.5 dBTP ceiling.
+EOF
+
+      - name: Commit final media and remove one-shot workflow
+        shell: bash
+        run: |
+          rm -- .github/workflows/reinforce-demo-beat.yml
+          git config user.name "gameplan-preview-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- assets/videos/gameplan-demo-ptbr.mp4 assets/videos/gameplan-demo-en.mp4 assets/videos/README.md .github/workflows/reinforce-demo-beat.yml
+          git commit -m "Strengthen demo groove with original percussion layer"
+          git push origin HEAD:landing/demo-video-pt-en-05x

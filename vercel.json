@@ -1,0 +1,4 @@
+{
+  "buildCommand": "node scripts/prepare-landing-demo.mjs",
+  "outputDirectory": "."
+}

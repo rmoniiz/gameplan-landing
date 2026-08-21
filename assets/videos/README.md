@@ -8,7 +8,7 @@ The PT-BR and EN walkthroughs are pre-rendered at normal browser playback speed.
 - Creator: Alejandro Magaña (A. M.)
 - Source: https://mixkit.co/free-stock-music/
 - Source category reference: https://mixkit.co/free-stock-music/electronica/
-- Direct preview asset used by the Preview build: https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3
+- Direct source asset used by the Preview build: https://assets.mixkit.co/music/130/130.mp3
 - License: Mixkit Free License / Mixkit Stock Music Free License
 - License page: https://mixkit.co/license/#musicFree
 - Attribution: not required by the Mixkit Free License

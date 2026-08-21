@@ -41,26 +41,83 @@
   const center = document.querySelector('.connection-center');
   const links = document.querySelector('.connection-links');
 
-  if (!board || !center || !links) return;
+  if (board && center && links) {
+    board.setAttribute('aria-label', copy.boardLabel);
+    if (eyebrow) eyebrow.textContent = copy.eyebrow;
+    if (title) title.textContent = copy.title;
+    if (description) description.textContent = copy.description;
 
-  board.setAttribute('aria-label', copy.boardLabel);
-  if (eyebrow) eyebrow.textContent = copy.eyebrow;
-  if (title) title.textContent = copy.title;
-  if (description) description.textContent = copy.description;
+    center.innerHTML = `<span>${copy.centerLabel}</span><img class="connection-logo" src="assets/images/gameplan-logo.png" alt="${copy.centerAlt}" width="72" height="72" /><strong>GamePlan</strong>`;
+    links.innerHTML = `
+      <defs><marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>
+      <path class="flow-main" d="M16 35 H24" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-main" d="M36 35 H44" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-main" d="M56 35 H64" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-main" d="M76 35 H84" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-hub" d="M50 47 V66" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-feedback" d="M89 47 C86 72 70 78 59 78" marker-end="url(#flow-arrow)"></path>
+      <path class="flow-feedback" d="M41 78 C27 78 15 68 11 48" marker-end="url(#flow-arrow)"></path>`;
 
-  center.innerHTML = `<span>${copy.centerLabel}</span><img class="connection-logo" src="assets/images/gameplan-logo.png" alt="${copy.centerAlt}" width="72" height="72" /><strong>GamePlan</strong>`;
-  links.innerHTML = `
-    <defs><marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z"></path></marker></defs>
-    <path class="flow-main" d="M16 35 H24" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-main" d="M36 35 H44" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-main" d="M56 35 H64" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-main" d="M76 35 H84" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-hub" d="M50 47 V66" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-feedback" d="M89 47 C86 72 70 78 59 78" marker-end="url(#flow-arrow)"></path>
-    <path class="flow-feedback" d="M41 78 C27 78 15 68 11 48" marker-end="url(#flow-arrow)"></path>`;
+    Object.entries(copy.cards).forEach(([key, [number, heading, text]]) => {
+      const item = document.querySelector(`.item-${key}`);
+      if (item) item.innerHTML = `<small>${number}</small><strong>${heading}</strong><span>${text}</span>`;
+    });
+  }
 
-  Object.entries(copy.cards).forEach(([key, [number, heading, text]]) => {
-    const item = document.querySelector(`.item-${key}`);
-    if (item) item.innerHTML = `<small>${number}</small><strong>${heading}</strong><span>${text}</span>`;
+  const demoVideo = document.querySelector('#demo video');
+  if (!demoVideo) return;
+
+  const START_VOLUME = 0.12;
+  const TARGET_VOLUME = 0.68;
+  const FADE_SECONDS = 7;
+  let fadeFrame = 0;
+  let fadeStartedAt = 0;
+  let fadeComplete = false;
+  let internalVolumeChange = false;
+
+  const setVolume = (value) => {
+    internalVolumeChange = true;
+    demoVideo.volume = Math.max(0, Math.min(1, value));
+    queueMicrotask(() => { internalVolumeChange = false; });
+  };
+
+  const stopFade = () => {
+    if (fadeFrame) cancelAnimationFrame(fadeFrame);
+    fadeFrame = 0;
+  };
+
+  const runFade = (timestamp) => {
+    if (!fadeStartedAt) fadeStartedAt = timestamp;
+    const progress = Math.min(1, (timestamp - fadeStartedAt) / (FADE_SECONDS * 1000));
+    const eased = progress * progress * (3 - 2 * progress);
+    setVolume(START_VOLUME + (TARGET_VOLUME - START_VOLUME) * eased);
+    if (progress < 1 && !demoVideo.paused) {
+      fadeFrame = requestAnimationFrame(runFade);
+    } else if (progress >= 1) {
+      fadeComplete = true;
+      fadeFrame = 0;
+    }
+  };
+
+  demoVideo.addEventListener('play', () => {
+    if (fadeComplete || demoVideo.currentTime > FADE_SECONDS + 0.5) return;
+    stopFade();
+    fadeStartedAt = 0;
+    setVolume(START_VOLUME);
+    fadeFrame = requestAnimationFrame(runFade);
+  });
+
+  demoVideo.addEventListener('pause', stopFade);
+  demoVideo.addEventListener('seeking', () => {
+    if (demoVideo.currentTime > FADE_SECONDS + 0.5) {
+      stopFade();
+      fadeComplete = true;
+    }
+  });
+
+  demoVideo.addEventListener('volumechange', () => {
+    if (internalVolumeChange || !fadeFrame) return;
+    stopFade();
+    fadeComplete = true;
   });
 })();

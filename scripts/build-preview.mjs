@@ -1,12 +1,15 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 import ffmpegPath from 'ffmpeg-static';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
-const TRACK_URL = 'https://assets.mixkit.co/music/124/124.mp3';
-const TRACK_PATH = join(ROOT, '.tmp-techno-fest-vibes.mp3');
+const TRACK_URL = 'https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3';
+const TRACK_PATH = join(ROOT, '.tmp-tech-house-vibes.mp3');
+const SOURCE_BPM = 130;
+const TARGET_BPM = 126;
+const TEMPO_RATIO = TARGET_BPM / SOURCE_BPM;
 const VIDEO_FILES = [
   'assets/videos/gameplan-demo-ptbr.mp4',
   'assets/videos/gameplan-demo-en.mp4',
@@ -39,10 +42,11 @@ function renderVideo(relativePath) {
   mkdirSync(join(output, '..'), { recursive: true });
 
   const filter = [
-    "[1:a]atrim=0:60,asetpts=PTS-STARTPTS",
-    "volume='if(lt(t,1.5),0.08,if(lt(t,7),0.08+(t-1.5)*(0.42/5.5),0.50))':eval=frame",
+    `[1:a]atrim=start=0:end=64,asetpts=PTS-STARTPTS,atempo=${TEMPO_RATIO.toFixed(6)}`,
+    "volume='if(lt(t,1),0.045,if(lt(t,7.5),0.045+(t-1)*(0.275/6.5),0.32))':eval=frame",
+    'afade=t=in:st=0:d=7.5',
     'afade=t=out:st=57.5:d=2.5',
-    'loudnorm=I=-18:TP=-1.5:LRA=7[aout]'
+    'loudnorm=I=-20:TP=-1.5:LRA=7[aout]'
   ].join(',');
 
   execFileSync(ffmpegPath, [
@@ -63,4 +67,4 @@ copyProject();
 await downloadTrack();
 for (const video of VIDEO_FILES) renderVideo(video);
 rmSync(TRACK_PATH, { force: true });
-console.log('[gameplan-landing] Preview built with exact approved connected-flow layout and Techno Fest Vibes soundtrack.');
+console.log('[gameplan-landing] Preview built with the approved horizontal connected-flow layout and a restrained 126 BPM Tech House vibes soundtrack.');

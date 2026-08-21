@@ -1,0 +1,11 @@
+{
+  "name": "gameplan-landing-preview",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-preview.mjs"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0"
+  }
+}

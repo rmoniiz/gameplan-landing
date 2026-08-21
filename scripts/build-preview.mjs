@@ -42,8 +42,8 @@ function renderVideo(relativePath) {
   mkdirSync(join(output, '..'), { recursive: true });
 
   const energyCurve = [
-    'if(lt(t,0.5),0.10,',
-    'if(lt(t,7),0.10+(t-0.5)*(0.65/6.5),',
+    'if(lt(t,1.5),0.02,',
+    'if(lt(t,10),0.02+(t-1.5)*(0.73/8.5),',
     'if(lt(t,38),0.75,',
     'if(lt(t,44),0.75-(t-38)*(0.12/6),',
     'if(lt(t,45),0.63+(t-44)*0.14,',
@@ -56,7 +56,7 @@ function renderVideo(relativePath) {
     'lowpass=f=16500',
     'loudnorm=I=-16.8:TP=-1.5:LRA=7',
     `volume='${energyCurve}':eval=frame`,
-    'afade=t=in:st=0:d=7',
+    'afade=t=in:st=0:d=10',
     'afade=t=out:st=57.2:d=2.8[aout]'
   ].join(',');
 
@@ -78,4 +78,4 @@ copyProject();
 await downloadTrack();
 for (const video of VIDEO_FILES) renderVideo(video);
 rmSync(TRACK_PATH, { force: true });
-console.log('[gameplan-landing] Preview built with the approved landing layout unchanged and the lighter Mixkit Sounds Good soundtrack embedded in both localized MP4s.');
+console.log('[gameplan-landing] Preview built with the approved landing layout unchanged and the approved Sounds Good soundtrack entering much lower over the first 10 seconds.');

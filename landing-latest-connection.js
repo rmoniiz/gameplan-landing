@@ -44,6 +44,33 @@
         },
       };
 
+  const pricingCopy = isEnglish
+    ? {
+        starterDescription: 'For organizing training, planning and your squad in one place.',
+        starterItems: ['Weekly planning', 'Monthly planning', 'Your own exercises', 'Player registration', 'Attendance'],
+        proDescription: 'For connecting your game idea to training, players and what happens in the match.',
+        proItems: ['Everything in Starter', 'Game Model & Methodology', 'GamePlan Library', 'Player Development', 'Tactical Test', 'Match Statistics', 'Virtual Assistant Coach'],
+      }
+    : {
+        starterDescription: 'Para organizar treinos, planejamento e elenco em um só lugar.',
+        starterItems: ['Planejamento semanal', 'Planejamento mensal', 'Exercícios próprios', 'Cadastro de atletas', 'Assiduidade'],
+        proDescription: 'Para conectar sua ideia de jogo ao treino, aos atletas e ao que acontece na partida.',
+        proItems: ['Tudo do Starter', 'Modelo de Jogo & Metodologia', 'Biblioteca GamePlan', 'Desenvolvimento de atletas', 'Teste tático', 'Estatísticas da partida', 'Assistente Técnico Virtual'],
+      };
+
+  const priceCards = document.querySelectorAll('#pricing .price-card');
+  const starterCard = priceCards[0];
+  const proCard = priceCards[1];
+  const applyPlanCopy = (card, description, items) => {
+    if (!card) return;
+    const paragraph = card.querySelector('p');
+    const list = card.querySelector('ul');
+    if (paragraph) paragraph.textContent = description;
+    if (list) list.innerHTML = items.map((item) => `<li>${item}</li>`).join('');
+  };
+  applyPlanCopy(starterCard, pricingCopy.starterDescription, pricingCopy.starterItems);
+  applyPlanCopy(proCard, pricingCopy.proDescription, pricingCopy.proItems);
+
   const board = document.querySelector('.connection-board');
   const eyebrow = document.querySelector('#connection .eyebrow');
   const title = document.querySelector('#connection .section-heading h2');

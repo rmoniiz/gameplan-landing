@@ -5,7 +5,7 @@ import ffmpegPath from 'ffmpeg-static';
 
 const ROOT = process.cwd();
 const DIST = join(ROOT, 'dist');
-const TRACK_URL = 'https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3';
+const TRACK_URL = 'https://assets.mixkit.co/music/130/130.mp3';
 const TRACK_PATH = join(ROOT, '.tmp-tech-house-vibes.mp3');
 const SOURCE_BPM = 130;
 const TARGET_BPM = 126;
@@ -28,7 +28,10 @@ function copyProject() {
 }
 
 async function downloadTrack() {
-  const response = await fetch(TRACK_URL, { redirect: 'follow' });
+  const response = await fetch(TRACK_URL, {
+    redirect: 'follow',
+    headers: { 'User-Agent': 'Mozilla/5.0 GamePlan Preview Builder' },
+  });
   if (!response.ok) throw new Error(`Could not download soundtrack: ${response.status} ${response.statusText}`);
   const bytes = Buffer.from(await response.arrayBuffer());
   if (bytes.length < 100_000) throw new Error(`Downloaded soundtrack is unexpectedly small: ${bytes.length} bytes`);

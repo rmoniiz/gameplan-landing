@@ -1,0 +1,9 @@
+[
+  {"start": 0, "end": 2, "rate": 0.5},
+  {"start": 2, "end": 49, "rate": 1.1818181818},
+  {"start": 49, "end": 51, "rate": 0.5},
+  {"start": 51, "end": 53, "rate": 1.1818181818},
+  {"start": 53, "end": 55, "rate": 0.5},
+  {"start": 55, "end": 58, "rate": 1.1818181818},
+  {"start": 58, "end": 60, "rate": 0.5}
+]

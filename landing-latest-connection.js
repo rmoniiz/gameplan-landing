@@ -1,6 +1,16 @@
 (() => {
   'use strict';
 
+  const connectionStylesheet = document.querySelector('link[href="landing-latest-connection.css"]');
+  if (connectionStylesheet) {
+    document.head.appendChild(connectionStylesheet);
+  } else {
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'landing-latest-connection.css';
+    document.head.appendChild(stylesheet);
+  }
+
   const isEnglish = document.documentElement.lang === 'en';
   const copy = isEnglish
     ? {

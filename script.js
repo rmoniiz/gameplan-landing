@@ -77,8 +77,8 @@
       ui_host: "https://eu.posthog.com",
       person_profiles: "identified_only",
       autocapture: false,
-      capture_pageview: true,
-      capture_pageleave: true,
+      capture_pageview: false,
+      capture_pageleave: false,
       disable_session_recording: true,
     });
     analyticsLoaded = true;
@@ -118,8 +118,8 @@
       installPostHog();
       window.posthog?.opt_in_capturing?.();
     } else if (analyticsLoaded) {
-      window.posthog?.opt_out_capturing?.();
       window.posthog?.reset?.();
+      window.posthog?.opt_out_capturing?.();
     }
     hideConsentBanner();
   };

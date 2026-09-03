@@ -1,0 +1,62 @@
+name: Phase 11 visual validation
+
+on:
+  push:
+    branches:
+      - phase-11-seo-organic-discovery
+
+permissions:
+  contents: read
+
+jobs:
+  visual-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Install browser validation dependencies
+        run: npm install --no-save playwright @axe-core/playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start local landing server
+        run: |
+          python3 -m http.server 4173 >/tmp/gameplan-phase11-server.log 2>&1 &
+          echo $! > /tmp/gameplan-phase11-server.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/gameplan-phase11-server.log
+          exit 1
+
+      - name: Run PT-BR EN desktop mobile browser validation
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/phase11-visual-validation.mjs
+
+      - name: Run production build
+        run: npm run build
+
+      - name: Upload Phase 11 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase11-visual-validation-${{ github.sha }}
+          path: phase11-evidence/
+          if-no-files-found: warn
+          retention-days: 14

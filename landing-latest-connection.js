@@ -20,6 +20,9 @@
         boardLabel: 'GamePlan connected coaching process: game model, exercises, planning, players, match and reflection',
         centerAlt: 'GamePlan logo',
         centerLabel: 'Connected process',
+        timelineLabel: 'GamePlan founder journey. Scroll horizontally to view all entries.',
+        ogTitle: 'GamePlan | From the model to the pitch',
+        ogDescription: 'Plan, train and analyze in one place. Connect your game model, exercises, planning, players and match review without losing the reasoning behind each decision.',
         cards: {
           a: ['01', 'Game model', 'Record your idea, principles and observable behaviours.'],
           b: ['02', 'Exercises', 'Turn priorities into your own tasks or ready-made exercises.'],
@@ -35,6 +38,9 @@
         boardLabel: 'Processo conectado do GamePlan: modelo de jogo, exercícios, planejamento, atletas, partida e reflexão',
         centerAlt: 'Logo do GamePlan',
         centerLabel: 'Processo conectado',
+        timelineLabel: 'Trajetória do fundador do GamePlan. Role horizontalmente para ver todas as etapas.',
+        ogTitle: 'GamePlan | Do modelo ao campo',
+        ogDescription: 'Planeje, treine e analise em um único lugar. Conecte modelo de jogo, exercícios, planejamento, atletas e partida sem perder a origem das decisões.',
         cards: {
           a: ['01', 'Modelo de jogo', 'Registre sua ideia, princípios e comportamentos observáveis.'],
           b: ['02', 'Exercícios', 'Transforme prioridades em tarefas próprias ou exercícios prontos.'],
@@ -43,6 +49,18 @@
           e: ['05', 'Partida', 'Compare o que foi planejado com o que apareceu em campo.'],
         },
       };
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogTitle) ogTitle.setAttribute('content', copy.ogTitle);
+  if (ogDescription) ogDescription.setAttribute('content', copy.ogDescription);
+
+  const timeline = document.querySelector('.timeline');
+  if (timeline) {
+    timeline.tabIndex = 0;
+    timeline.setAttribute('role', 'region');
+    timeline.setAttribute('aria-label', copy.timelineLabel);
+  }
 
   const pricingCopy = isEnglish
     ? {

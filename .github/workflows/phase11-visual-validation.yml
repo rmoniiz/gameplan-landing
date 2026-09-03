@@ -43,19 +43,20 @@ jobs:
           cat /tmp/gameplan-phase11-server.log
           exit 1
 
-      - name: Run PT-BR EN desktop mobile browser validation
+      - name: Rerun affected PT-BR EN desktop mobile gates
         env:
           BASE_URL: http://127.0.0.1:4173
-        run: node scripts/phase11-visual-validation.mjs
+        run: node scripts/phase11-visual-rerun.mjs
 
       - name: Run production build
+        if: always()
         run: npm run build
 
-      - name: Upload Phase 11 evidence
+      - name: Upload Phase 11 rerun evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase11-visual-validation-${{ github.sha }}
-          path: phase11-evidence/
+          name: phase11-visual-rerun-${{ github.sha }}
+          path: phase11-rerun-evidence/
           if-no-files-found: warn
           retention-days: 14

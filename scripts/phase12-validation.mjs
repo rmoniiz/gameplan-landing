@@ -9,7 +9,8 @@ const browser = await chromium.launch({ headless: true });
 const report = { generatedAt: new Date().toISOString(), sha: process.env.GITHUB_SHA || null, cases: [], failures: [] };
 
 async function runCase({ name, path, width, height, lang, submit = false }) {
-  const page = await browser.newPage({ viewport: { width, height } });
+  const context = await browser.newContext({ viewport: { width, height } });
+  const page = await context.newPage();
   const errors = [];
   page.on('console', (msg) => { if (msg.type() === 'error') errors.push(`console:${msg.text()}`); });
   page.on('pageerror', (err) => errors.push(`page:${err.message}`));
@@ -43,7 +44,7 @@ async function runCase({ name, path, width, height, lang, submit = false }) {
   await page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
   report.cases.push({ name, path, width, height, locale, visible, bodyOverflow, consentText, success, serious, errors });
   report.failures.push(...errors.map(error => `${name}: ${error}`));
-  await page.close();
+  await context.close();
 }
 
 await runCase({ name:'pt-desktop', path:'/index.html?utm_source=phase12-test&utm_medium=e2e&utm_campaign=lead-capture', width:1440, height:1000, lang:'pt-BR', submit:true });
@@ -52,7 +53,8 @@ await runCase({ name:'en-desktop', path:'/en.html?utm_source=phase12-test&utm_me
 await runCase({ name:'en-mobile', path:'/en.html', width:390, height:844, lang:'en' });
 
 for (const [name, path, lang] of [['checklist-pt','/checklist-modelo-de-jogo.html','pt-BR'],['checklist-en','/game-model-checklist.html','en']]) {
-  const page = await browser.newPage({ viewport:{ width:390, height:844 } });
+  const context = await browser.newContext({ viewport:{ width:390, height:844 } });
+  const page = await context.newPage();
   await page.goto(`${base}${path}`, { waitUntil:'networkidle' });
   const robots = await page.locator('meta[name=robots]').getAttribute('content');
   const articles = await page.locator('.checklist-item').count();
@@ -66,7 +68,7 @@ for (const [name, path, lang] of [['checklist-pt','/checklist-modelo-de-jogo.htm
   await page.screenshot({ path:`${out}/${name}.png`, fullPage:true });
   report.cases.push({ name, path, locale, robots, articles, bodyOverflow:overflow, errors });
   report.failures.push(...errors.map(error => `${name}: ${error}`));
-  await page.close();
+  await context.close();
 }
 
 await browser.close();

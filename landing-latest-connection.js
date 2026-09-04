@@ -11,6 +11,19 @@
     document.head.appendChild(stylesheet);
   }
 
+  if (!document.querySelector('link[href="phase12-lead-capture.css"]')) {
+    const leadStylesheet = document.createElement('link');
+    leadStylesheet.rel = 'stylesheet';
+    leadStylesheet.href = 'phase12-lead-capture.css';
+    document.head.appendChild(leadStylesheet);
+  }
+  if (!document.querySelector('script[src="phase12-lead-capture.js"]')) {
+    const leadScript = document.createElement('script');
+    leadScript.src = 'phase12-lead-capture.js';
+    leadScript.defer = true;
+    document.body.appendChild(leadScript);
+  }
+
   const isEnglish = document.documentElement.lang === 'en';
   const copy = isEnglish
     ? {

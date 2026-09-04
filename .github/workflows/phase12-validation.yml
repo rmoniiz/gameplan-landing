@@ -1,0 +1,51 @@
+name: Phase 12 lead capture validation
+
+on:
+  push:
+    branches:
+      - phase-12-lead-capture-foundation
+
+permissions:
+  contents: read
+
+jobs:
+  phase12-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install project dependencies
+        run: npm install
+      - name: Install browser validation dependencies
+        run: npm install --no-save playwright @axe-core/playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start local landing server
+        run: |
+          python3 -m http.server 4173 >/tmp/gameplan-phase12-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/gameplan-phase12-server.log
+          exit 1
+      - name: Validate PT-BR EN desktop mobile and live Rehearsal capture
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/phase12-validation.mjs
+      - name: Validate production build
+        if: always()
+        run: npm run build
+      - name: Upload Phase 12 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase12-validation-${{ github.sha }}
+          path: phase12-validation-evidence/
+          if-no-files-found: warn
+          retention-days: 14

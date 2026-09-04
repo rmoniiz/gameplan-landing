@@ -3,10 +3,20 @@ import AxeBuilder from '@axe-core/playwright';
 import fs from 'node:fs/promises';
 
 const base = process.env.BASE_URL || 'http://127.0.0.1:4173';
+const edgeEndpoint = 'https://dyhkhnjmnmktpjlqcqej.supabase.co/functions/v1/capture-marketing-lead';
 const out = 'phase12-validation-evidence';
 await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const report = { generatedAt: new Date().toISOString(), sha: process.env.GITHUB_SHA || null, cases: [], failures: [] };
+const report = { generatedAt: new Date().toISOString(), sha: process.env.GITHUB_SHA || null, serverValidation: null, cases: [], failures: [] };
+
+const invalidServerResponse = await fetch(edgeEndpoint, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:4173' },
+  body: JSON.stringify({ name: 'Consent Test', email: 'phase12-no-consent@example.invalid', language: 'en', consentCapture: false }),
+});
+const invalidServerBody = await invalidServerResponse.json().catch(() => ({}));
+report.serverValidation = { status: invalidServerResponse.status, error: invalidServerBody.error || null };
+if (invalidServerResponse.status !== 422 || invalidServerBody.error !== 'consent_required') report.failures.push(`server consent gate: ${invalidServerResponse.status} ${invalidServerBody.error || 'no_error'}`);
 
 async function runCase({ name, path, width, height, lang, submit = false }) {
   const context = await browser.newContext({ viewport: { width, height } });
@@ -18,12 +28,11 @@ async function runCase({ name, path, width, height, lang, submit = false }) {
   await page.locator('#lead-magnet').scrollIntoViewIfNeeded();
   const visible = await page.locator('#lead-magnet').isVisible();
   const locale = await page.locator('html').getAttribute('lang');
-  const bodyOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  const overflowElements = await page.evaluate(() => [...document.querySelectorAll('*')].map((el) => {
-    const r = el.getBoundingClientRect();
-    const style = getComputedStyle(el);
-    return { tag: el.tagName, id: el.id || '', cls: typeof el.className === 'string' ? el.className.slice(0,140) : '', left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), position: style.position, overflowX: style.overflowX };
-  }).filter((x) => x.right > innerWidth + 1 || x.left < -1).slice(0,30));
+  const layout = await page.evaluate(() => {
+    const bodyOverflow = Math.max(0, document.body.scrollWidth - document.body.clientWidth);
+    const section = document.getElementById('lead-magnet')?.getBoundingClientRect();
+    return { bodyOverflow, sectionLeft: section ? Math.round(section.left) : null, sectionRight: section ? Math.round(section.right) : null, viewportWidth: innerWidth };
+  });
   const form = page.locator('.lead-magnet-form');
   const consentText = (await page.locator('.lead-consent').innerText()).trim();
   const checkbox = page.locator('.lead-consent input[type=checkbox]');
@@ -43,11 +52,12 @@ async function runCase({ name, path, width, height, lang, submit = false }) {
   const serious = axe.violations.filter(v => ['serious','critical'].includes(v.impact || '')).map(v => ({ id:v.id, impact:v.impact, nodes:v.nodes.length }));
   if (!visible) errors.push('lead magnet not visible');
   if (locale !== lang) errors.push(`lang mismatch ${locale}`);
-  if (bodyOverflow > 1) errors.push(`horizontal overflow ${bodyOverflow}; offenders=${JSON.stringify(overflowElements)}`);
+  if (layout.bodyOverflow > 1) errors.push(`body horizontal overflow ${layout.bodyOverflow}`);
+  if (layout.sectionLeft === null || layout.sectionLeft < -1 || layout.sectionRight > layout.viewportWidth + 1) errors.push(`lead section outside viewport ${JSON.stringify(layout)}`);
   if (!consentText) errors.push('consent copy missing');
   if (serious.length) errors.push(`axe serious/critical: ${serious.map(v=>v.id).join(',')}`);
   await page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
-  report.cases.push({ name, path, width, height, locale, visible, bodyOverflow, overflowElements, consentText, success, serious, errors });
+  report.cases.push({ name, path, width, height, locale, visible, layout, consentText, success, serious, errors });
   report.failures.push(...errors.map(error => `${name}: ${error}`));
   await context.close();
 }
@@ -64,12 +74,12 @@ for (const [name, path, lang] of [['checklist-pt','/checklist-modelo-de-jogo.htm
   const robots = await page.locator('meta[name=robots]').getAttribute('content');
   const articles = await page.locator('.checklist-item').count();
   const locale = await page.locator('html').getAttribute('lang');
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  const overflow = await page.evaluate(() => Math.max(0, document.body.scrollWidth - document.body.clientWidth));
   const errors=[];
   if (robots !== 'noindex, nofollow') errors.push(`robots=${robots}`);
   if (articles !== 10) errors.push(`articles=${articles}`);
   if (locale !== lang) errors.push(`lang=${locale}`);
-  if (overflow > 1) errors.push(`horizontal overflow=${overflow}`);
+  if (overflow > 1) errors.push(`body horizontal overflow=${overflow}`);
   await page.screenshot({ path:`${out}/${name}.png`, fullPage:true });
   report.cases.push({ name, path, locale, robots, articles, bodyOverflow:overflow, errors });
   report.failures.push(...errors.map(error => `${name}: ${error}`));

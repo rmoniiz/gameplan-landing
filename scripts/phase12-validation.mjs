@@ -19,6 +19,11 @@ async function runCase({ name, path, width, height, lang, submit = false }) {
   const visible = await page.locator('#lead-magnet').isVisible();
   const locale = await page.locator('html').getAttribute('lang');
   const bodyOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  const overflowElements = await page.evaluate(() => [...document.querySelectorAll('*')].map((el) => {
+    const r = el.getBoundingClientRect();
+    const style = getComputedStyle(el);
+    return { tag: el.tagName, id: el.id || '', cls: typeof el.className === 'string' ? el.className.slice(0,140) : '', left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), position: style.position, overflowX: style.overflowX };
+  }).filter((x) => x.right > innerWidth + 1 || x.left < -1).slice(0,30));
   const form = page.locator('.lead-magnet-form');
   const consentText = (await page.locator('.lead-consent').innerText()).trim();
   const checkbox = page.locator('.lead-consent input[type=checkbox]');
@@ -38,11 +43,11 @@ async function runCase({ name, path, width, height, lang, submit = false }) {
   const serious = axe.violations.filter(v => ['serious','critical'].includes(v.impact || '')).map(v => ({ id:v.id, impact:v.impact, nodes:v.nodes.length }));
   if (!visible) errors.push('lead magnet not visible');
   if (locale !== lang) errors.push(`lang mismatch ${locale}`);
-  if (bodyOverflow > 1) errors.push(`horizontal overflow ${bodyOverflow}`);
+  if (bodyOverflow > 1) errors.push(`horizontal overflow ${bodyOverflow}; offenders=${JSON.stringify(overflowElements)}`);
   if (!consentText) errors.push('consent copy missing');
   if (serious.length) errors.push(`axe serious/critical: ${serious.map(v=>v.id).join(',')}`);
   await page.screenshot({ path: `${out}/${name}.png`, fullPage: true });
-  report.cases.push({ name, path, width, height, locale, visible, bodyOverflow, consentText, success, serious, errors });
+  report.cases.push({ name, path, width, height, locale, visible, bodyOverflow, overflowElements, consentText, success, serious, errors });
   report.failures.push(...errors.map(error => `${name}: ${error}`));
   await context.close();
 }

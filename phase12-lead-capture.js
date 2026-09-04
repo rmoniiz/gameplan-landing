@@ -39,7 +39,7 @@
   section.id = 'lead-magnet';
   section.className = 'section lead-magnet-section';
   section.innerHTML = `
-    <div class="lead-magnet-shell glass reveal">
+    <div class="lead-magnet-shell glass">
       <div class="lead-magnet-copy">
         <div class="eyebrow">${copy.eyebrow}</div>
         <h2>${copy.title}</h2>

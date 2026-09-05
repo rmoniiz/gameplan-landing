@@ -11,7 +11,8 @@ const check = (name, condition, detail = '') => {
 
 check('preview host set is explicit', capture.includes("const auditedPreviewHosts = new Set(["));
 check('legacy audited preview remains allowed', capture.includes('gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app'));
-check('production-readiness preview is allowed', capture.includes('gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app'));
+check('actual production-readiness branch alias is allowed', capture.includes('gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app'));
+check('unverified guessed branch alias is not retained', !capture.includes('gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app'));
 check('production host is exact', capture.includes("const productionHost = 'gameplan-landing.vercel.app'"));
 check('rehearsal project ref is explicit', capture.includes("const auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej'"));
 check('production project ref is explicit', capture.includes("const productionRef = 'ljuwnrbrneedzatbbslr'"));

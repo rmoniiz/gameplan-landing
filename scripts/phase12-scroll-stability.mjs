@@ -68,7 +68,9 @@ for (const testCase of cases) {
     const brokenImages = [...document.images]
       .filter((image) => !image.complete || image.naturalWidth === 0)
       .map((image) => image.getAttribute('src'));
-    return { sections, hiddenReveal, brokenImages, hasMotionTilt: Boolean(document.querySelector('.motion-tilt')) };
+    const bgGrid = document.querySelector('.bg-grid');
+    const bgGridAfter = bgGrid ? getComputedStyle(bgGrid, '::after').backgroundImage : '';
+    return { sections, hiddenReveal, brokenImages, hasMotionTilt: Boolean(document.querySelector('.motion-tilt')), hasPointTexture: bgGridAfter.includes('radial-gradient') };
   });
 
   const errors = [...runtimeErrors];
@@ -80,7 +82,8 @@ for (const testCase of cases) {
   }
   if (stability.hiddenReveal.length) errors.push(`reveal content became hidden after fast scroll: ${stability.hiddenReveal.join(', ')}`);
   if (stability.brokenImages.length) errors.push(`images failed after scroll: ${stability.brokenImages.join(', ')}`);
-  if (stability.hasMotionTilt) errors.push('GPU-heavy motion tilt must not be present');
+  if (!stability.hasMotionTilt) errors.push('cinematic motion tilt should be restored on desktop');
+  if (stability.hasPointTexture) errors.push('background point texture must not be present');
   const actualLang = await page.locator('html').getAttribute('lang');
   if (actualLang !== testCase.lang) errors.push(`language mismatch: ${actualLang}`);
 

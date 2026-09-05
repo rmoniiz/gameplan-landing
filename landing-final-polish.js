@@ -194,6 +194,37 @@
     });
   };
 
+  const setupTilt = (element, strength = 1.2) => {
+    if (!element || reducedMotion || !finePointer || window.innerWidth <= 1120) return;
+    element.classList.add('motion-tilt');
+    let frame = 0;
+    const reset = () => {
+      element.style.setProperty('--tilt-x', '0deg');
+      element.style.setProperty('--tilt-y', '0deg');
+    };
+    element.addEventListener('pointermove', (event) => {
+      if (body.classList.contains('demo-cinema-mode') && element.matches('.demo-shell')) {
+        reset();
+        return;
+      }
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        const rect = element.getBoundingClientRect();
+        const x = clamp((event.clientX - rect.left) / Math.max(1, rect.width));
+        const y = clamp((event.clientY - rect.top) / Math.max(1, rect.height));
+        element.style.setProperty('--tilt-x', `${((0.5 - y) * strength).toFixed(2)}deg`);
+        element.style.setProperty('--tilt-y', `${((x - 0.5) * strength).toFixed(2)}deg`);
+        frame = 0;
+      });
+    }, { passive: true });
+    element.addEventListener('pointerleave', reset, { passive: true });
+  };
+
+  setupTilt(document.querySelector('.connection-board'), 1.25);
+  setupTilt(document.querySelector('.demo-shell'), 1.05);
+  setupTilt(document.querySelector('.founder-card'), 1.15);
+
+
   const demoVideo = document.querySelector('#demo video');
   if (demoVideo) {
     const enterCinema = () => body.classList.add('demo-cinema-mode');
@@ -235,6 +266,19 @@
   setSectionAmbience();
   updateJourney();
   updateTimeline();
+
+  if (!reducedMotion && finePointer) {
+    let pointerFrame = 0;
+    window.addEventListener('pointermove', (event) => {
+      if (pointerFrame) return;
+      pointerFrame = window.requestAnimationFrame(() => {
+        root.style.setProperty('--pointer-x', `${Math.round((event.clientX / window.innerWidth) * 100)}%`);
+        root.style.setProperty('--pointer-y', `${Math.round((event.clientY / window.innerHeight) * 100)}%`);
+        pointerFrame = 0;
+      });
+    }, { passive: true });
+  }
+
 
   const connectionBoard = document.querySelector('.connection-board');
   if (connectionBoard && !reducedMotion) {

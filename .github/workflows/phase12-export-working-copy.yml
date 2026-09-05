@@ -1,0 +1,33 @@
+name: Phase 12 temporary working copy export
+
+on:
+  push:
+    branches:
+      - phase-12-lead-magnet-mvp
+
+permissions:
+  contents: read
+
+jobs:
+  export-working-copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pack working copy
+        run: |
+          tar \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            -czf /tmp/gameplan-phase12-working-copy.tgz .
+
+      - name: Upload working copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase12-working-copy-${{ github.sha }}
+          path: /tmp/gameplan-phase12-working-copy.tgz
+          if-no-files-found: error
+          retention-days: 1

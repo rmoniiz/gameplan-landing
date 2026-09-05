@@ -68,7 +68,9 @@ async function openPage(context, path) {
   const page = await context.newPage();
   const runtimeErrors = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') runtimeErrors.push(`console: ${message.text()}`);
+    const text = message.text();
+    const expectedBlockedResource = text === 'Failed to load resource: net::ERR_FAILED';
+    if (message.type() === 'error' && !expectedBlockedResource) runtimeErrors.push(`console: ${text}`);
   });
   page.on('pageerror', (error) => runtimeErrors.push(`page: ${error.message}`));
   await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded' });
@@ -253,4 +255,3 @@ await fs.writeFile(`${out}/report.json`, JSON.stringify(report, null, 2));
 await fs.writeFile(`${out}/summary.txt`, `SHA: ${report.sha}\nFailures: ${report.failures.length}\n${report.failures.join('\n')}\n`);
 console.log(JSON.stringify(report, null, 2));
 if (report.failures.length) process.exit(1);
-

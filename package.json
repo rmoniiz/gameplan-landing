@@ -3,9 +3,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-preview.mjs"
+    "build": "node scripts/build-preview.mjs",
+    "test:phase12": "node scripts/phase12-validation.mjs",
+    "test:phase12:static": "node scripts/phase12-static-validation.mjs",
+    "test:phase12:rehearsal": "node scripts/phase12-rehearsal-smoke.mjs"
   },
   "dependencies": {
-    "ffmpeg-static": "^5.2.0"
+    "ffmpeg-static": "5.2.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "playwright": "1.63.0"
   }
 }

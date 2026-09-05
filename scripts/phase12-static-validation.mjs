@@ -49,7 +49,8 @@ check('capture has no literal Supabase endpoint', !/https:\/\/[^'"`\s]*supabase\
 check('capture defaults to explicit runtime gate', files.capture.includes("enabled: runtimeConfig.enabled === true"));
 check('capture has explicit Preview allowlist', files.capture.includes('const auditedPreviewHosts = new Set(['));
 check('capture keeps original audited Preview hostname', files.capture.includes('gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app'));
-check('capture includes production-readiness Preview hostname', files.capture.includes('gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app'));
+check('capture includes actual production-readiness Preview alias', files.capture.includes('gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app'));
+check('capture excludes guessed production-readiness hostname', !files.capture.includes('gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app'));
 check('capture requires exact Preview hostname membership', files.capture.includes('auditedPreviewHosts.has(window.location.hostname)'));
 check('capture points Preview only at audited Rehearsal project ref', files.capture.includes("auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej'"));
 check('capture has exact production hostname', files.capture.includes("productionHost = 'gameplan-landing.vercel.app'"));

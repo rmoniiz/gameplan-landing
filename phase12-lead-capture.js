@@ -9,7 +9,7 @@
   const analyticsConsentKey = 'gameplan:privacy:analytics-consent:v1';
   const auditedPreviewHosts = new Set([
     'gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app',
-    'gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app',
+    'gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app',
   ]);
   const productionHost = 'gameplan-landing.vercel.app';
   const auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej';

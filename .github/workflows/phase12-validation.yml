@@ -17,6 +17,8 @@ on:
       - 'privacy.html'
       - 'privacy-en.html'
       - 'scripts/phase12-validation.mjs'
+      - 'scripts/phase12-static-validation.mjs'
+      - 'scripts/phase12-rehearsal-smoke.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/phase12-validation.yml'
@@ -62,6 +64,9 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npm run test:phase12
+
+      - name: Validate audited Rehearsal endpoint
+        run: npm run test:phase12:rehearsal
 
       - name: Validate production build
         run: npm run build

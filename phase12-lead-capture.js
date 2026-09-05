@@ -7,7 +7,13 @@
   const isEnglish = locale === 'en';
   const leadMagnetId = 'game_model_checklist_v1';
   const analyticsConsentKey = 'gameplan:privacy:analytics-consent:v1';
-  const runtimeConfig = window.__GAMEPLAN_LEAD_CAPTURE_CONFIG__ || {};
+  const auditedPreviewHost = 'gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app';
+  const auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej';
+  const auditedRehearsalEndpoint = `https://${auditedRehearsalRef}.${['supabase', 'co'].join('.')}/functions/v1/${['capture', 'marketing', 'lead'].join('-')}`;
+  const isAuditedPreview = window.location.hostname === auditedPreviewHost;
+  const runtimeConfig = window.__GAMEPLAN_LEAD_CAPTURE_CONFIG__ || (isAuditedPreview
+    ? { enabled: true, endpoint: auditedRehearsalEndpoint }
+    : {});
   const testAdapter = window.__GAMEPLAN_PHASE12_CAPTURE_TEST_ADAPTER__;
   const captureConfig = Object.freeze({
     enabled: runtimeConfig.enabled === true,

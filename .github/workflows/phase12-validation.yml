@@ -21,6 +21,7 @@ on:
       - 'scripts/build-preview.mjs'
       - 'landing-final-polish.css'
       - 'landing-final-polish.js'
+      - 'phase12-scroll-compositor.css'
       - 'scripts/phase12-static-validation.mjs'
       - 'scripts/phase12-rehearsal-smoke.mjs'
       - 'package.json'
@@ -69,7 +70,7 @@ jobs:
           BASE_URL: http://127.0.0.1:4173
         run: npm run test:phase12
 
-      - name: Validate fast scroll paint stability
+      - name: Validate continuous scroll compositor paint
         env:
           BASE_URL: http://127.0.0.1:4173
         run: node scripts/phase12-scroll-stability.mjs

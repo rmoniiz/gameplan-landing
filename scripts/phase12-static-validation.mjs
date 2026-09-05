@@ -11,6 +11,8 @@ const files = {
   styles: await fs.readFile('phase12-lead-capture.css', 'utf8'),
   privacyPt: await fs.readFile('privacy.html', 'utf8'),
   privacyEn: await fs.readFile('privacy-en.html', 'utf8'),
+  finalPolish: await fs.readFile('landing-final-polish.js', 'utf8'),
+  compositor: await fs.readFile('phase12-scroll-compositor.css', 'utf8'),
 };
 const packageJson = JSON.parse(await fs.readFile('package.json', 'utf8'));
 
@@ -76,6 +78,29 @@ check('ffmpeg-static is pinned', packageJson.dependencies?.['ffmpeg-static'] ===
 check('Playwright is pinned', packageJson.devDependencies?.playwright === '1.63.0');
 check('Axe is pinned', packageJson.devDependencies?.['@axe-core/playwright'] === '4.13.0');
 check('Rehearsal smoke command exists', packageJson.scripts?.['test:phase12:rehearsal'] === 'node scripts/phase12-rehearsal-smoke.mjs');
+
+// Compositor regression contracts derived from the user's captured white-flash evidence.
+check('compositor guard stylesheet is loaded by final polish', files.finalPolish.includes("compositorStylesheet.href = 'phase12-scroll-compositor.css'"));
+check('root canvas gets an immediate dark fallback', files.finalPolish.includes("root.style.backgroundColor = '#050b22'"));
+check('body gets an immediate dark fallback', files.finalPolish.includes("body.style.backgroundColor = '#050b22'"));
+check('CSS keeps html canvas dark', /html\s*\{[^}]*background-color\s*:\s*#050b22/i.test(files.compositor));
+check('CSS isolates body stacking context', /body\s*\{[^}]*isolation\s*:\s*isolate/i.test(files.compositor));
+check('decorative backgrounds no longer use negative z-index', /body::before,\s*\.bg-grid,\s*\.bg-blur\s*\{[^}]*z-index\s*:\s*0!important/i.test(files.compositor));
+check('tilt keeps no permanent will-change', /\.motion-tilt\s*\{[^}]*will-change\s*:\s*auto!important/i.test(files.compositor));
+check('tilt promotes only during interaction', /\.motion-tilt\.is-tilting\s*\{[^}]*will-change\s*:\s*transform!important/i.test(files.compositor));
+check('scroll progress is scoped to the header', files.finalPolish.includes("header.style.setProperty('--scroll-progress'"));
+check('journey progress is scoped to the journey', files.finalPolish.includes("journey.style.setProperty('--journey-progress'"));
+check('section ambience is scoped to body', files.finalPolish.includes("body.style.setProperty('--section-rgb'"));
+check('pointer glow coordinates are scoped to body', files.finalPolish.includes("body.style.setProperty('--pointer-x'") && files.finalPolish.includes("body.style.setProperty('--pointer-y'"));
+check('no scroll progress write remains on root', !files.finalPolish.includes("root.style.setProperty('--scroll-progress'"));
+check('no journey progress write remains on root', !files.finalPolish.includes("root.style.setProperty('--journey-progress'"));
+check('header height is cached outside scroll RAF', files.finalPolish.includes('cachedHeaderHeight = header?.offsetHeight || 0'));
+check('scroll RAF uses cached header height', files.finalPolish.includes('scrollY + cachedHeaderHeight'));
+check('cinematic tilt remains enabled', files.finalPolish.includes("setupTilt(document.querySelector('.connection-board'), 1.25)") && files.finalPolish.includes("setupTilt(document.querySelector('.demo-shell'), 1.05)") && files.finalPolish.includes("setupTilt(document.querySelector('.founder-card'), 1.15)"));
+check('cinema mode remains enabled', files.finalPolish.includes("body.classList.add('demo-cinema-mode')"));
+check('hero tactics remain enabled', files.finalPolish.includes("tactics.className = 'hero-tactics'"));
+check('Tactical Journey remains enabled', files.finalPolish.includes("journey.className = 'tactical-journey'"));
+check('mini diagrams remain enabled', files.finalPolish.includes("visual.className = 'feature-mini-visual'"));
 
 const report = { generatedAt: new Date().toISOString(), checks, failures };
 await fs.mkdir('phase12-validation-evidence', { recursive: true });

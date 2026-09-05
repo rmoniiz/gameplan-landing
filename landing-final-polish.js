@@ -3,6 +3,13 @@
 
   const stylesheet = document.querySelector('link[href="landing-final-polish.css"]');
   if (stylesheet) document.head.appendChild(stylesheet);
+  let compositorStylesheet = document.querySelector('link[href="phase12-scroll-compositor.css"]');
+  if (!compositorStylesheet) {
+    compositorStylesheet = document.createElement('link');
+    compositorStylesheet.rel = 'stylesheet';
+    compositorStylesheet.href = 'phase12-scroll-compositor.css';
+  }
+  document.head.appendChild(compositorStylesheet);
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
@@ -15,19 +22,26 @@
     .map((link) => ({ link, section: document.querySelector(link.getAttribute('href')) }))
     .filter((item) => item.section);
 
-  const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+  root.style.backgroundColor = '#050b22';
+  body.style.backgroundColor = '#050b22';
 
-  const setScrollProgress = () => {
-    const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const progress = clamp(window.scrollY / scrollable) * 100;
-    root.style.setProperty('--scroll-progress', `${progress}%`);
-  };
+  const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
   let sectionMetrics = [];
   let ambientMetrics = [];
   let journeyMetrics = null;
   let timelineMetrics = null;
+  let viewportHeight = window.innerHeight;
+  let scrollableHeight = Math.max(1, document.documentElement.scrollHeight - viewportHeight);
+  let cachedHeaderHeight = 0;
   let activeAmbientRgb = '';
+  let activeNavIndex = -1;
+  let lastScrollProgress = -1;
+  let lastJourneyProgress = -1;
+  let lastJourneyVisible = null;
+  let lastJourneyReachedCount = -1;
+  let lastTimelineProgress = -1;
+  let lastTimelineReachedCount = -1;
 
   const ambientSections = [
     { element: document.querySelector('.hero'), rgb: '83,128,255' },
@@ -42,6 +56,9 @@
 
   const cacheLayout = () => {
     const y = window.scrollY;
+    viewportHeight = window.innerHeight;
+    scrollableHeight = Math.max(1, document.documentElement.scrollHeight - viewportHeight);
+    cachedHeaderHeight = header?.offsetHeight || 0;
     sectionMetrics = trackedSections.map((item) => ({ ...item, top: y + item.section.getBoundingClientRect().top }));
     ambientMetrics = ambientSections.map((item) => ({ ...item, top: y + item.element.getBoundingClientRect().top }));
     const startSection = document.getElementById('connection');
@@ -58,24 +75,33 @@
     }
   };
 
-  const setActiveNavigation = () => {
-    const headerHeight = header?.offsetHeight || 0;
-    const marker = window.scrollY + headerHeight + Math.min(180, window.innerHeight * 0.24);
-    let active = sectionMetrics[0] || null;
-    for (const item of sectionMetrics) {
-      if (item.top <= marker) active = item;
+  const setScrollProgress = (scrollY) => {
+    if (!header) return;
+    const progress = clamp(scrollY / scrollableHeight) * 100;
+    if (Math.abs(progress - lastScrollProgress) < 0.08) return;
+    lastScrollProgress = progress;
+    header.style.setProperty('--scroll-progress', `${progress}%`);
+  };
+
+  const setActiveNavigation = (scrollY) => {
+    const marker = scrollY + cachedHeaderHeight + Math.min(180, viewportHeight * 0.24);
+    let nextIndex = sectionMetrics.length ? 0 : -1;
+    for (let index = 0; index < sectionMetrics.length; index += 1) {
+      if (sectionMetrics[index].top <= marker) nextIndex = index;
       else break;
     }
-    navLinks.forEach((link) => {
-      const selected = active?.link === link;
+    if (nextIndex === activeNavIndex) return;
+    activeNavIndex = nextIndex;
+    navLinks.forEach((link, index) => {
+      const selected = index === activeNavIndex;
       link.classList.toggle('is-active', selected);
       if (selected) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
   };
 
-  const setSectionAmbience = () => {
-    const marker = window.scrollY + window.innerHeight * 0.46;
+  const setSectionAmbience = (scrollY) => {
+    const marker = scrollY + viewportHeight * 0.46;
     let active = ambientMetrics[0] || null;
     for (const item of ambientMetrics) {
       if (item.top <= marker) active = item;
@@ -83,7 +109,7 @@
     }
     if (active && active.rgb !== activeAmbientRgb) {
       activeAmbientRgb = active.rgb;
-      root.style.setProperty('--section-rgb', active.rgb);
+      body.style.setProperty('--section-rgb', active.rgb);
     }
   };
 
@@ -146,17 +172,27 @@
   }
 
   const journeyNodes = journey ? [...journey.querySelectorAll('.tactical-journey__node')] : [];
-  const updateJourney = () => {
+  const updateJourney = (scrollY) => {
     if (!journey || !journeyNodes.length || !journeyMetrics) return;
-    const markerY = window.scrollY + window.innerHeight * 0.5;
+    const markerY = scrollY + viewportHeight * 0.5;
     const progress = clamp((markerY - journeyMetrics.start) / Math.max(1, journeyMetrics.end - journeyMetrics.start));
-    const visible = markerY >= journeyMetrics.start - window.innerHeight * 0.4 && markerY <= journeyMetrics.end + window.innerHeight * 0.45;
-    journey.classList.toggle('is-visible', visible);
-    root.style.setProperty('--journey-progress', `${progress * 100}%`);
-    journeyNodes.forEach((node, index) => {
+    const visible = markerY >= journeyMetrics.start - viewportHeight * 0.4 && markerY <= journeyMetrics.end + viewportHeight * 0.45;
+    if (visible !== lastJourneyVisible) {
+      lastJourneyVisible = visible;
+      journey.classList.toggle('is-visible', visible);
+    }
+    if (Math.abs(progress - lastJourneyProgress) >= 0.002) {
+      lastJourneyProgress = progress;
+      journey.style.setProperty('--journey-progress', `${progress * 100}%`);
+    }
+    const reachedCount = journeyNodes.filter((_, index) => {
       const threshold = journeyNodes.length === 1 ? 0 : index / (journeyNodes.length - 1);
-      node.classList.toggle('is-reached', progress + 0.035 >= threshold);
-    });
+      return progress + 0.035 >= threshold;
+    }).length;
+    if (reachedCount !== lastJourneyReachedCount) {
+      lastJourneyReachedCount = reachedCount;
+      journeyNodes.forEach((node, index) => node.classList.toggle('is-reached', index < reachedCount));
+    }
   };
 
   const miniVisuals = [
@@ -182,27 +218,43 @@
 
   const timeline = document.querySelector('.timeline');
   const timelineItems = timeline ? [...timeline.querySelectorAll('.timeline-item')] : [];
-  const updateTimeline = () => {
+  const updateTimeline = (scrollY) => {
     if (!timeline || !timelineItems.length || !timelineMetrics) return;
-    const trigger = window.scrollY + window.innerHeight * 0.76;
-    const travel = Math.max(220, timelineMetrics.height + window.innerHeight * 0.24);
+    const trigger = scrollY + viewportHeight * 0.76;
+    const travel = Math.max(220, timelineMetrics.height + viewportHeight * 0.24);
     const progress = clamp((trigger - timelineMetrics.top) / travel);
-    timeline.style.setProperty('--timeline-progress', String(progress));
-    timelineItems.forEach((item, index) => {
+    if (Math.abs(progress - lastTimelineProgress) >= 0.002) {
+      lastTimelineProgress = progress;
+      timeline.style.setProperty('--timeline-progress', String(progress));
+    }
+    const reachedCount = timelineItems.filter((_, index) => {
       const threshold = timelineItems.length === 1 ? 0 : index / (timelineItems.length - 1);
-      item.classList.toggle('is-reached', progress + 0.08 >= threshold);
-    });
+      return progress + 0.08 >= threshold;
+    }).length;
+    if (reachedCount !== lastTimelineReachedCount) {
+      lastTimelineReachedCount = reachedCount;
+      timelineItems.forEach((item, index) => item.classList.toggle('is-reached', index < reachedCount));
+    }
   };
 
   const setupTilt = (element, strength = 1.2) => {
     if (!element || reducedMotion || !finePointer || window.innerWidth <= 1120) return;
     element.classList.add('motion-tilt');
     let frame = 0;
+    let settleTimer = 0;
+    const engage = () => {
+      window.clearTimeout(settleTimer);
+      element.classList.add('is-tilting');
+    };
     const reset = () => {
       element.style.setProperty('--tilt-x', '0deg');
       element.style.setProperty('--tilt-y', '0deg');
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => element.classList.remove('is-tilting'), 260);
     };
+    element.addEventListener('pointerenter', engage, { passive: true });
     element.addEventListener('pointermove', (event) => {
+      engage();
       if (body.classList.contains('demo-cinema-mode') && element.matches('.demo-shell')) {
         reset();
         return;
@@ -224,7 +276,6 @@
   setupTilt(document.querySelector('.demo-shell'), 1.05);
   setupTilt(document.querySelector('.founder-card'), 1.15);
 
-
   const demoVideo = document.querySelector('#demo video');
   if (demoVideo) {
     const enterCinema = () => body.classList.add('demo-cinema-mode');
@@ -239,11 +290,12 @@
     if (ticking) return;
     ticking = true;
     window.requestAnimationFrame(() => {
-      setScrollProgress();
-      setActiveNavigation();
-      setSectionAmbience();
-      updateJourney();
-      updateTimeline();
+      const scrollY = window.scrollY;
+      setScrollProgress(scrollY);
+      setActiveNavigation(scrollY);
+      setSectionAmbience(scrollY);
+      updateJourney(scrollY);
+      updateTimeline(scrollY);
       ticking = false;
     });
   };
@@ -261,24 +313,19 @@
   window.addEventListener('resize', refreshLayout, { passive: true });
   window.addEventListener('load', refreshLayout, { once: true });
   cacheLayout();
-  setScrollProgress();
-  setActiveNavigation();
-  setSectionAmbience();
-  updateJourney();
-  updateTimeline();
+  refreshScrollUI();
 
   if (!reducedMotion && finePointer) {
     let pointerFrame = 0;
     window.addEventListener('pointermove', (event) => {
       if (pointerFrame) return;
       pointerFrame = window.requestAnimationFrame(() => {
-        root.style.setProperty('--pointer-x', `${Math.round((event.clientX / window.innerWidth) * 100)}%`);
-        root.style.setProperty('--pointer-y', `${Math.round((event.clientY / window.innerHeight) * 100)}%`);
+        body.style.setProperty('--pointer-x', `${Math.round((event.clientX / window.innerWidth) * 100)}%`);
+        body.style.setProperty('--pointer-y', `${Math.round((event.clientY / window.innerHeight) * 100)}%`);
         pointerFrame = 0;
       });
     }, { passive: true });
   }
-
 
   const connectionBoard = document.querySelector('.connection-board');
   if (connectionBoard && !reducedMotion) {

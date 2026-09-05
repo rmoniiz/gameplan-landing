@@ -241,7 +241,7 @@ async function runStaticContractChecks() {
       if (!html.includes(selector)) errors.push(`${label}: preserved landing section missing ${selector}`);
     }
   }
-  if (!privacyPt.includes('solicitação de recurso gratuito')) errors.push('PT-BR privacy disclosure for the free resource is missing');
+  if (!privacyPt.includes('Solicitação de materiais gratuitos')) errors.push('PT-BR privacy disclosure for the free resource is missing');
   if (!privacyEn.includes('Free-resource requests')) errors.push('English privacy disclosure for the free resource is missing');
 
   report.cases.push({ name, errors });

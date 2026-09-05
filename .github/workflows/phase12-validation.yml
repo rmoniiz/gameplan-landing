@@ -1,0 +1,76 @@
+name: Phase 12 lead magnet validation
+
+on:
+  push:
+    branches:
+      - phase-12-lead-magnet-mvp
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'en.html'
+      - 'checklist-modelo-de-jogo.html'
+      - 'game-model-checklist.html'
+      - 'phase12-lead-capture.css'
+      - 'phase12-lead-capture.js'
+      - 'privacy.html'
+      - 'privacy-en.html'
+      - 'scripts/phase12-validation.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/phase12-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase12-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate static contracts
+        run: npm run test:phase12:static
+
+      - name: Start isolated landing server
+        run: |
+          python3 -m http.server 4173 >/tmp/gameplan-phase12-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/gameplan-phase12-server.log
+          exit 1
+
+      - name: Validate PT-BR, English, accessibility and safe disabled capture
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: npm run test:phase12
+
+      - name: Validate production build
+        run: npm run build
+
+      - name: Upload Phase 12 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase12-validation-${{ github.sha }}
+          path: phase12-validation-evidence/
+          if-no-files-found: warn
+          retention-days: 14

@@ -87,10 +87,16 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
   await lead.scrollIntoViewIfNeeded();
 
   const layout = await page.evaluate(() => {
-    const bodyOverflow = Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const rawOverflow = Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const rootOverflow = getComputedStyle(document.documentElement).overflowX;
+    const bodyOverflowStyle = getComputedStyle(document.body).overflowX;
+    const overflowIsClipped = [rootOverflow, bodyOverflowStyle].some((value) => ['hidden', 'clip'].includes(value));
+    const bodyOverflow = overflowIsClipped ? 0 : rawOverflow;
     const section = document.getElementById('lead-magnet')?.getBoundingClientRect();
     return {
       bodyOverflow,
+      rawOverflow,
+      overflowIsClipped,
       sectionLeft: section ? Math.round(section.left) : null,
       sectionRight: section ? Math.round(section.right) : null,
       viewportWidth: innerWidth,

@@ -2,10 +2,12 @@ import fs from 'node:fs/promises';
 
 const projectRef = 'dyhkhnjmnmktpjlqcqej';
 const endpoint = `https://${projectRef}.${['supabase', 'co'].join('.')}/functions/v1/${['capture', 'marketing', 'lead'].join('-')}`;
-const allowedOrigin = 'https://gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app';
+const allowedOrigin = 'https://gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app';
+const legacyAllowedOrigin = 'https://gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app';
+const productionOrigin = 'https://gameplan-landing.vercel.app';
 const runId = process.env.GITHUB_RUN_ID || String(Date.now());
 const runAttempt = process.env.GITHUB_RUN_ATTEMPT || '1';
-const email = `phase12-rehearsal-${runId}-${runAttempt}@example.invalid`;
+const email = `phase12-readiness-${runId}-${runAttempt}@example.invalid`;
 const outputDir = 'phase12-validation-evidence';
 const checks = [];
 const failures = [];
@@ -35,20 +37,26 @@ const request = async ({ method = 'POST', origin, body }) => {
 };
 
 const basePayload = {
-  name: 'GamePlan Phase 12 Rehearsal Test',
+  name: 'GamePlan Phase 12 Readiness Test',
   email,
   company: '',
   language: 'en',
   consentCapture: true,
   utmSource: 'github-actions',
-  utmMedium: 'phase12-smoke',
-  utmCampaign: 'rehearsal-validation',
+  utmMedium: 'phase12-readiness-smoke',
+  utmCampaign: 'production-readiness',
 };
 
 try {
   const preflight = await request({ method: 'OPTIONS', origin: allowedOrigin });
-  record('allowed preflight returns 204', preflight.status === 204, `status=${preflight.status}`);
-  record('allowed preflight reflects exact origin', preflight.allowOrigin === allowedOrigin, `acao=${preflight.allowOrigin}`);
+  record('readiness Preview preflight returns 204', preflight.status === 204, `status=${preflight.status}`);
+  record('readiness Preview preflight reflects exact origin', preflight.allowOrigin === allowedOrigin, `acao=${preflight.allowOrigin}`);
+
+  const legacyPreflight = await request({ method: 'OPTIONS', origin: legacyAllowedOrigin });
+  record('legacy audited Preview remains allowed', legacyPreflight.status === 204 && legacyPreflight.allowOrigin === legacyAllowedOrigin, `status=${legacyPreflight.status} acao=${legacyPreflight.allowOrigin}`);
+
+  const productionBlocked = await request({ origin: productionOrigin, body: basePayload });
+  record('Rehearsal blocks production origin', productionBlocked.status === 403 && productionBlocked.json.error === 'origin_not_allowed', `status=${productionBlocked.status} error=${productionBlocked.json.error}`);
 
   const blocked = await request({ origin: 'https://example.com', body: basePayload });
   record('foreign origin is blocked', blocked.status === 403 && blocked.json.error === 'origin_not_allowed', `status=${blocked.status} error=${blocked.json.error}`);

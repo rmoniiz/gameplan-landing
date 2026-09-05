@@ -1,0 +1,82 @@
+name: Phase 12 restore cinematic effects
+
+on:
+  push:
+    branches:
+      - phase-12-lead-magnet-mvp
+    paths:
+      - '.github/workflows/phase12-restore-cinematic.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: phase-12-lead-magnet-mvp
+          fetch-depth: 0
+
+      - name: Restore cinematic effects and remove only point texture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git show fc4d2223dc29f57c3558d1137c86c5649886a841:landing-final-polish.css > landing-final-polish.css
+          node <<'NODE'
+          const fs = require('fs');
+
+          const cssPath = 'landing-final-polish.css';
+          let css = fs.readFileSync(cssPath, 'utf8');
+          css = css.replace(
+            '.section{position:relative}\n',
+            '.section{position:relative}\n/* Keep content paintable even during aggressive scroll; visual effects stay enabled. */\n.reveal{opacity:1!important;transform:none!important;filter:none!important}\n'
+          );
+          const oldBg = '.bg-grid::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.36;background-image:radial-gradient(circle at 18% 23%,rgba(25,211,158,.12) 0 1px,transparent 1.6px),radial-gradient(circle at 82% 62%,rgba(83,128,255,.12) 0 1px,transparent 1.6px),repeating-linear-gradient(118deg,transparent 0 92px,rgba(154,99,255,.025) 93px 94px,transparent 95px 184px);background-size:180px 180px,220px 220px,auto;mask-image:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.25) 72%,transparent 96%)}';
+          const newBg = '.bg-grid::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.36;background-image:repeating-linear-gradient(118deg,transparent 0 92px,rgba(154,99,255,.025) 93px 94px,transparent 95px 184px);mask-image:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.25) 72%,transparent 96%);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.25) 72%,transparent 96%)}';
+          if (!css.includes(oldBg)) throw new Error('Expected cinematic point texture not found');
+          css = css.replace(oldBg, newBg);
+          fs.writeFileSync(cssPath, css);
+
+          const originalJs = require('child_process').execFileSync('git', ['show', 'fc4d2223dc29f57c3558d1137c86c5649886a841:landing-final-polish.js'], { encoding: 'utf8' });
+          const jsPath = 'landing-final-polish.js';
+          let js = fs.readFileSync(jsPath, 'utf8');
+          const tiltStart = originalJs.indexOf('  const setupTilt =');
+          const tiltEnd = originalJs.indexOf("\n  const demoVideo =", tiltStart);
+          const tiltBlock = originalJs.slice(tiltStart, tiltEnd);
+          if (!tiltBlock.includes('setupTilt')) throw new Error('Original tilt block not found');
+          if (!js.includes('  const setupTilt =')) js = js.replace("\n  const demoVideo =", `\n${tiltBlock}\n\n  const demoVideo =`);
+
+          const pointerStart = originalJs.indexOf('  if (!reducedMotion && finePointer) {', originalJs.indexOf("window.addEventListener('scroll'"));
+          const pointerEnd = originalJs.indexOf("\n  const connectionBoard =", pointerStart);
+          const pointerBlock = originalJs.slice(pointerStart, pointerEnd);
+          if (!pointerBlock.includes('--pointer-x')) throw new Error('Original pointer block not found');
+          if (!js.includes("root.style.setProperty('--pointer-x'")) js = js.replace("\n  const connectionBoard =", `\n${pointerBlock}\n\n  const connectionBoard =`);
+          fs.writeFileSync(jsPath, js);
+
+          const testPath = 'scripts/phase12-scroll-stability.mjs';
+          let test = fs.readFileSync(testPath, 'utf8');
+          const oldReturn = "    return { sections, hiddenReveal, brokenImages, hasMotionTilt: Boolean(document.querySelector('.motion-tilt')) };";
+          const newReturn = "    const bgGrid = document.querySelector('.bg-grid');\n    const bgGridAfter = bgGrid ? getComputedStyle(bgGrid, '::after').backgroundImage : '';\n    return { sections, hiddenReveal, brokenImages, hasMotionTilt: Boolean(document.querySelector('.motion-tilt')), hasPointTexture: bgGridAfter.includes('radial-gradient') };";
+          if (test.includes(oldReturn)) test = test.replace(oldReturn, newReturn);
+          test = test.replace("  if (stability.hasMotionTilt) errors.push('GPU-heavy motion tilt must not be present');", "  if (!stability.hasMotionTilt) errors.push('cinematic motion tilt should be restored on desktop');\n  if (stability.hasPointTexture) errors.push('background point texture must not be present');");
+          fs.writeFileSync(testPath, test);
+          NODE
+
+          node --check landing-final-polish.js
+          node --check scripts/phase12-scroll-stability.mjs
+          node scripts/phase12-static-validation.mjs
+
+      - name: Commit focused restoration
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/phase12-restore-cinematic.yml
+          git config user.name "GamePlan CI"
+          git config user.email "actions@users.noreply.github.com"
+          git add landing-final-polish.css landing-final-polish.js scripts/phase12-scroll-stability.mjs .github/workflows/phase12-restore-cinematic.yml
+          git commit -m "fix(phase-12): restore cinematic effects without point texture"
+          git push origin HEAD:phase-12-lead-magnet-mvp

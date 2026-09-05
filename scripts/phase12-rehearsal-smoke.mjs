@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 
 const projectRef = 'dyhkhnjmnmktpjlqcqej';
 const endpoint = `https://${projectRef}.${['supabase', 'co'].join('.')}/functions/v1/${['capture', 'marketing', 'lead'].join('-')}`;
-const allowedOrigin = 'https://gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app';
+const allowedOrigin = 'https://gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app';
 const legacyAllowedOrigin = 'https://gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app';
 const productionOrigin = 'https://gameplan-landing.vercel.app';
 const runId = process.env.GITHUB_RUN_ID || String(Date.now());
@@ -49,8 +49,8 @@ const basePayload = {
 
 try {
   const preflight = await request({ method: 'OPTIONS', origin: allowedOrigin });
-  record('readiness Preview preflight returns 204', preflight.status === 204, `status=${preflight.status}`);
-  record('readiness Preview preflight reflects exact origin', preflight.allowOrigin === allowedOrigin, `acao=${preflight.allowOrigin}`);
+  record('actual readiness Preview preflight returns 204', preflight.status === 204, `status=${preflight.status}`);
+  record('actual readiness Preview preflight reflects exact origin', preflight.allowOrigin === allowedOrigin, `acao=${preflight.allowOrigin}`);
 
   const legacyPreflight = await request({ method: 'OPTIONS', origin: legacyAllowedOrigin });
   record('legacy audited Preview remains allowed', legacyPreflight.status === 204 && legacyPreflight.allowOrigin === legacyAllowedOrigin, `status=${legacyPreflight.status} acao=${legacyPreflight.allowOrigin}`);

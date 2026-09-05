@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node scripts/build-preview.mjs",
     "test:phase12": "node scripts/phase12-validation.mjs",
-    "test:phase12:static": "node scripts/phase12-static-validation.mjs"
+    "test:phase12:static": "node scripts/phase12-static-validation.mjs",
+    "test:phase12:rehearsal": "node scripts/phase12-rehearsal-smoke.mjs"
   },
   "dependencies": {
     "ffmpeg-static": "5.2.0"

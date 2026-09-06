@@ -1,0 +1,109 @@
+name: Phase 12 public production smoke
+
+on:
+  push:
+    branches:
+      - phase-12-public-production-smoke
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-form-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Validate public PT-BR and EN lead forms
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+
+          const baseUrl = 'https://gameplan-landing.vercel.app';
+          const productionRef = 'ljuwnrbrneedzatbbslr';
+          const consentKey = 'gameplan:privacy:analytics-consent:v1';
+          const stamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
+          const ptEmail = `phase12-public-ptbr-${stamp}@example.invalid`;
+          const enEmail = `phase12-public-en-${stamp}@example.invalid`;
+
+          async function submitLead(browser, { path, expectedLang, name, email, analytics }) {
+            const context = await browser.newContext();
+            await context.addInitScript(({ key, value }) => {
+              localStorage.setItem(key, value);
+            }, { key: consentKey, value: analytics ? 'granted' : 'denied' });
+
+            const page = await context.newPage();
+            let leadResponse = null;
+            page.on('response', (response) => {
+              if (response.url().includes('/functions/v1/capture-marketing-lead')) {
+                leadResponse = { url: response.url(), status: response.status() };
+              }
+            });
+
+            await page.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.locator('#lead-magnet').waitFor({ state: 'attached', timeout: 10000 });
+
+            const pageLang = await page.locator('html').getAttribute('lang');
+            if (pageLang !== expectedLang) {
+              throw new Error(`Unexpected page language for ${path}: ${pageLang}`);
+            }
+
+            await page.locator('#leadName').fill(name);
+            await page.locator('#leadEmail').fill(email);
+            await page.locator('input[name="consent"]').check();
+            await page.locator('.lead-submit').click();
+            await page.locator('.lead-success').waitFor({ state: 'visible', timeout: 15000 });
+
+            if (!leadResponse) throw new Error(`No lead-capture response observed for ${path}`);
+            if (!leadResponse.url.includes(productionRef)) {
+              throw new Error(`Lead form did not use Production Supabase for ${path}: ${leadResponse.url}`);
+            }
+            if (leadResponse.status !== 200) {
+              throw new Error(`Lead-capture HTTP ${leadResponse.status} for ${path}`);
+            }
+
+            console.log(`PASS ${expectedLang} ${email} ${leadResponse.status} ${leadResponse.url}`);
+            await context.close();
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              await submitLead(browser, {
+                path: '/',
+                expectedLang: 'pt-BR',
+                name: 'Phase 12 PT-BR Smoke',
+                email: ptEmail,
+                analytics: true,
+              });
+              await submitLead(browser, {
+                path: '/en.html',
+                expectedLang: 'en',
+                name: 'Phase 12 EN Smoke',
+                email: enEmail,
+                analytics: false,
+              });
+              console.log(`PT_EMAIL=${ptEmail}`);
+              console.log(`EN_EMAIL=${enEmail}`);
+              console.log('phase12-public-production-smoke=PASS');
+            } finally {
+              await browser.close();
+            }
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE

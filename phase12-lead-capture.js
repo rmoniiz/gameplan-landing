@@ -7,13 +7,22 @@
   const isEnglish = locale === 'en';
   const leadMagnetId = 'game_model_checklist_v1';
   const analyticsConsentKey = 'gameplan:privacy:analytics-consent:v1';
-  const auditedPreviewHost = 'gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app';
+  const auditedPreviewHosts = new Set([
+    'gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app',
+    'gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app',
+  ]);
+  const productionHost = 'gameplan-landing.vercel.app';
   const auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej';
-  const auditedRehearsalEndpoint = `https://${auditedRehearsalRef}.${['supabase', 'co'].join('.')}/functions/v1/${['capture', 'marketing', 'lead'].join('-')}`;
-  const isAuditedPreview = window.location.hostname === auditedPreviewHost;
-  const runtimeConfig = window.__GAMEPLAN_LEAD_CAPTURE_CONFIG__ || (isAuditedPreview
-    ? { enabled: true, endpoint: auditedRehearsalEndpoint }
-    : {});
+  const productionRef = 'ljuwnrbrneedzatbbslr';
+  const endpointForRef = (projectRef) => `https://${projectRef}.${['supabase', 'co'].join('.')}/functions/v1/${['capture', 'marketing', 'lead'].join('-')}`;
+  const isAuditedPreview = auditedPreviewHosts.has(window.location.hostname);
+  const isProductionHost = window.location.hostname === productionHost;
+  const environmentConfig = isAuditedPreview
+    ? { enabled: true, endpoint: endpointForRef(auditedRehearsalRef) }
+    : isProductionHost
+      ? { enabled: true, endpoint: endpointForRef(productionRef) }
+      : {};
+  const runtimeConfig = window.__GAMEPLAN_LEAD_CAPTURE_CONFIG__ || environmentConfig;
   const testAdapter = window.__GAMEPLAN_PHASE12_CAPTURE_TEST_ADAPTER__;
   const captureConfig = Object.freeze({
     enabled: runtimeConfig.enabled === true,

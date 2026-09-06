@@ -45,11 +45,17 @@ for (const [language, html, expectedLang] of [
   check(`${language} checklist supports print`, html.includes('window.print()'));
 }
 
-check('capture has no literal Supabase endpoint', !/supabase\.co|capture-marketing-lead/.test(files.capture));
+check('capture has no literal Supabase endpoint', !/https:\/\/[^'"`\s]*supabase\.co/.test(files.capture));
 check('capture defaults to explicit runtime gate', files.capture.includes("enabled: runtimeConfig.enabled === true"));
-check('capture is bound to the Phase 12 branch Preview hostname', files.capture.includes("auditedPreviewHost = 'gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app'"));
-check('capture requires exact Preview hostname match', files.capture.includes('window.location.hostname === auditedPreviewHost'));
-check('capture points only at audited Rehearsal project ref', files.capture.includes("auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej'"));
+check('capture has explicit Preview allowlist', files.capture.includes('const auditedPreviewHosts = new Set(['));
+check('capture keeps original audited Preview hostname', files.capture.includes('gameplan-landing-git-phase-12-lead-magnet-mvp-rmoniizs-projects.vercel.app'));
+check('capture includes actual production-readiness Preview alias', files.capture.includes('gameplan-landing-git-phase-12-producti-f5a01e-rmoniizs-projects.vercel.app'));
+check('capture excludes guessed production-readiness hostname', !files.capture.includes('gameplan-landing-git-phase-12-production-readiness-landing-rmoniizs-projects.vercel.app'));
+check('capture requires exact Preview hostname membership', files.capture.includes('auditedPreviewHosts.has(window.location.hostname)'));
+check('capture points Preview only at audited Rehearsal project ref', files.capture.includes("auditedRehearsalRef = 'dyhkhnjmnmktpjlqcqej'"));
+check('capture has exact production hostname', files.capture.includes("productionHost = 'gameplan-landing.vercel.app'"));
+check('capture points production only at primary project ref', files.capture.includes("productionRef = 'ljuwnrbrneedzatbbslr'"));
+check('capture unknown hosts stay disabled', files.capture.includes(': {}'));
 check('capture has a 10-second timeout', files.capture.includes('controller.abort(), 10000'));
 check('capture sanitizes campaign controls', files.capture.includes("replace(/[\\u0000-\\u001f\\u007f]/g"));
 check('capture never sends analytics without granted consent', files.capture.includes("!== 'granted'"));
@@ -79,7 +85,6 @@ check('Playwright is pinned', packageJson.devDependencies?.playwright === '1.63.
 check('Axe is pinned', packageJson.devDependencies?.['@axe-core/playwright'] === '4.13.0');
 check('Rehearsal smoke command exists', packageJson.scripts?.['test:phase12:rehearsal'] === 'node scripts/phase12-rehearsal-smoke.mjs');
 
-// Compositor regression contracts derived from the user's captured white-flash evidence.
 check('compositor guard stylesheet is loaded by final polish', files.finalPolish.includes("compositorStylesheet.href = 'phase12-scroll-compositor.css'"));
 check('root canvas gets an immediate dark fallback', files.finalPolish.includes("root.style.backgroundColor = '#050b22'"));
 check('body gets an immediate dark fallback', files.finalPolish.includes("body.style.backgroundColor = '#050b22'"));

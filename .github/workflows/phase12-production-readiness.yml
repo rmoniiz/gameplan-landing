@@ -1,0 +1,30 @@
+name: Phase 12 production readiness landing
+
+on:
+  push:
+    branches:
+      - phase-12-production-readiness-landing
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'phase12-lead-capture.js'
+      - 'scripts/phase12-production-readiness.mjs'
+      - '.github/workflows/phase12-production-readiness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  production-routing-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate environment routing contracts
+        run: node scripts/phase12-production-readiness.mjs

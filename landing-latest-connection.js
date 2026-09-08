@@ -12,6 +12,56 @@
   }
 
   const isEnglish = document.documentElement.lang === 'en';
+  const ANALYTICS_CONSENT_KEY = 'gameplan:privacy:analytics-consent:v1';
+  const METRICOOL_HASH = 'db01dada35de2ae2639a37010022eda6';
+  let metricoolTracked = false;
+
+  const readAnalyticsConsent = () => {
+    try {
+      return window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
+    } catch {
+      return null;
+    }
+  };
+
+  const trackMetricoolVisit = () => {
+    if (metricoolTracked || readAnalyticsConsent() !== 'granted') return;
+    if (!window.beTracker?.t) return;
+    window.beTracker.t({ hash: METRICOOL_HASH });
+    metricoolTracked = true;
+  };
+
+  const installMetricool = () => {
+    if (metricoolTracked || readAnalyticsConsent() !== 'granted') return;
+    if (window.beTracker?.t) {
+      trackMetricoolVisit();
+      return;
+    }
+
+    const existingScript = document.querySelector('script[data-gameplan-metricool]');
+    if (existingScript) {
+      existingScript.addEventListener('load', trackMetricoolVisit, { once: true });
+      return;
+    }
+
+    const tracker = document.createElement('script');
+    tracker.type = 'text/javascript';
+    tracker.async = true;
+    tracker.src = 'https://tracker.metricool.com/resources/be.js';
+    tracker.dataset.gameplanMetricool = 'true';
+    tracker.addEventListener('load', trackMetricoolVisit, { once: true });
+    document.head.appendChild(tracker);
+  };
+
+  if (readAnalyticsConsent() === 'granted') installMetricool();
+  document.body.addEventListener('click', (event) => {
+    const action = event.target.closest?.('[data-analytics-consent]')?.dataset.analyticsConsent;
+    if (action !== 'accept') return;
+    window.setTimeout(() => {
+      if (readAnalyticsConsent() === 'granted') installMetricool();
+    }, 0);
+  });
+
   const copy = isEnglish
     ? {
         eyebrow: 'From the model to the pitch',

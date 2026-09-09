@@ -1,0 +1,67 @@
+name: Phase 13 Canonical Landing — Strix
+
+on:
+  push:
+    branches:
+      - phase-13-canonical-security-reconciliation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase13-canonical-landing-strix-security
+  cancel-in-progress: true
+
+jobs:
+  strix-white-box:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      STRIX_LLM: ${{ secrets.STRIX_LLM }}
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+
+    steps:
+      - name: Checkout exact reconciliation commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require Strix model configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${STRIX_LLM:-}" || { echo "::error::STRIX_LLM secret is not configured."; exit 1; }
+          test -n "${LLM_API_KEY:-}" || { echo "::error::LLM_API_KEY secret is not configured."; exit 1; }
+          echo "Strix model configuration is present and remains masked."
+
+      - name: Confirm Docker is available
+        run: docker info >/dev/null
+
+      - name: Install Strix
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sSL https://strix.ai/install | bash
+          strix --version
+
+      - name: Run bounded white-box Strix scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          strix -n \
+            --target ./ \
+            --scan-mode quick \
+            --scope-mode diff \
+            --diff-base origin/main \
+            --instruction-file security/strix-reconciliation-scope.md \
+            --max-budget 2
+
+      - name: Upload Strix evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase13-canonical-landing-strix-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: strix_runs/

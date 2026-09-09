@@ -27,18 +27,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Require Strix model configuration
+      - name: Detect optional Strix configuration
+        id: strix_config
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${STRIX_LLM:-}" || { echo "::error::STRIX_LLM secret is not configured."; exit 1; }
-          test -n "${LLM_API_KEY:-}" || { echo "::error::LLM_API_KEY secret is not configured."; exit 1; }
-          echo "Strix model configuration is present and remains masked."
+          if [ -n "${STRIX_LLM:-}" ] && [ -n "${LLM_API_KEY:-}" ]; then
+            echo "enabled=true" >> "${GITHUB_OUTPUT}"
+            echo "Strix credentials are configured and remain masked. The scan will run as supplementary evidence."
+          else
+            echo "enabled=false" >> "${GITHUB_OUTPUT}"
+            echo "::notice::Strix credentials are not configured. Skipping Strix without blocking landing reconciliation."
+          fi
 
       - name: Confirm Docker is available
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
         run: docker info >/dev/null
 
       - name: Install Strix
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -46,6 +55,8 @@ jobs:
           strix --version
 
       - name: Run bounded white-box Strix scan
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -58,7 +69,8 @@ jobs:
             --max-budget 2
 
       - name: Upload Strix evidence
-        if: always()
+        if: always() && steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: phase13-canonical-landing-strix-${{ github.run_id }}

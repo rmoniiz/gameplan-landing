@@ -22,6 +22,8 @@ on:
       - 'landing-final-polish.css'
       - 'landing-final-polish.js'
       - 'phase12-scroll-compositor.css'
+      - 'phase13-landing-refinement.js'
+      - 'scripts/phase13-landing-refinement-validation.mjs'
       - 'scripts/phase12-static-validation.mjs'
       - 'scripts/phase12-rehearsal-smoke.mjs'
       - 'package.json'
@@ -54,6 +56,9 @@ jobs:
 
       - name: Validate static contracts
         run: npm run test:phase12:static
+
+      - name: Validate Phase 13 landing refinement contracts
+        run: node scripts/phase13-landing-refinement-validation.mjs
 
       - name: Start isolated landing server
         run: |

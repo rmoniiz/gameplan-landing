@@ -1,0 +1,79 @@
+name: Phase 13 Canonical Landing — Strix
+
+on:
+  push:
+    branches:
+      - phase-13-canonical-security-reconciliation
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase13-canonical-landing-strix-security
+  cancel-in-progress: true
+
+jobs:
+  strix-white-box:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      STRIX_LLM: ${{ secrets.STRIX_LLM }}
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+
+    steps:
+      - name: Checkout exact reconciliation commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect optional Strix configuration
+        id: strix_config
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${STRIX_LLM:-}" ] && [ -n "${LLM_API_KEY:-}" ]; then
+            echo "enabled=true" >> "${GITHUB_OUTPUT}"
+            echo "Strix credentials are configured and remain masked. The scan will run as supplementary evidence."
+          else
+            echo "enabled=false" >> "${GITHUB_OUTPUT}"
+            echo "::notice::Strix credentials are not configured. Skipping Strix without blocking landing reconciliation."
+          fi
+
+      - name: Confirm Docker is available
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
+        run: docker info >/dev/null
+
+      - name: Install Strix
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sSL https://strix.ai/install | bash
+          strix --version
+
+      - name: Run bounded white-box Strix scan
+        if: steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          strix -n \
+            --target ./ \
+            --scan-mode quick \
+            --scope-mode diff \
+            --diff-base origin/main \
+            --instruction-file security/strix-reconciliation-scope.md \
+            --max-budget 2
+
+      - name: Upload Strix evidence
+        if: always() && steps.strix_config.outputs.enabled == 'true'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase13-canonical-landing-strix-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: strix_runs/

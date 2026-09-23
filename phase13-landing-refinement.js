@@ -71,7 +71,13 @@
           demoDescription: 'The demo follows the same references from the game model into exercises, planning and match review.',
           demoCardTitle: 'Follow one coaching decision across the app',
           demoCardText: 'Record a principle, choose an exercise, place it in the week and return to that reference in the match review.',
-          aboutLast: 'GamePlan keeps the game model, exercises, planning, players and match analysis in one environment. The coach chooses the methodology, interprets the evidence and decides what to do next.',
+          aboutTitle: 'Why I built GamePlan',
+          aboutParagraphs: [
+            'My relationship with football began with my grandfather, Adão, an amateur coach. I started coaching in the United States in 2017 and later worked in different clubs and football environments before moving to the Netherlands.',
+            'In practice, I was using different places for the game model, weekly planning, training notes and match review. When I wanted to check why a session had been planned in a certain way, the context was often spread across those records.',
+            'The question I wanted to answer was simple: what did we train, what appeared in the match and what should I review before planning the next week?',
+            'GamePlan keeps the game model, exercises, planning, players and match analysis in one environment. The coach chooses the methodology, interprets the evidence and decides what to do next.',
+          ],
         }
       : {
           hero: 'Planeje a semana, escolha os exercícios e volte à partida mantendo os mesmos princípios e comportamentos como referência.',
@@ -84,7 +90,13 @@
           demoDescription: 'A demonstração acompanha as mesmas referências do modelo de jogo até os exercícios, o planejamento e a revisão da partida.',
           demoCardTitle: 'Acompanhe uma decisão de treino dentro do app',
           demoCardText: 'Registre um princípio, escolha um exercício, coloque-o na semana e volte à mesma referência na revisão da partida.',
-          aboutLast: 'O GamePlan reúne modelo de jogo, exercícios, planejamento, atletas e análise da partida no mesmo ambiente. O treinador escolhe a metodologia, interpreta as evidências e decide o próximo passo.',
+          aboutTitle: 'Por que eu criei o GamePlan',
+          aboutParagraphs: [
+            'Minha relação com o futebol começou com meu avô, Adão, treinador amador. Em 2017 comecei a trabalhar como treinador nos Estados Unidos e, depois, passei por diferentes clubes e contextos de futebol até me mudar para a Holanda.',
+            'Na prática, eu usava lugares diferentes para o modelo de jogo, o planejamento semanal, as anotações de treino e a revisão da partida. Quando queria verificar por que uma sessão tinha sido planejada de determinada forma, o contexto muitas vezes estava espalhado entre esses registros.',
+            'A pergunta que eu queria responder era simples: o que treinamos, o que apareceu na partida e o que preciso revisar antes de planejar a próxima semana?',
+            'O GamePlan reúne modelo de jogo, exercícios, planejamento, atletas e análise da partida no mesmo ambiente. O treinador escolhe a metodologia, interpreta as evidências e decide o próximo passo.',
+          ],
         };
 
     const heroDescription = document.querySelector('.hero-description');
@@ -111,9 +123,13 @@
     if (demoCardTitle) demoCardTitle.textContent = copy.demoCardTitle;
     if (demoCardText) demoCardText.textContent = copy.demoCardText;
 
-    const aboutParagraphs = document.querySelectorAll('#about .about-copy > p');
-    const aboutLast = aboutParagraphs[aboutParagraphs.length - 1];
-    if (aboutLast) aboutLast.textContent = copy.aboutLast;
+    const aboutCopy = document.querySelector('#about .about-copy');
+    const aboutTitle = aboutCopy?.querySelector('h2');
+    const aboutParagraphs = [...(aboutCopy?.querySelectorAll(':scope > p') || [])];
+    if (aboutTitle) aboutTitle.textContent = copy.aboutTitle;
+    copy.aboutParagraphs.forEach((text, index) => {
+      if (aboutParagraphs[index]) aboutParagraphs[index].textContent = text;
+    });
   }).catch((error) => {
     console.error('[GamePlan] Phase 13 landing refinement failed to load.', error);
   });

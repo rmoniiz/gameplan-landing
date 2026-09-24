@@ -48,8 +48,54 @@
     .hero-kicker {
       box-shadow: none !important;
     }
+
+    /* Motion is used to explain entry/continuity, not as decoration. */
+    .gp-reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
+    }
+    .gp-reveal.gp-visible { opacity: 1; transform: translateY(0); }
+    main > section:not(:first-child), footer { content-visibility: auto; contain-intrinsic-size: 800px; }
+    img, video { transition: opacity 220ms ease; }
+    img[loading="lazy"], video[preload="none"] { opacity: .985; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gp-reveal, .gp-reveal.gp-visible, img, video {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+      }
+      html { scroll-behavior: auto !important; }
+    }
   `;
   document.head.appendChild(refinementStyle);
+
+  const enablePerformanceMotion = () => {
+    document.querySelectorAll('img').forEach((image, index) => {
+      if (index > 0 && !image.hasAttribute('loading')) image.setAttribute('loading', 'lazy');
+      image.setAttribute('decoding', 'async');
+    });
+    document.querySelectorAll('video').forEach((video) => {
+      if (!video.hasAttribute('preload')) video.setAttribute('preload', 'metadata');
+    });
+
+    const targets = [...document.querySelectorAll('main > section, .feature-card, .connection-item, .demo-shell, .price-card, .cta-box')];
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+      targets.forEach((node) => node.classList.add('gp-visible'));
+      return;
+    }
+    targets.forEach((node) => node.classList.add('gp-reveal'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('gp-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '80px 0px', threshold: 0.08 });
+    targets.forEach((node) => observer.observe(node));
+  };
 
   import('./phase13-landing-refinement-base.js').then(() => {
     const heroTactics = document.querySelector('.hero-tactics svg');
@@ -130,6 +176,8 @@
     copy.aboutParagraphs.forEach((text, index) => {
       if (aboutParagraphs[index]) aboutParagraphs[index].textContent = text;
     });
+
+    enablePerformanceMotion();
   }).catch((error) => {
     console.error('[GamePlan] Phase 13 landing refinement failed to load.', error);
   });

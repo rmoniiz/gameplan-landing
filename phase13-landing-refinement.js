@@ -55,7 +55,6 @@
       transition: opacity 420ms cubic-bezier(.2,.8,.2,1), transform 420ms cubic-bezier(.2,.8,.2,1);
     }
     .gp-reveal.gp-visible { opacity: 1; transform: translateY(0); }
-    main > section:not(:first-child), footer { content-visibility: auto; contain-intrinsic-size: 800px; }
     img, video { transition: opacity 220ms ease; }
     img[loading="lazy"], video[preload="none"] { opacity: .985; }
 

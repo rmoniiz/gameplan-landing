@@ -49,7 +49,6 @@
       box-shadow: none !important;
     }
 
-    /* Motion is used to explain entry/continuity, not as decoration. */
     .gp-reveal {
       opacity: 0;
       transform: translateY(14px);
@@ -113,7 +112,7 @@
           connectionCenter: 'Coaching work',
           featuresTitle: 'What GamePlan records and connects',
           featuresDescription: 'Use each module on its own, or follow the same principle, exercise or observation across planning, training and match review.',
-          demoTitle: 'See how a principle moves into the weekly plan',
+          demoTitle: 'Take a look inside GamePlan',
           demoDescription: 'The demo follows the same references from the game model into exercises, planning and match review.',
           demoCardTitle: 'Follow one coaching decision across the app',
           demoCardText: 'Record a principle, choose an exercise, place it in the week and return to that reference in the match review.',
@@ -132,7 +131,7 @@
           connectionCenter: 'Trabalho do treinador',
           featuresTitle: 'O que o GamePlan registra e conecta',
           featuresDescription: 'Use cada módulo separadamente ou acompanhe o mesmo princípio, exercício ou observação entre planejamento, treino e revisão da partida.',
-          demoTitle: 'Veja como um princípio entra no plano semanal',
+          demoTitle: 'Veja por dentro do GamePlan',
           demoDescription: 'A demonstração acompanha as mesmas referências do modelo de jogo até os exercícios, o planejamento e a revisão da partida.',
           demoCardTitle: 'Acompanhe uma decisão de treino dentro do app',
           demoCardText: 'Registre um princípio, escolha um exercício, coloque-o na semana e volte à mesma referência na revisão da partida.',

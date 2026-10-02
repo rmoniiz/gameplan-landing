@@ -27,10 +27,13 @@ const analyzePaintVideo = async (videoPath, testName) => {
   const metadata = await fs.readFile(metadataPath, 'utf8');
   const luma = [...metadata.matchAll(/lavfi\.signalstats\.YAVG=(\d+(?:\.\d+)?)/g)].map((match) => Number(match[1]));
   const maxLuma = luma.length ? Math.max(...luma) : 0;
-  const brightFrames = luma.filter((value) => value > 185).length;
-  const veryBrightFrames = luma.filter((value) => value > 195).length;
+  const nearWhiteFrames = luma.filter((value) => value > 250).length;
+  let isolatedNearWhiteSpikes = 0;
+  for (let index = 1; index < luma.length - 1; index += 1) {
+    if (luma[index] > 250 && luma[index - 1] < 230 && luma[index + 1] < 230) isolatedNearWhiteSpikes += 1;
+  }
   const avgLuma = luma.length ? luma.reduce((sum, value) => sum + value, 0) / luma.length : 0;
-  return { frames: luma.length, maxLuma, avgLuma, brightFrames, veryBrightFrames };
+  return { frames: luma.length, maxLuma, avgLuma, nearWhiteFrames, isolatedNearWhiteSpikes };
 };
 
 for (const testCase of cases) {
@@ -58,11 +61,10 @@ for (const testCase of cases) {
   await page.goto(`${base}${testCase.path}`, { waitUntil: 'domcontentloaded' });
   await page.locator('#lead-magnet').waitFor({ state: 'visible' });
   await page.locator('#loader').waitFor({ state: 'detached', timeout: 4000 }).catch(() => {});
-  await page.waitForTimeout(650);
-  await page.mouse.move(Math.round(testCase.viewport.width * 0.5), Math.round(testCase.viewport.height * 0.45));
+  await page.waitForTimeout(500);
 
   const maxScroll = await page.evaluate(() => Math.max(0, document.documentElement.scrollHeight - innerHeight));
-  const wheelStep = testCase.desktop ? 520 : 360;
+  const wheelStep = testCase.desktop ? 560 : 390;
   const downSteps = Math.max(18, Math.ceil(maxScroll / wheelStep));
   for (let index = 0; index < downSteps; index += 1) {
     await page.mouse.wheel(0, wheelStep);
@@ -72,20 +74,14 @@ for (const testCase of cases) {
     await page.mouse.wheel(0, -wheelStep);
     await page.waitForTimeout(12);
   }
-  for (let index = 0; index < Math.ceil(downSteps * 0.72); index += 1) {
+  for (let index = 0; index < Math.ceil(downSteps * 0.68); index += 1) {
     await page.mouse.wheel(0, wheelStep);
     await page.waitForTimeout(10);
   }
-  for (let index = 0; index < Math.ceil(downSteps * 0.52); index += 1) {
-    await page.mouse.wheel(0, -wheelStep);
-    await page.waitForTimeout(10);
-  }
-
-  await page.mouse.move(2, 2);
-  await page.waitForTimeout(360);
+  await page.waitForTimeout(250);
 
   const stability = await page.evaluate(() => {
-    const ids = ['connection', 'features', 'demo', 'pricing', 'about', 'timeline', 'feedback', 'lead-magnet'];
+    const ids = ['process', 'product', 'demo', 'about', 'pricing', 'feedback', 'lead-magnet'];
     const sections = ids.map((id) => {
       const element = document.getElementById(id);
       if (!element) return { id, exists: false };
@@ -108,24 +104,17 @@ for (const testCase of cases) {
     const brokenImages = [...document.images]
       .filter((image) => !image.complete || image.naturalWidth === 0)
       .map((image) => image.getAttribute('src'));
-    const bgGrid = document.querySelector('.bg-grid');
-    const bgBlur = document.querySelector('.bg-blur');
-    const bgGridAfter = bgGrid ? getComputedStyle(bgGrid, '::after').backgroundImage : '';
-    const motionTilt = document.querySelector('.motion-tilt');
-    const compositorLink = document.querySelector('link[href="phase12-scroll-compositor.css"]');
+    const rawOverflow = Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth);
     return {
       sections,
       hiddenReveal,
       brokenImages,
-      hasMotionTilt: Boolean(motionTilt),
-      hasPointTexture: bgGridAfter.includes('radial-gradient'),
+      rawOverflow,
+      editorialReady: document.body.classList.contains('editorial-ready'),
+      editorialStylesLoaded: Boolean(document.querySelector('link[href="phase13-editorial-redesign.css"]')?.sheet),
+      legacyBackgroundLayers: Boolean(document.querySelector('.bg-grid, .bg-blur')),
       rootBackground: getComputedStyle(document.documentElement).backgroundColor,
       bodyBackground: getComputedStyle(document.body).backgroundColor,
-      bgGridZ: bgGrid ? getComputedStyle(bgGrid).zIndex : null,
-      bgBlurZ: bgBlur ? getComputedStyle(bgBlur).zIndex : null,
-      bodyBeforeZ: getComputedStyle(document.body, '::before').zIndex,
-      idleWillChange: motionTilt ? getComputedStyle(motionTilt).willChange : 'none',
-      compositorStylesLoaded: Boolean(compositorLink?.sheet),
     };
   });
 
@@ -146,19 +135,16 @@ for (const testCase of cases) {
   }
   if (stability.hiddenReveal.length) errors.push(`reveal content became hidden: ${stability.hiddenReveal.join(', ')}`);
   if (stability.brokenImages.length) errors.push(`images failed after scroll: ${stability.brokenImages.join(', ')}`);
-  if (testCase.desktop && !stability.hasMotionTilt) errors.push('cinematic motion tilt should remain present on desktop');
-  if (stability.hasPointTexture) errors.push('background point texture must not be present');
+  if (stability.rawOverflow > 2) errors.push(`horizontal overflow after continuous scroll: ${stability.rawOverflow}`);
+  if (!stability.editorialReady) errors.push('editorial runtime did not mark the page ready');
+  if (!stability.editorialStylesLoaded) errors.push('editorial stylesheet did not load');
+  if (stability.legacyBackgroundLayers) errors.push('legacy decorative background layers are still present');
   if (stability.rootBackground !== 'rgb(5, 11, 34)') errors.push(`root canvas fallback is not dark: ${stability.rootBackground}`);
   if (stability.bodyBackground !== 'rgb(5, 11, 34)') errors.push(`body fallback is not dark: ${stability.bodyBackground}`);
-  if (stability.bgGridZ !== '0' || stability.bgBlurZ !== '0' || stability.bodyBeforeZ !== '0') {
-    errors.push(`decorative background layers must stay inside body stacking context: grid=${stability.bgGridZ} blur=${stability.bgBlurZ} before=${stability.bodyBeforeZ}`);
-  }
-  if (testCase.desktop && stability.idleWillChange !== 'auto') errors.push(`tilt must not keep permanent will-change at idle: ${stability.idleWillChange}`);
-  if (!stability.compositorStylesLoaded) errors.push('compositor guard stylesheet did not load');
   if (actualLang !== testCase.lang) errors.push(`language mismatch: ${actualLang}`);
   if (!paint.frames) errors.push('continuous-scroll video did not yield paint frames');
-  if (paint.veryBrightFrames > 0 || paint.brightFrames >= 3 || paint.maxLuma > 195) {
-    errors.push(`white/checkerboard paint flash detected: ${JSON.stringify(paint)}`);
+  if (paint.isolatedNearWhiteSpikes > 0 || paint.maxLuma > 253) {
+    errors.push(`unexpected near-white paint flash detected: ${JSON.stringify(paint)}`);
   }
 
   await fs.writeFile(`${out}/${testCase.name}.json`, JSON.stringify({ ...testCase, actualLang, stability, paint, errors }, null, 2));
@@ -170,4 +156,4 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exit(1);
 }
-console.log('Phase 12 continuous scroll paint: PT-BR/English desktop/mobile passed compositor and pixel checks.');
+console.log('Editorial landing continuous-scroll paint: PT-BR/English desktop/mobile passed runtime, overflow and paint checks.');

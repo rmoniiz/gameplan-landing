@@ -50,8 +50,8 @@
     }
 
     #features .feature-mini-visual {
-      height: 96px;
-      margin: 4px 0 18px;
+      height: 92px;
+      margin: 2px 0 17px;
       border: 1px solid rgba(203, 216, 239, .12) !important;
       border-radius: 10px !important;
       background: rgba(5, 13, 30, .72) !important;

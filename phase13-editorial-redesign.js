@@ -4,6 +4,17 @@
   const stylesheet = document.querySelector('link[href="phase13-editorial-redesign.css"]');
   if (stylesheet) document.head.appendChild(stylesheet);
 
+  if (!document.querySelector('link[href="phase13-editorial-a11y.css"]')) {
+    const a11yStylesheet = document.createElement('link');
+    a11yStylesheet.rel = 'stylesheet';
+    a11yStylesheet.href = 'phase13-editorial-a11y.css';
+    document.head.appendChild(a11yStylesheet);
+  }
+
+  document.querySelectorAll('.hero-foot, .return-loop').forEach((region) => {
+    if (!region.hasAttribute('tabindex')) region.setAttribute('tabindex', '0');
+  });
+
   document.body.classList.add('editorial-ready');
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

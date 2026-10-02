@@ -21,6 +21,7 @@ on:
       - 'scripts/phase13-editorial-a11y.mjs'
       - 'scripts/build-preview.mjs'
       - 'phase13-editorial-redesign.css'
+      - 'phase13-editorial-a11y.css'
       - 'phase13-editorial-redesign.js'
       - 'phase13-landing-refinement.js'
       - 'scripts/phase13-landing-refinement-validation.mjs'

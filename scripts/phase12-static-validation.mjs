@@ -9,10 +9,10 @@ const files = {
   checklistEn: await fs.readFile('game-model-checklist.html', 'utf8'),
   capture: await fs.readFile('phase12-lead-capture.js', 'utf8'),
   styles: await fs.readFile('phase12-lead-capture.css', 'utf8'),
+  editorialCss: await fs.readFile('phase13-editorial-redesign.css', 'utf8'),
+  editorialJs: await fs.readFile('phase13-editorial-redesign.js', 'utf8'),
   privacyPt: await fs.readFile('privacy.html', 'utf8'),
   privacyEn: await fs.readFile('privacy-en.html', 'utf8'),
-  finalPolish: await fs.readFile('landing-final-polish.js', 'utf8'),
-  compositor: await fs.readFile('phase12-scroll-compositor.css', 'utf8'),
 };
 const packageJson = JSON.parse(await fs.readFile('package.json', 'utf8'));
 
@@ -24,9 +24,13 @@ const check = (name, condition, detail = '') => {
 for (const [language, html] of [['pt-BR', files.pt], ['en', files.en]]) {
   check(`${language} Phase 12 stylesheet once`, (html.match(/phase12-lead-capture\.css/g) || []).length === 1);
   check(`${language} Phase 12 script once`, (html.match(/phase12-lead-capture\.js/g) || []).length === 1);
-  for (const section of ['connection', 'features', 'demo', 'pricing', 'about', 'timeline', 'feedback']) {
+  check(`${language} editorial stylesheet once`, (html.match(/phase13-editorial-redesign\.css/g) || []).length === 1);
+  check(`${language} editorial runtime once`, (html.match(/phase13-editorial-redesign\.js/g) || []).length === 1);
+  for (const section of ['process', 'product', 'demo', 'pricing', 'about', 'feedback']) {
     check(`${language} preserves #${section}`, html.includes(`id="${section}"`));
   }
+  check(`${language} removed old card/connection architecture`, !/id="connection"|id="features"|features-grid|connection-board/.test(html));
+  check(`${language} excludes legacy visual runtimes`, !/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html));
   check(`${language} preserves privacy link`, /href="privacy(?:-en)?\.html"/.test(html));
   check(`${language} preserves terms link`, /href="terms(?:-en)?\.html"/.test(html));
   check(`${language} preserves signup`, html.includes('/signup?trial=7&lang='));
@@ -77,35 +81,25 @@ check('PT-BR privacy disclosure', files.privacyPt.includes('Solicitação de mat
 check('English privacy disclosure', files.privacyEn.includes('Free-resource requests'));
 check('PT-BR privacy states 12-month lead retention', files.privacyPt.includes('por até 12 meses'));
 check('English privacy states 12-month lead retention', files.privacyEn.includes('for up to 12 months'));
-check('reduced-motion styles', files.styles.includes('@media(prefers-reduced-motion:reduce)'));
-check('mobile breakpoint styles', files.styles.includes('@media(max-width:820px)'));
-check('print styles', files.styles.includes('@media print'));
+check('lead capture reduced-motion styles', files.styles.includes('@media(prefers-reduced-motion:reduce)'));
+check('lead capture mobile breakpoint styles', files.styles.includes('@media(max-width:820px)'));
+check('lead capture print styles', files.styles.includes('@media print'));
 check('ffmpeg-static is pinned', packageJson.dependencies?.['ffmpeg-static'] === '5.2.0');
 check('Playwright is pinned', packageJson.devDependencies?.playwright === '1.63.0');
 check('Axe is pinned', packageJson.devDependencies?.['@axe-core/playwright'] === '4.13.0');
 check('Rehearsal smoke command exists', packageJson.scripts?.['test:phase12:rehearsal'] === 'node scripts/phase12-rehearsal-smoke.mjs');
 
-check('compositor guard stylesheet is loaded by final polish', files.finalPolish.includes("compositorStylesheet.href = 'phase12-scroll-compositor.css'"));
-check('root canvas gets an immediate dark fallback', files.finalPolish.includes("root.style.backgroundColor = '#050b22'"));
-check('body gets an immediate dark fallback', files.finalPolish.includes("body.style.backgroundColor = '#050b22'"));
-check('CSS keeps html canvas dark', /html\s*\{[^}]*background-color\s*:\s*#050b22/i.test(files.compositor));
-check('CSS isolates body stacking context', /body\s*\{[^}]*isolation\s*:\s*isolate/i.test(files.compositor));
-check('decorative backgrounds no longer use negative z-index', /body::before,\s*\.bg-grid,\s*\.bg-blur\s*\{[^}]*z-index\s*:\s*0!important/i.test(files.compositor));
-check('tilt keeps no permanent will-change', /\.motion-tilt\s*\{[^}]*will-change\s*:\s*auto!important/i.test(files.compositor));
-check('tilt promotes only during interaction', /\.motion-tilt\.is-tilting\s*\{[^}]*will-change\s*:\s*transform!important/i.test(files.compositor));
-check('scroll progress is scoped to the header', files.finalPolish.includes("header.style.setProperty('--scroll-progress'"));
-check('journey progress is scoped to the journey', files.finalPolish.includes("journey.style.setProperty('--journey-progress'"));
-check('section ambience is scoped to body', files.finalPolish.includes("body.style.setProperty('--section-rgb'"));
-check('pointer glow coordinates are scoped to body', files.finalPolish.includes("body.style.setProperty('--pointer-x'") && files.finalPolish.includes("body.style.setProperty('--pointer-y'"));
-check('no scroll progress write remains on root', !files.finalPolish.includes("root.style.setProperty('--scroll-progress'"));
-check('no journey progress write remains on root', !files.finalPolish.includes("root.style.setProperty('--journey-progress'"));
-check('header height is cached outside scroll RAF', files.finalPolish.includes('cachedHeaderHeight = header?.offsetHeight || 0'));
-check('scroll RAF uses cached header height', files.finalPolish.includes('scrollY + cachedHeaderHeight'));
-check('cinematic tilt remains enabled', files.finalPolish.includes("setupTilt(document.querySelector('.connection-board'), 1.25)") && files.finalPolish.includes("setupTilt(document.querySelector('.demo-shell'), 1.05)") && files.finalPolish.includes("setupTilt(document.querySelector('.founder-card'), 1.15)"));
-check('cinema mode remains enabled', files.finalPolish.includes("body.classList.add('demo-cinema-mode')"));
-check('hero tactics remain enabled', files.finalPolish.includes("tactics.className = 'hero-tactics'"));
-check('Tactical Journey remains enabled', files.finalPolish.includes("journey.className = 'tactical-journey'"));
-check('mini diagrams remain enabled', files.finalPolish.includes("visual.className = 'feature-mini-visual'"));
+check('editorial CSS includes dark and paper canvases', files.editorialCss.includes('--dark:#050b22') && files.editorialCss.includes('--paper:#f3efe6'));
+check('editorial CSS includes reduced-motion support', files.editorialCss.includes('@media(prefers-reduced-motion:reduce)'));
+check('editorial CSS includes responsive mobile breakpoint', files.editorialCss.includes('@media(max-width:760px)'));
+check('editorial CSS contains no gradients', !/linear-gradient|radial-gradient|conic-gradient/i.test(files.editorialCss));
+check('editorial CSS contains no decorative blur', !/filter\s*:\s*blur\s*\(/i.test(files.editorialCss));
+check('editorial CSS contains no backdrop filter', !/backdrop-filter/i.test(files.editorialCss));
+check('editorial CSS uses real-product composition', files.editorialCss.includes('.hero-product') && files.editorialCss.includes('.product-shot') && files.editorialCss.includes('.module-list'));
+check('editorial runtime moves its CSS to final precedence', files.editorialJs.includes('document.head.appendChild(stylesheet)'));
+check('editorial runtime announces ready state', files.editorialJs.includes("document.body.classList.add('editorial-ready')"));
+check('editorial runtime observes coaching flow', files.editorialJs.includes("document.querySelectorAll('[data-flow-step]')"));
+check('editorial runtime respects reduced motion', files.editorialJs.includes('prefers-reduced-motion: reduce'));
 
 const report = { generatedAt: new Date().toISOString(), checks, failures };
 await fs.mkdir('phase12-validation-evidence', { recursive: true });

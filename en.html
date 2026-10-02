@@ -7,9 +7,9 @@
   <meta name="description" content="GamePlan connects game model, exercises, planning, players and match analysis so football coaches can work with more clarity from idea to pitch." />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#050b22" />
-  <link rel="canonical" href="https://gameplan-landing.vercel.app/en.html" />
-  <link rel="alternate" hreflang="pt-BR" href="https://gameplan-landing.vercel.app/" />
-  <link rel="alternate" hreflang="en" href="https://gameplan-landing.vercel.app/en.html" />
+  <link rel="canonical" href="https://gameplan-landing.vercel.app/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://gameplan-landing.vercel.app/index.html" />
+  <link rel="alternate" hreflang="en" href="https://gameplan-landing.vercel.app/" />
   <link rel="alternate" hreflang="x-default" href="https://gameplan-landing.vercel.app/" />
   <link rel="icon" type="image/png" href="assets/images/gameplan-logo.png" />
   <meta property="og:type" content="website" />
@@ -17,21 +17,19 @@
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="pt_BR" />
   <meta property="og:title" content="GamePlan | From the model to the pitch" />
-  <meta property="og:description" content="Plan, train and analyze in one place. Connect your game model, exercises, planning, players and match review without losing the reasoning behind each decision." />
-  <meta property="og:url" content="https://gameplan-landing.vercel.app/en.html" />
+  <meta property="og:description" content="Plan the week from what you want to see on the pitch and return to the match using the same references." />
+  <meta property="og:url" content="https://gameplan-landing.vercel.app/" />
   <meta property="og:image" content="https://gameplan-landing.vercel.app/assets/images/gameplan-logo.png" />
   <meta property="og:image:alt" content="GamePlan logo" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="GamePlan | From the model to the pitch" />
-  <meta name="twitter:description" content="Plan, train and analyze in one place." />
+  <meta name="twitter:description" content="Plan the week from what you want to see on the pitch and return to the match using the same references." />
   <meta name="twitter:image" content="https://gameplan-landing.vercel.app/assets/images/gameplan-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="landing-latest-connection.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="phase12-lead-capture.css" />
-  <link rel="stylesheet" href="landing-final-polish.css" />
+  <link rel="stylesheet" href="phase13-editorial-redesign.css" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,16 +37,17 @@
       {
         "@type": "WebSite",
         "@id": "https://gameplan-landing.vercel.app/#website",
-        "url": "https://gameplan-landing.vercel.app/en.html",
+        "url": "https://gameplan-landing.vercel.app/",
         "name": "GamePlan",
         "inLanguage": "en",
-        "description": "Football coaching platform connecting game model, exercises, planning, players and match analysis."
+        "description": "Football coaching platform connecting game model, exercises, planning, players and match analysis.",
+        "sameAs": ["https://www.instagram.com/the.gameplan.app/","https://www.facebook.com/profile.php?id=1363322276857518","https://www.linkedin.com/company/146358073/","https://x.com/gameplantheapp"]
       },
       {
         "@type": "SoftwareApplication",
         "@id": "https://gameplan-landing.vercel.app/#software",
         "name": "GamePlan",
-        "url": "https://gameplan-landing.vercel.app/en.html",
+        "url": "https://gameplan-landing.vercel.app/",
         "applicationCategory": "SportsApplication",
         "operatingSystem": "Web",
         "inLanguage": ["pt-BR", "en"],
@@ -63,39 +62,228 @@
   </script>
 </head>
 <body>
-  <div id="loader" aria-hidden="true"><div class="loader-box"><img class="loader-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><strong>GAMEPLAN</strong><p>Loading the coaching experience...</p></div></div>
-  <div class="bg-grid"></div><div class="bg-blur blur-a"></div><div class="bg-blur blur-b"></div><div class="bg-blur blur-c"></div>
+  <div id="loader" aria-hidden="true">
+    <div class="loader-box"><img class="loader-logo" src="assets/images/gameplan-logo.png" alt="" /><strong>GAMEPLAN</strong></div>
+  </div>
 
   <header class="site-header">
-    <a href="#top" class="brand" aria-label="GamePlan home"><img class="brand-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div class="brand-text"><strong>GamePlan</strong><span>Coaching platform</span></div></a>
-    <nav class="nav" aria-label="Main navigation"><a href="#connection">How it works</a><a href="#features">Features</a><a href="#demo">Demo</a><a href="#about">About</a><a href="#pricing">Pricing</a></nav>
-    <div class="header-actions"><div class="language-switcher"><button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇺🇸</span><span class="language-label">EN-US</span><span class="language-caret">▾</span></button><div class="language-menu" id="languageMenu"><a href="index.html" class="language-option"><span class="flag">🇧🇷</span><span>Português (Brasil)</span></a><a href="en.html" class="language-option active"><span class="flag">🇺🇸</span><span>English (US)</span></a></div></div><a class="btn btn-ghost compact-btn" href="https://gameplan-app-zeta.vercel.app/login?lang=en">Log in</a><a class="btn btn-primary compact-btn" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Free trial</a></div>
+    <a href="#top" class="brand" aria-label="GamePlan home">
+      <img class="brand-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" />
+      <strong>GamePlan</strong>
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#process">How it works</a>
+      <a href="#product">Product</a>
+      <a href="#demo">Demo</a>
+      <a href="#about">About</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="header-actions">
+      <div class="language-switcher">
+        <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇺🇸</span><span class="language-label">EN-US</span><span class="language-caret">▾</span></button>
+        <div class="language-menu" id="languageMenu"><a href="index.html" class="language-option"><span class="flag">🇧🇷</span><span>Português (Brasil)</span></a><a href="en.html" class="language-option active"><span class="flag">🇺🇸</span><span>English (US)</span></a></div>
+      </div>
+      <a class="text-link login-link" href="https://gameplan-app-zeta.vercel.app/login?lang=en">Log in</a>
+      <a class="btn btn-primary compact-btn" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Free trial</a>
+    </div>
   </header>
 
   <main id="top">
-    <section class="hero section hero-centered" aria-labelledby="hero-title"><div class="hero-copy reveal"><div class="hero-kicker">Methodology, training and analysis for football coaches</div><h1 id="hero-title">From the model to the pitch.<span>Plan, train and analyze in one place.</span></h1><p class="hero-description">You plan the week, choose the exercises, then come back to the match to see what actually showed up. GamePlan keeps the game model, planning, players and match review in the same thread — without telling you how to coach.</p><div class="hero-actions"><a class="btn btn-primary btn-large" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Try GamePlan for 7 days</a><a class="btn btn-ghost btn-large" href="#demo">Watch demo</a></div></div></section>
+    <section class="hero-editorial dark-section" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <p class="section-code">GAMEPLAN / FOOTBALL COACHING</p>
+          <h1 id="hero-title"><span>YOUR GAME.</span><span>YOUR MODEL.</span><span>YOUR WEEK.</span></h1>
+          <p class="hero-description">Connect what you want to see on the pitch with what you train during the week and what you observe in the match — without handing the decision to the software.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-large" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Try for 7 days</a>
+            <a class="text-link accent-link" href="#demo">Watch demo →</a>
+          </div>
+        </div>
+        <figure class="hero-product reveal">
+          <img src="assets/images/home.png" alt="Real GamePlan product screen" width="1440" height="900" />
+          <figcaption>REAL PRODUCT / GAMEPLAN</figcaption>
+        </figure>
+      </div>
+      <div class="hero-foot" aria-label="GamePlan coaching workflow">
+        <span>GAME MODEL</span><span aria-hidden="true">→</span><span>TRAINING</span><span aria-hidden="true">→</span><span>WEEK</span><span aria-hidden="true">→</span><span>MATCH</span><span aria-hidden="true">→</span><span>REFLECTION</span>
+      </div>
+    </section>
 
-    <section id="connection" class="section connection-section"><div class="section-heading reveal center-block"><div class="eyebrow">How it connects</div><h2>From what you want to see to what actually showed up on the pitch</h2><p>Capture the game idea, carry priorities into exercises and the week, follow your players, then return to the match with context. The thinking stays yours; GamePlan keeps the thread from getting lost.</p></div><div class="connection-board reveal" aria-label="GamePlan connected coaching process: game model, exercises, planning, players, match and reflection"><div class="pitch-markings" aria-hidden="true"><span class="pitch-halfway"></span><span class="pitch-circle"></span><span class="pitch-box pitch-box-left"></span><span class="pitch-box pitch-box-right"></span><span class="pitch-goal pitch-goal-left"></span><span class="pitch-goal pitch-goal-right"></span></div><svg class="connection-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="50" y1="50" x2="18" y2="22"></line><line x1="50" y1="50" x2="82" y2="22"></line><line x1="50" y1="50" x2="18" y2="58"></line><line x1="50" y1="50" x2="82" y2="58"></line><line x1="50" y1="50" x2="50" y2="82"></line><circle cx="50" cy="50" r="1.25"></circle></svg><div class="connection-center glass"><span>Connected process</span><img class="connection-logo" src="assets/images/gameplan-logo.png" alt="GamePlan logo" width="72" height="72" /><strong>GamePlan</strong></div><div class="connection-item item-a glass"><small>01</small><strong>Game model</strong><span>Principles and behaviours that give your game idea a shape.</span></div><div class="connection-item item-b glass"><small>02</small><strong>Exercises</strong><span>Your own tasks, plus GamePlan Library exercises when they fit.</span></div><div class="connection-item item-c glass"><small>03</small><strong>Planning</strong><span>Weekly and monthly objectives and sessions connected to training.</span></div><div class="connection-item item-d glass"><small>04</small><strong>Players</strong><span>Evaluations and observations kept in each player’s context.</span></div><div class="connection-item item-e glass"><small>05</small><strong>Match</strong><span>Actions and evidence you can bring back to the plan.</span></div></div></section>
+    <section id="process" class="process-manifesto light-section" aria-labelledby="process-title">
+      <div class="manifesto-grid reveal">
+        <p class="section-code dark-code">THE PROCESS</p>
+        <h2 id="process-title">AN IDEA DOES NOT END IN THE GAME MODEL.</h2>
+        <p>It has to reach the exercise, shape the week, gain player context and come back from the match as evidence. GamePlan keeps those references close. The coach still reads the game and decides what happens next.</p>
+      </div>
+    </section>
 
-    <section id="features" class="section features-section"><div class="section-heading reveal center-block"><div class="eyebrow">Features</div><h2>The parts of coaching that should stay connected</h2><p>Game model, training, planning, players and match review no longer need to live as separate records. Each module helps you pick the thinking up where you left it.</p></div><div class="features-grid"><article class="feature-card glass reveal"><div class="feature-tag green">Methodology</div><h3>Game Model</h3><p>Record principles, behaviours, positional roles and training references without forcing your idea into a ready-made methodology.</p></article><article class="feature-card glass reveal"><div class="feature-tag blue">Planning</div><h3>Weekly and monthly planning</h3><p>Build weeks and months around objectives, sessions and exercises connected to what you want to train.</p></article><article class="feature-card glass reveal"><div class="feature-tag purple">Training</div><h3>Exercise database</h3><p>Create your own tasks and reuse GamePlan Library exercises when they fit your work.</p></article><article class="feature-card glass reveal"><div class="feature-tag orange">Players</div><h3>Individual development</h3><p>Keep player evaluations and observations together and follow that history across the season.</p></article><article class="feature-card glass reveal"><div class="feature-tag cyan">Learning</div><h3>Tactical test</h3><p>Use tactical situations to look at game reading, decision-making and understanding of the principles you work on.</p></article><article class="feature-card glass reveal"><div class="feature-tag pink">Match</div><h3>Match statistics</h3><p>Record match actions and return to the plan to compare what was trained with what actually showed up on the pitch.</p></article></div></section>
+    <div id="product" class="product-story">
+      <section class="story-step light-section" data-flow-step="01" aria-labelledby="model-title">
+        <div class="story-grid reveal">
+          <div class="story-copy">
+            <p class="step-number">01 / GAME MODEL</p>
+            <h2 id="model-title">DEFINE WHAT YOU WANT TO SEE.</h2>
+            <p>Record principles and observable behaviours using your own language. GamePlan organises the idea without forcing you into a ready-made methodology.</p>
+            <p class="step-footnote">The reference you create here can follow training, planning and match review.</p>
+          </div>
+          <figure class="product-shot product-shot-light">
+            <img src="assets/images/home.png" alt="Real GamePlan interface used as product reference" loading="lazy" width="1440" height="900" />
+            <figcaption>ONE REFERENCE FOR THE REST OF THE WEEK</figcaption>
+          </figure>
+        </div>
+      </section>
 
-    <section id="demo" class="section demo-section"><div class="section-heading reveal center-block"><div class="eyebrow">Demo</div><h2>See the flow inside GamePlan</h2><p>A quick look at how the game model, exercises, planning and match review can stay part of the same coaching process.</p></div><div class="demo-shell glass reveal"><div class="video-frame"><video controls preload="metadata" playsinline poster="assets/images/gameplan-logo.png" aria-label="GamePlan demo in English"><source src="assets/videos/gameplan-demo-en.mp4" type="video/mp4" />Your browser could not load the demo video.</video></div><div class="demo-copy"><h3>The thinking carries from one screen to the next</h3><p>See how an idea recorded in the game model can move into training, shape the week and come back in the match review.</p><a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Start 7-day free trial</a></div></div></section>
+      <section class="story-step dark-section" data-flow-step="02" aria-labelledby="training-title">
+        <div class="story-grid story-grid-reverse reveal">
+          <figure class="product-shot product-shot-dark">
+            <img src="assets/images/criacao-de-treino.png" alt="Real GamePlan exercise creation screen" loading="lazy" width="1440" height="900" />
+            <figcaption>EXERCISE / TRAINING ORGANISATION</figcaption>
+          </figure>
+          <div class="story-copy">
+            <p class="step-number">02 / TRAINING</p>
+            <h2 id="training-title">TAKE THE IDEA TO THE PITCH.</h2>
+            <p>Create your own task or start from a GamePlan Library exercise. Link what you want to observe without turning a suggestion into a fact.</p>
+            <p class="step-footnote">Training Method and Activity Organisation remain separate.</p>
+          </div>
+        </div>
+      </section>
 
-    <section id="about" class="section about-section"><div class="about-grid"><div class="founder-card glass reveal"><div class="founder-photo"><img src="assets/images/renan-founder-updated.png" alt="Renan Moniz, founder of GamePlan" width="1122" height="1402" /></div><div class="founder-card-body"><span>Founder of GamePlan</span><h3>Renan Moniz</h3></div></div><div class="about-copy reveal"><div class="eyebrow">About GamePlan</div><h2>GamePlan started because too much of a coach’s work was living in different places.</h2><p>The idea came from a problem I kept running into in my own work: one part of the thinking lived in the game model, another in the weekly plan, another in training notes and another in the match review. Coming back to it later meant rebuilding the context.</p><p>My relationship with football began with my grandfather, Adão, an amateur coach. He taught me early to look at the game through intelligence, cooperation and purpose. I started coaching in the United States in 2017 and have since worked across different clubs, countries and football cultures before arriving in the Netherlands.</p><p>The same question kept coming back: did what we worked on during the week actually show up in the match? And if it didn’t, where should that observation live so it can shape the next week? That need is where GamePlan started to take shape.</p><p>GamePlan brings the game model, exercises, planning, players and match analysis into one environment. It gives the process structure without choosing the methodology or making the technical decision. That stays <strong>with the coach</strong>.</p></div></div></section>
+      <section class="story-step light-section week-section" data-flow-step="03" aria-labelledby="week-title">
+        <div class="story-grid reveal">
+          <div class="story-copy">
+            <p class="step-number">03 / PLANNING</p>
+            <h2 id="week-title">BUILD THE WEEK WITH INTENTION.</h2>
+            <p>Bring objectives and exercises into the week and keep the reason for each session visible. Adjustments remain coaching decisions.</p>
+          </div>
+          <div class="week-editorial" aria-label="Editorial representation of a coaching week">
+            <div><span>MON</span><strong>IDEA</strong></div>
+            <div><span>TUE</span><strong>SESSION</strong></div>
+            <div><span>WED</span><strong>ADJUST</strong></div>
+            <div><span>THU</span><strong>SESSION</strong></div>
+            <div><span>FRI</span><strong>MATCH</strong></div>
+          </div>
+        </div>
+      </section>
 
-    <section id="timeline" class="section timeline-section"><div class="section-heading reveal center-block"><div class="eyebrow">Journey</div><h2>Experience built on the pitch</h2><p>Practical experience across different football cultures and environments.</p></div><div class="timeline reveal"><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/tetrabrazil.png" alt="TetraBrazil"></div><div class="timeline-dot"></div><div class="club-info"><h4>TetraBrazil</h4><span>USA</span><small>2017–2019</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/psgacademy.png" alt="PSG Academy"></div><div class="timeline-dot"></div><div class="club-info"><h4>PSG Academy</h4><span>Brazil</span><small>2020</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/boavista.png" alt="Boavista"></div><div class="timeline-dot"></div><div class="club-info"><h4>Boavista</h4><span>Portugal</span><small>2021</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/fcdafoz.png" alt="FC da Foz"></div><div class="timeline-dot"></div><div class="club-info"><h4>FC da Foz</h4><span>Portugal</span><small>2022</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/pantherforce.png" alt="Panther Force"></div><div class="timeline-dot"></div><div class="club-info"><h4>Panther Force</h4><span>Portugal</span><small>2023</small></div></div><div class="timeline-item"><div class="club-logo"><img src="assets/images/clubs/koninklijkehfc.png" alt="Koninklijke HFC"></div><div class="timeline-dot"></div><div class="club-info"><h4>Koninklijke HFC</h4><span>Netherlands</span><small>2024–2025</small></div></div><div class="timeline-item timeline-item-current"><div class="club-logo gameplan-mark"><img src="assets/images/gameplan-logo.png" alt="GamePlan"></div><div class="timeline-dot"></div><div class="club-info"><h4>GamePlan</h4><span>Founder</span><small>2026</small></div></div></div></section>
+      <section class="story-step dark-section observe-section" aria-labelledby="observe-title">
+        <div class="observe-grid reveal">
+          <div class="story-copy" data-flow-step="04">
+            <p class="step-number">04 / PLAYERS</p>
+            <h2 id="observe-title">KEEP THE CONTEXT. NOT A RANKING.</h2>
+            <p>Observations, development, Tactical Test and attendance help reconstruct each player's context. None of those records, on its own, proves development.</p>
+          </div>
+          <div class="story-copy" data-flow-step="05">
+            <p class="step-number">05 / MATCH</p>
+            <h2>SEE WHAT ACTUALLY SHOWED UP.</h2>
+            <p>Record match actions and observations, then return to the same references used in planning. Recorded data and the coach's interpretation remain different things.</p>
+          </div>
+        </div>
+        <figure class="match-shot reveal">
+          <img src="assets/images/estatistica-da-partida.png" alt="Real GamePlan match statistics screen" loading="lazy" width="1440" height="900" />
+          <figcaption>MATCH / EVIDENCE FOR REVIEW</figcaption>
+        </figure>
+      </section>
 
-    <section id="pricing" class="section pricing-section"><div class="section-heading reveal center-block"><div class="eyebrow">Pricing</div><h2>Try the full GamePlan for 7 days. Then choose your plan.</h2><p>Use the trial with a real week of your own work and see whether the flow fits the way you coach.</p></div><div class="pricing-cards"><article class="price-card glass reveal"><div class="plan-label">Starter</div><h3>€9.99 <span>/ month</span></h3><p>For keeping exercises, planning and your squad together without spreading the routine across different tools.</p><ul><li>Weekly planning</li><li>Monthly planning</li><li>Your own exercises</li><li>Player registration</li><li>Attendance</li></ul><a class="btn btn-ghost" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Start 7-day free trial</a></article><article class="price-card price-card-featured glass reveal"><div class="recommended-badge">Recommended</div><div class="plan-label">Pro</div><h3>€19.99 <span>/ month</span></h3><p>For connecting your game model, training, players and match review in one process.</p><ul><li>Everything in Starter</li><li>Game Model &amp; Methodology</li><li>GamePlan Library</li><li>Player Development</li><li>Tactical Test</li><li>Match Statistics</li><li>Virtual Assistant Coach</li></ul><a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Start 7-day free trial</a></article></div><p class="pricing-note reveal">The 7-day trial gives new users access to the full GamePlan experience. After that, choose Starter or Pro to continue.</p></section>
+      <section class="return-section" data-flow-step="06" aria-labelledby="return-title">
+        <div class="return-copy reveal">
+          <p class="step-number">06 / REFLECTION</p>
+          <h2 id="return-title">BRING THE MATCH BACK TO THE NEXT DECISION.</h2>
+          <p>Evidence can return to the game model, the player or the next week. GamePlan keeps its origin visible. You decide whether to keep, adjust or investigate further.</p>
+        </div>
+        <div class="return-loop" aria-label="GamePlan reflection loop"><b>MODEL</b><span>→</span><b>TRAINING</b><span>→</span><b>WEEK</b><span>→</span><b>MATCH</b><span>→</span><b>REFLECTION</b><span>→</span><b>NEXT DECISION</b></div>
+      </section>
 
-    <section id="feedback" class="section cta-section"><div class="cta-box glass reveal"><div class="cta-copy"><div class="eyebrow">Try it with your work</div><h2>Bring a real coaching week into GamePlan.</h2><p>Build the week, use your own exercises and see whether the flow fits the way you work. You have 7 days to try it before choosing a plan.</p></div><div class="cta-actions"><a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Try GamePlan for 7 days</a></div></div></section>
+      <section class="module-index light-section" aria-labelledby="modules-title">
+        <div class="module-index-head reveal">
+          <p class="section-code dark-code">INSIDE GAMEPLAN</p>
+          <h2 id="modules-title">ONE PRODUCT. SIX PARTS OF THE SAME WORK.</h2>
+        </div>
+        <div class="module-list reveal">
+          <div><span>01</span><strong>Game Model</strong><p>Principles, behaviours and references from your own model.</p></div>
+          <div><span>02</span><strong>Planning</strong><p>Weeks and months built from what you want to train.</p></div>
+          <div><span>03</span><strong>Exercises</strong><p>Your own tasks plus GamePlan Library exercises to clone and adapt.</p></div>
+          <div><span>04</span><strong>Players</strong><p>Observations and individual history kept in context.</p></div>
+          <div><span>05</span><strong>Tactical Test</strong><p>Situations for observing game reading and decisions without automating conclusions.</p></div>
+          <div><span>06</span><strong>Match</strong><p>Actions and evidence you can bring back to the plan.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <section id="demo" class="demo-editorial dark-section" aria-labelledby="demo-title">
+      <div class="demo-heading reveal">
+        <p class="section-code">DEMO</p>
+        <h2 id="demo-title">SEE THE FLOW INSIDE THE PRODUCT.</h2>
+        <p>A quick look through GamePlan using the actual product screens — no fictional mockup.</p>
+      </div>
+      <div class="demo-stage reveal">
+        <video controls preload="metadata" playsinline poster="assets/images/home.png" aria-label="GamePlan demo in English">
+          <source src="assets/videos/gameplan-demo-en.mp4" type="video/mp4" />
+          Your browser could not load the demo video.
+        </video>
+      </div>
+    </section>
+
+    <section id="about" class="founder-editorial light-section" aria-labelledby="about-title">
+      <figure class="founder-image reveal"><img src="assets/images/renan-founder-updated.png" alt="Renan Moniz, founder of GamePlan" loading="lazy" width="1122" height="1402" /></figure>
+      <div class="founder-copy reveal">
+        <p class="section-code dark-code">WHY GAMEPLAN EXISTS</p>
+        <h2 id="about-title">THE WORK WAS SPREAD ACROSS TOO MANY PLACES.</h2>
+        <p>My relationship with football began with my grandfather, Adão, an amateur coach. I started coaching in the United States in 2017 and later worked across different clubs and football environments before moving to the Netherlands.</p>
+        <p>In practice, the game model, weekly plan, training notes and match review lived in different places. Returning to a decision meant rebuilding the context around it.</p>
+        <p>GamePlan started as a way to keep that process connected. The platform organises the references; the methodology, reading of the game and technical decisions stay with the coach.</p>
+        <p class="founder-sign">RENAN MONIZ / FOUNDER</p>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing-editorial dark-section" aria-labelledby="pricing-title">
+      <div class="pricing-heading reveal">
+        <p class="section-code">PRICING</p>
+        <h2 id="pricing-title">TEST A REAL WEEK BEFORE YOU CHOOSE.</h2>
+        <p>Use the 7-day trial to bring your own planning into the product. Then choose the plan that matches what you actually use.</p>
+      </div>
+      <div class="pricing-table reveal">
+        <article class="price-column">
+          <div class="price-topline"><span>STARTER</span><strong>€9.99 <small>/ month</small></strong></div>
+          <p>For keeping exercises, planning and your squad together without spreading the routine across different tools.</p>
+          <ul><li>Weekly planning</li><li>Monthly planning</li><li>Your own exercises</li><li>Player registration</li><li>Attendance</li></ul>
+          <a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Start 7-day trial</a>
+        </article>
+        <article class="price-column">
+          <div class="price-topline"><span>PRO</span><strong>€19.99 <small>/ month</small></strong></div>
+          <p>For connecting your game model, training, players and match review in one process.</p>
+          <ul><li>Everything in Starter</li><li>Game Model &amp; Methodology</li><li>GamePlan Library</li><li>Player development</li><li>Tactical test</li><li>Match statistics</li><li>Virtual Assistant Coach</li></ul>
+          <a class="btn btn-primary" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Start 7-day trial</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="feedback" class="final-cta" aria-labelledby="final-cta-title">
+      <div class="final-cta-inner reveal">
+        <p class="section-code dark-code">START WITH YOUR OWN WORK</p>
+        <h2 id="final-cta-title">BRING A REAL WEEK INTO GAMEPLAN.</h2>
+        <p>Plan from your principles, use your exercises and see whether the flow fits the way you coach.</p>
+        <a class="btn btn-dark btn-large" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Try for 7 days</a>
+      </div>
+    </section>
   </main>
 
-  <a class="floating-whatsapp" href="https://wa.me/31643759823" target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.62 2 2.2 6.41 2.2 11.84c0 1.74.46 3.45 1.32 4.95L2 22l5.37-1.41a9.82 9.82 0 0 0 4.67 1.19h.01c5.42 0 9.84-4.41 9.84-9.84 0-2.63-1.02-5.09-2.84-6.99ZM12.05 20.1h-.01a8.15 8.15 0 0 1-4.15-1.14l-.3-.18-3.19.84.85-3.11-.2-.32a8.13 8.13 0 0 1-1.25-4.35c0-4.51 3.67-8.18 8.19-8.18 2.18 0 4.22.85 5.76 2.4a8.12 8.12 0 0 1 2.39 5.78c0 4.51-3.67 8.18-8.19 8.18Zm4.49-6.11c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.55.12-.16.24-.63.77-.77.93-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.43-1.35-1.67-.14-.24-.01-.37.1-.49.11-.11.24-.29.37-.43.12-.14.16-.24.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.31-.75-1.79-.2-.47-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.39.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.13.2-.55.2-1.02.14-1.13-.06-.1-.22-.16-.46-.28Z" /></svg></a>
-  <footer class="site-footer"><div class="footer-brand"><img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><div><strong>GamePlan</strong><span>Coaching platform</span></div></div><div class="footer-links"><a href="privacy-en.html">Privacy</a><a href="terms-en.html">Terms</a><a href="mailto:vmonizperformance@gmail.com?subject=GamePlan%20Contact">Contact</a></div></footer>
+  <footer class="site-footer">
+    <div class="footer-brand"><img class="brand-logo small" src="assets/images/gameplan-logo.png" alt="GamePlan logo" /><strong>GamePlan</strong></div>
+    <div class="footer-links" aria-label="GamePlan links">
+      <a href="https://www.instagram.com/the.gameplan.app/" target="_blank" rel="noreferrer">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=1363322276857518" target="_blank" rel="noreferrer">Facebook</a>
+      <a href="https://www.linkedin.com/company/146358073/" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://x.com/gameplantheapp" target="_blank" rel="noreferrer">X</a>
+      <a href="https://wa.me/31643759823" target="_blank" rel="noreferrer">WhatsApp</a>
+      <a href="privacy-en.html">Privacy</a>
+      <a href="terms-en.html">Terms</a>
+      <a href="mailto:vmonizperformance@gmail.com?subject=GamePlan%20contact">Contact</a>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
   <script src="phase12-lead-capture.js"></script>
-  <script src="landing-latest-connection.js"></script>
-  <script src="landing-final-polish.js"></script>
-  <script src="phase13-landing-refinement.js"></script>
+  <script src="phase13-editorial-redesign.js"></script>
 </body>
 </html>

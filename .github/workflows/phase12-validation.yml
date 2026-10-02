@@ -18,10 +18,10 @@ on:
       - 'privacy-en.html'
       - 'scripts/phase12-validation.mjs'
       - 'scripts/phase12-scroll-stability.mjs'
+      - 'scripts/phase13-editorial-a11y.mjs'
       - 'scripts/build-preview.mjs'
-      - 'landing-final-polish.css'
-      - 'landing-final-polish.js'
-      - 'phase12-scroll-compositor.css'
+      - 'phase13-editorial-redesign.css'
+      - 'phase13-editorial-redesign.js'
       - 'phase13-landing-refinement.js'
       - 'scripts/phase13-landing-refinement-validation.mjs'
       - 'scripts/phase12-static-validation.mjs'
@@ -57,7 +57,7 @@ jobs:
       - name: Validate static contracts
         run: npm run test:phase12:static
 
-      - name: Validate Phase 13 landing refinement contracts
+      - name: Validate Phase 13 editorial landing contracts
         run: node scripts/phase13-landing-refinement-validation.mjs
 
       - name: Start isolated landing server
@@ -75,7 +75,12 @@ jobs:
           BASE_URL: http://127.0.0.1:4173
         run: npm run test:phase12
 
-      - name: Validate continuous scroll compositor paint
+      - name: Validate editorial landing accessibility
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/phase13-editorial-a11y.mjs
+
+      - name: Validate continuous editorial scroll paint
         env:
           BASE_URL: http://127.0.0.1:4173
         run: node scripts/phase12-scroll-stability.mjs

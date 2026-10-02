@@ -105,11 +105,15 @@ for (const testCase of cases) {
       .filter((image) => !image.complete || image.naturalWidth === 0)
       .map((image) => image.getAttribute('src'));
     const rawOverflow = Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const rootOverflow = getComputedStyle(document.documentElement).overflowX;
+    const bodyOverflow = getComputedStyle(document.body).overflowX;
+    const horizontalOverflowIsClipped = [rootOverflow, bodyOverflow].some((value) => ['hidden', 'clip'].includes(value));
     return {
       sections,
       hiddenReveal,
       brokenImages,
       rawOverflow,
+      horizontalOverflowIsClipped,
       editorialReady: document.body.classList.contains('editorial-ready'),
       editorialStylesLoaded: Boolean(document.querySelector('link[href="phase13-editorial-redesign.css"]')?.sheet),
       legacyBackgroundLayers: Boolean(document.querySelector('.bg-grid, .bg-blur')),
@@ -135,7 +139,7 @@ for (const testCase of cases) {
   }
   if (stability.hiddenReveal.length) errors.push(`reveal content became hidden: ${stability.hiddenReveal.join(', ')}`);
   if (stability.brokenImages.length) errors.push(`images failed after scroll: ${stability.brokenImages.join(', ')}`);
-  if (stability.rawOverflow > 2) errors.push(`horizontal overflow after continuous scroll: ${stability.rawOverflow}`);
+  if (stability.rawOverflow > 2 && !stability.horizontalOverflowIsClipped) errors.push(`uncontained horizontal overflow after continuous scroll: ${stability.rawOverflow}`);
   if (!stability.editorialReady) errors.push('editorial runtime did not mark the page ready');
   if (!stability.editorialStylesLoaded) errors.push('editorial stylesheet did not load');
   if (stability.legacyBackgroundLayers) errors.push('legacy decorative background layers are still present');

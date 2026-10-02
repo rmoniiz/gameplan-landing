@@ -43,8 +43,14 @@ for (const testCase of cases) {
   const serious = (await new AxeBuilder({ page }).analyze())
     .violations
     .filter((violation) => ['serious', 'critical'].includes(violation.impact || ''))
-    .map((violation) => `${violation.id} (${violation.nodes.length})`);
-  if (serious.length) failures.push(`${testCase.path} ${testCase.width}px: axe ${serious.join(', ')}`);
+    .map((violation) => ({
+      id: violation.id,
+      nodes: violation.nodes.map((node) => ({
+        target: node.target.join(' '),
+        summary: node.failureSummary || '',
+      })),
+    }));
+  if (serious.length) failures.push(`${testCase.path} ${testCase.width}px: axe ${JSON.stringify(serious)}`);
 
   const layout = await page.evaluate(() => {
     const rawOverflow = Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth);

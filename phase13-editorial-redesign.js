@@ -4,12 +4,15 @@
   const stylesheet = document.querySelector('link[href="phase13-editorial-redesign.css"]');
   if (stylesheet) document.head.appendChild(stylesheet);
 
-  if (!document.querySelector('link[href="phase13-editorial-a11y.css"]')) {
-    const a11yStylesheet = document.createElement('link');
-    a11yStylesheet.rel = 'stylesheet';
-    a11yStylesheet.href = 'phase13-editorial-a11y.css';
-    document.head.appendChild(a11yStylesheet);
-  }
+  const accessibilityStyles = document.createElement('style');
+  accessibilityStyles.setAttribute('data-gameplan-editorial-a11y', 'true');
+  accessibilityStyles.textContent = [
+    '.light-section .step-number{color:#0b745a!important}',
+    '.product-shot-light figcaption{color:#606a6f!important}',
+    '.lead-field input::placeholder{color:#606a6f!important}',
+    '.final-cta .dark-code{color:#06362a!important}',
+  ].join('');
+  document.head.appendChild(accessibilityStyles);
 
   document.querySelectorAll('.hero-foot, .return-loop').forEach((region) => {
     if (!region.hasAttribute('tabindex')) region.setAttribute('tabindex', '0');

@@ -221,15 +221,17 @@ async function runChecklistCase({ name, path, width, height, lang, expectedTrial
 async function runStaticContractChecks() {
   const name = 'static-contract';
   const errors = [];
-  const [script, pt, en, privacyPt, privacyEn] = await Promise.all([
+  const [script, pt, en, privacyPt, privacyEn, editorialCss, editorialJs] = await Promise.all([
     fs.readFile('phase12-lead-capture.js', 'utf8'),
     fs.readFile('index.html', 'utf8'),
     fs.readFile('en.html', 'utf8'),
     fs.readFile('privacy.html', 'utf8'),
     fs.readFile('privacy-en.html', 'utf8'),
+    fs.readFile('phase13-editorial-redesign.css', 'utf8'),
+    fs.readFile('phase13-editorial-redesign.js', 'utf8'),
   ]);
 
-  if (/supabase\.co|capture-marketing-lead/.test(script)) errors.push('a live Supabase endpoint is embedded in frontend code');
+  if (/https:\/\/[^'"`\s]*supabase\.co/.test(script)) errors.push('a live Supabase endpoint is embedded in frontend code');
   if (!script.includes("enabled: runtimeConfig.enabled === true")) errors.push('runtime endpoint gate is missing');
   for (const eventName of expectedEvents) {
     if (!script.includes(eventName)) errors.push(`event contract missing: ${eventName}`);
@@ -237,12 +239,19 @@ async function runStaticContractChecks() {
   for (const [label, html] of [['pt', pt], ['en', en]]) {
     if ((html.match(/phase12-lead-capture\.css/g) || []).length !== 1) errors.push(`${label}: Phase 12 stylesheet must appear once`);
     if ((html.match(/phase12-lead-capture\.js/g) || []).length !== 1) errors.push(`${label}: Phase 12 script must appear once`);
-    for (const selector of ['id="connection"', 'id="features"', 'id="demo"', 'id="pricing"', 'id="about"', 'id="timeline"', 'id="feedback"']) {
-      if (!html.includes(selector)) errors.push(`${label}: preserved landing section missing ${selector}`);
+    if ((html.match(/phase13-editorial-redesign\.css/g) || []).length !== 1) errors.push(`${label}: editorial stylesheet must appear once`);
+    if ((html.match(/phase13-editorial-redesign\.js/g) || []).length !== 1) errors.push(`${label}: editorial runtime must appear once`);
+    for (const selector of ['id="process"', 'id="product"', 'id="demo"', 'id="pricing"', 'id="about"', 'id="feedback"']) {
+      if (!html.includes(selector)) errors.push(`${label}: editorial landing section missing ${selector}`);
     }
+    if (/id="connection"|id="features"|features-grid|connection-board/.test(html)) errors.push(`${label}: old SaaS card architecture is still present`);
+    if (/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html)) errors.push(`${label}: legacy landing runtime is still loaded`);
   }
   if (!privacyPt.includes('Solicitação de materiais gratuitos')) errors.push('PT-BR privacy disclosure for the free resource is missing');
   if (!privacyEn.includes('Free-resource requests')) errors.push('English privacy disclosure for the free resource is missing');
+  if (!editorialCss.includes('@media(prefers-reduced-motion:reduce)')) errors.push('editorial reduced-motion contract is missing');
+  if (/linear-gradient|radial-gradient|conic-gradient/i.test(editorialCss)) errors.push('editorial CSS contains a decorative gradient');
+  if (!editorialJs.includes("document.querySelectorAll('[data-flow-step]')")) errors.push('editorial flow observer is missing');
 
   report.cases.push({ name, errors });
   errors.forEach((error) => recordFailure(name, error));

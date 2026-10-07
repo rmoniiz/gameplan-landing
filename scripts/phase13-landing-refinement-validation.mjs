@@ -30,7 +30,7 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: six flow steps`, (html.match(/data-flow-step=/g) || []).length === 6);
   check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
   check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
-  check(`${label}: current library video cover`, html.includes('poster="assets/images/exercise-146-pt-desktop.webp"'));
+  check(`${label}: branded video cover`, html.includes('poster="assets/images/gameplan-video-poster.svg"') && existsSync('assets/images/gameplan-video-poster.svg'));
   check(`${label}: seven-day week with weekend match`, language === 'pt-BR' ? html.includes('<span>DOM</span><strong>JOGO</strong>') : html.includes('<span>SUN</span><strong>MATCH</strong>'));
   check(`${label}: concrete process example`, html.includes('class="process-example reveal"'));
   check(`${label}: correct demo video`, html.includes(demoVideo));

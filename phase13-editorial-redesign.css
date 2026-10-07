@@ -370,3 +370,22 @@ section[id]{scroll-margin-top:calc(var(--header) + 20px)}
   .lead-magnet-copy h2{font-size:2rem!important;line-height:1.08!important}
   .btn{max-width:100%;white-space:normal;text-align:center}
 }
+
+/* Renan review: concrete process, weekend match and simpler brand mark. */
+.brand strong{font-family:var(--display);font-size:1.6rem;letter-spacing:.015em}
+.brand-logo{width:38px;height:38px}
+.process-example{width:min(var(--max),100%);margin:36px auto 0;border-top:2px solid var(--ink)}
+.example-label{font-size:.7rem;font-weight:800;letter-spacing:.12em;color:#0b745a;margin:20px 0}
+.process-example dl{margin:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px}
+.process-example dl>div{min-width:0;border-top:1px solid var(--line-light);padding-top:16px}
+.process-example dt{font-size:.72rem;font-weight:800;letter-spacing:.04em}
+.process-example dd{margin:10px 0 0;font-size:.92rem;line-height:1.65;color:var(--muted-dark)}
+.example-note,.week-note{font-size:.85rem;line-height:1.65;color:var(--muted-dark)}
+.example-note{margin-top:24px}
+.week-note{width:min(var(--max),100%);margin:22px auto 0}
+.week-editorial{grid-template-columns:repeat(7,minmax(0,1fr))}
+.week-editorial div{padding:18px 8px;min-height:160px}
+.week-editorial strong{font-size:clamp(.85rem,1.4vw,1.4rem);line-height:1.1;overflow-wrap:normal}
+.week-editorial div:last-child strong{color:#0b745a}
+@media(max-width:1080px){.process-example dl{grid-template-columns:1fr 1fr}.week-editorial strong{font-size:1.25rem}}
+@media(max-width:760px){.process-example dl{grid-template-columns:1fr;gap:14px}.process-example dl>div{display:grid;grid-template-columns:110px 1fr;gap:16px}.process-example dd{margin:0}.week-editorial{grid-template-columns:1fr}.week-editorial div{min-height:0;padding:14px 0}.week-editorial strong{font-size:1.5rem}}

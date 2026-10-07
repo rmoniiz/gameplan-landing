@@ -28,7 +28,11 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: legacy landing runtimes removed`, !/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html));
   check(`${label}: old SaaS feature grid removed`, !/features-grid|feature-card|connection-board|bg-blur|bg-grid/.test(html));
   check(`${label}: six flow steps`, (html.match(/data-flow-step=/g) || []).length === 6);
-  check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/estatistica-da-partida.png', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
+  check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
+  check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
+  check(`${label}: current library video cover`, html.includes('poster="assets/images/exercise-146-pt-desktop.webp"'));
+  check(`${label}: seven-day week with weekend match`, language === 'pt-BR' ? html.includes('<span>DOM</span><strong>JOGO</strong>') : html.includes('<span>SUN</span><strong>MATCH</strong>'));
+  check(`${label}: concrete process example`, html.includes('class="process-example reveal"'));
   check(`${label}: correct demo video`, html.includes(demoVideo));
   check(`${label}: hero copy`, heroLines.every((line) => html.includes(line)));
   check(`${label}: attendance remains context`, html.includes(attendanceText));

@@ -80,7 +80,7 @@
     </nav>
     <div class="header-actions">
       <div class="language-switcher">
-        <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇺🇸</span><span class="language-label">EN-US</span><span class="language-caret">▾</span></button>
+        <button class="language-button" id="languageButton" aria-label="Choose language" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇺🇸</span><span class="language-label">EN-US</span><span class="language-caret">▾</span></button>
         <div class="language-menu" id="languageMenu"><a href="index.html" class="language-option"><span class="flag">🇧🇷</span><span>Português (Brasil)</span></a><a href="en.html" class="language-option active"><span class="flag">🇺🇸</span><span>English (US)</span></a></div>
       </div>
       <a class="text-link login-link" href="https://gameplan-app-zeta.vercel.app/login?lang=en">Log in</a>
@@ -93,17 +93,17 @@
       <div class="hero-grid">
         <div class="hero-copy reveal">
           <p class="section-code">GAMEPLAN / FOOTBALL COACHING</p>
-          <h1 id="hero-title"><span>YOUR GAME.</span><span>YOUR MODEL.</span><span>YOUR WEEK.</span></h1>
-          <p class="hero-description">Connect what you want to see on the pitch with what you train during the week and what you observe in the match — without handing the decision to the software.</p>
+          <h1 id="hero-title"><span>PLAN TRAINING AROUND</span><span>WHAT YOU WANT TO</span><span>OBSERVE ON THE PITCH.</span></h1>
+          <p class="hero-description">Find a task by its game problem, review how it works and decide how to use it in your coaching.</p>
           <div class="hero-actions">
             <a class="btn btn-primary btn-large" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=en">Try for 7 days</a>
             <a class="text-link accent-link" href="#demo">Watch demo →</a>
           </div>
         </div>
-        <figure class="hero-product reveal">
-          <img src="assets/images/home.png" alt="Real GamePlan product screen" width="1440" height="900" />
-          <figcaption>REAL PRODUCT / GAMEPLAN</figcaption>
-        </figure>
+        <figure class="hero-product reveal"><picture>
+            <source media="(max-width:760px)" srcset="assets/images/exercise-146-pt-diagram.webp" />
+            <img src="assets/images/exercise-146-pt-desktop.webp" alt="Public 2v1 counter-attack exercise in Portuguese, showing its objective and tactical diagram in Preview" width="1425" height="891" fetchpriority="high" />
+          </picture><figcaption>PUBLIC LIBRARY / PREVIEW · INTERFACE IN PORTUGUESE</figcaption></figure>
       </div>
       <div class="hero-foot" aria-label="GamePlan coaching workflow">
         <span>GAME MODEL</span><span aria-hidden="true">→</span><span>TRAINING</span><span aria-hidden="true">→</span><span>WEEK</span><span aria-hidden="true">→</span><span>MATCH</span><span aria-hidden="true">→</span><span>REFLECTION</span>
@@ -114,7 +114,7 @@
       <div class="manifesto-grid reveal">
         <p class="section-code dark-code">THE PROCESS</p>
         <h2 id="process-title">AN IDEA DOES NOT END IN THE GAME MODEL.</h2>
-        <p>It has to reach the exercise, shape the week, gain player context and come back from the match as evidence. GamePlan keeps those references close. The coach still reads the game and decides what happens next.</p>
+        <p>Principles, behaviours, tasks and review give continuity to your work. Use the GamePlan areas to record your references. You choose the relationships and interpret what happens on the pitch.</p>
       </div>
     </section>
 
@@ -125,29 +125,44 @@
             <p class="step-number">01 / GAME MODEL</p>
             <h2 id="model-title">DEFINE WHAT YOU WANT TO SEE.</h2>
             <p>Record principles and observable behaviours using your own language. GamePlan organises the idea without forcing you into a ready-made methodology.</p>
-            <p class="step-footnote">The reference you create here can follow training, planning and match review.</p>
+            <p class="step-footnote">Start from your own reference. Connections and decisions depend on the context of your work.</p>
           </div>
-          <figure class="product-shot product-shot-light">
-            <img src="assets/images/home.png" alt="Real GamePlan interface used as product reference" loading="lazy" width="1440" height="900" />
-            <figcaption>ONE REFERENCE FOR THE REST OF THE WEEK</figcaption>
-          </figure>
+          <dl class="reference-guide" aria-label="Questions for your game model">
+            <div><dt>PRINCIPLE</dt><dd>What do you want the team to do?</dd></div>
+            <div><dt>BEHAVIOUR</dt><dd>What will you look for on the pitch?</dd></div>
+            <div><dt>TRAINING</dt><dd>Which task gives players that problem?</dd></div>
+          </dl>
         </div>
       </section>
 
       <section class="story-step dark-section" data-flow-step="02" aria-labelledby="training-title">
         <div class="story-grid story-grid-reverse reveal">
-          <figure class="product-shot product-shot-dark">
-            <img src="assets/images/criacao-de-treino.png" alt="Real GamePlan exercise creation screen" loading="lazy" width="1440" height="900" />
-            <figcaption>EXERCISE / TRAINING ORGANISATION</figcaption>
-          </figure>
+          <figure class="product-shot product-shot-dark"><picture>
+            <source media="(max-width:760px)" srcset="assets/images/exercise-146-pt-mobile.webp" />
+            <img src="assets/images/exercise-146-pt-desktop.webp" alt="Public 2v1 counter-attack exercise in Portuguese, showing its objective and tactical diagram in Preview" loading="lazy" width="1425" height="891" />
+          </picture><figcaption>PUBLIC LIBRARY / PREVIEW · INTERFACE IN PORTUGUESE</figcaption></figure>
           <div class="story-copy">
             <p class="step-number">02 / TRAINING</p>
-            <h2 id="training-title">TAKE THE IDEA TO THE PITCH.</h2>
-            <p>Create your own task or start from a GamePlan Library exercise. Link what you want to observe without turning a suggestion into a fact.</p>
+            <h2 id="training-title">CHOOSE BY THE GAME PROBLEM.</h2>
+            <p>In this 2v1, the supporting player looks to move outside the defender’s field of vision. Read the objective, organisation and options before deciding how to use the task.</p>
             <p class="step-footnote">Training Method and Activity Organisation remain separate.</p>
           </div>
         </div>
       </section>
+
+    <section id="demo" class="demo-editorial dark-section" aria-labelledby="demo-title">
+      <div class="demo-heading reveal">
+        <p class="section-code">DEMO</p>
+        <h2 id="demo-title">SEE THE FLOW INSIDE THE PRODUCT.</h2>
+        <p>A recorded tour of the GamePlan areas. The recording may show an earlier version of the interface.</p>
+      </div>
+      <div class="demo-stage reveal">
+        <video controls preload="metadata" playsinline poster="assets/images/home.png" aria-label="GamePlan demo in English">
+          <source src="assets/videos/gameplan-demo-en.mp4" type="video/mp4" />
+          Your browser could not load the demo video.
+        </video>
+      </div>
+    </section>
 
       <section class="story-step light-section week-section" data-flow-step="03" aria-labelledby="week-title">
         <div class="story-grid reveal">
@@ -180,8 +195,8 @@
           </div>
         </div>
         <figure class="match-shot reveal">
-          <img src="assets/images/estatistica-da-partida.png" alt="Real GamePlan match statistics screen" loading="lazy" width="1440" height="900" />
-          <figcaption>MATCH / EVIDENCE FOR REVIEW</figcaption>
+          <img src="assets/images/estatistica-da-partida.png" alt="GamePlan statistics screen from the earlier demonstration, with interface in English and no recorded events" loading="lazy" width="1440" height="900" />
+          <figcaption>MATCH / EARLIER DEMONSTRATION · INTERFACE IN ENGLISH · NO EVENTS</figcaption>
         </figure>
       </section>
 
@@ -189,17 +204,14 @@
         <div class="return-copy reveal">
           <p class="step-number">06 / REFLECTION</p>
           <h2 id="return-title">BRING THE MATCH BACK TO THE NEXT DECISION.</h2>
-          <p>Evidence can return to the game model, the player or the next week. GamePlan keeps its origin visible. You decide whether to keep, adjust or investigate further.</p>
+          <p>Return to what you observed, consider the context and record the next work. You decide what to keep, adjust or investigate.</p>
         </div>
         <div class="return-loop" aria-label="GamePlan reflection loop"><b>MODEL</b><span>→</span><b>TRAINING</b><span>→</span><b>WEEK</b><span>→</span><b>MATCH</b><span>→</span><b>REFLECTION</b><span>→</span><b>NEXT DECISION</b></div>
       </section>
 
       <section class="module-index light-section" aria-labelledby="modules-title">
-        <div class="module-index-head reveal">
-          <p class="section-code dark-code">INSIDE GAMEPLAN</p>
-          <h2 id="modules-title">ONE PRODUCT. SIX PARTS OF THE SAME WORK.</h2>
-        </div>
-        <div class="module-list reveal">
+        <details><summary id="modules-title">EXPLORE THE SIX AREAS</summary>
+        <div class="module-list">
           <div><span>01</span><strong>Game Model</strong><p>Principles, behaviours and references from your own model.</p></div>
           <div><span>02</span><strong>Planning</strong><p>Weeks and months built from what you want to train.</p></div>
           <div><span>03</span><strong>Exercises</strong><p>Your own tasks plus GamePlan Library exercises to clone and adapt.</p></div>
@@ -207,22 +219,10 @@
           <div><span>05</span><strong>Tactical Test</strong><p>Situations for observing game reading and decisions without automating conclusions.</p></div>
           <div><span>06</span><strong>Match</strong><p>Actions and evidence you can bring back to the plan.</p></div>
         </div>
-      </section>
+      </details></section>
     </div>
 
-    <section id="demo" class="demo-editorial dark-section" aria-labelledby="demo-title">
-      <div class="demo-heading reveal">
-        <p class="section-code">DEMO</p>
-        <h2 id="demo-title">SEE THE FLOW INSIDE THE PRODUCT.</h2>
-        <p>A quick look through GamePlan using the actual product screens — no fictional mockup.</p>
-      </div>
-      <div class="demo-stage reveal">
-        <video controls preload="metadata" playsinline poster="assets/images/home.png" aria-label="GamePlan demo in English">
-          <source src="assets/videos/gameplan-demo-en.mp4" type="video/mp4" />
-          Your browser could not load the demo video.
-        </video>
-      </div>
-    </section>
+
 
     <section id="about" class="founder-editorial light-section" aria-labelledby="about-title">
       <figure class="founder-image reveal"><img src="assets/images/renan-founder-updated.png" alt="Renan Moniz, founder of GamePlan" loading="lazy" width="1122" height="1402" /></figure>

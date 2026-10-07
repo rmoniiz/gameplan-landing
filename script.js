@@ -208,7 +208,8 @@
 
   document.querySelectorAll("img").forEach((image) => {
     image.decoding = "async";
-    if (!image.closest(".hero") && !image.closest("#loader")) image.loading = "lazy";
+    if (!image.closest(".hero-editorial") && !image.closest("#loader")) image.loading = "lazy";
+    else image.loading = "eager";
   });
   document.querySelectorAll(".timeline h4").forEach((heading) => {
     const replacement = document.createElement("h3");

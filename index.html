@@ -80,7 +80,7 @@
     </nav>
     <div class="header-actions">
       <div class="language-switcher">
-        <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇧🇷</span><span class="language-label">PT-BR</span><span class="language-caret">▾</span></button>
+        <button class="language-button" id="languageButton" aria-label="Selecionar idioma" type="button" aria-haspopup="true" aria-expanded="false"><span class="flag">🇧🇷</span><span class="language-label">PT-BR</span><span class="language-caret">▾</span></button>
         <div class="language-menu" id="languageMenu"><a href="index.html" class="language-option active"><span class="flag">🇧🇷</span><span>Português (Brasil)</span></a><a href="en.html" class="language-option"><span class="flag">🇺🇸</span><span>English (US)</span></a></div>
       </div>
       <a class="text-link login-link" href="https://gameplan-app-zeta.vercel.app/login?lang=pt-BR">Entrar</a>
@@ -93,17 +93,17 @@
       <div class="hero-grid">
         <div class="hero-copy reveal">
           <p class="section-code">GAMEPLAN / FOOTBALL COACHING</p>
-          <h1 id="hero-title"><span>SEU JOGO.</span><span>SEU MODELO.</span><span>SUA SEMANA.</span></h1>
-          <p class="hero-description">Conecte o que você quer ver em campo ao que treina durante a semana e ao que observa na partida — sem entregar a decisão ao software.</p>
+          <h1 id="hero-title"><span>PREPARE O TREINO.</span><span>SAIBA O QUE OBSERVAR</span><span>EM CAMPO.</span></h1>
+          <p class="hero-description">Encontre uma tarefa pelo problema do jogo, leia sua organização e decida como usá-la no seu trabalho.</p>
           <div class="hero-actions">
             <a class="btn btn-primary btn-large" href="https://gameplan-app-zeta.vercel.app/signup?trial=7&lang=pt-BR">Testar por 7 dias</a>
             <a class="text-link accent-link" href="#demo">Ver demonstração →</a>
           </div>
         </div>
-        <figure class="hero-product reveal">
-          <img src="assets/images/home.png" alt="Tela real do GamePlan mostrando a área inicial do produto" width="1440" height="900" />
-          <figcaption>PRODUTO REAL / GAMEPLAN</figcaption>
-        </figure>
+        <figure class="hero-product reveal"><picture>
+            <source media="(max-width:760px)" srcset="assets/images/exercise-146-pt-diagram.webp" />
+            <img src="assets/images/exercise-146-pt-desktop.webp" alt="Exercício público de contra-ataque 2x1 no Preview, com objetivo e diagrama tático" width="1425" height="891" fetchpriority="high" />
+          </picture><figcaption>BIBLIOTECA PÚBLICA / PREVIEW · INTERFACE EM PORTUGUÊS</figcaption></figure>
       </div>
       <div class="hero-foot" aria-label="Fluxo do trabalho no GamePlan">
         <span>MODELO DE JOGO</span><span aria-hidden="true">→</span><span>TREINO</span><span aria-hidden="true">→</span><span>SEMANA</span><span aria-hidden="true">→</span><span>PARTIDA</span><span aria-hidden="true">→</span><span>REFLEXÃO</span>
@@ -112,10 +112,12 @@
 
     <section id="process" class="process-manifesto light-section" aria-labelledby="process-title">
       <div class="manifesto-grid reveal">
-        <p class="section-code dark-code">O PROCESSO</p>
-        <h2 id="process-title">UMA IDEIA NÃO TERMINA NO MODELO DE JOGO.</h2>
-        <p>Ela precisa chegar ao exercício, entrar na semana, ganhar contexto com os atletas e voltar da partida como evidência. O GamePlan mantém essas referências próximas. O treinador continua interpretando o jogo e decidindo o que fazer a seguir.</p>
+        <p class="section-code dark-code">DO TREINO AO DIA DO JOGO</p>
+        <h2 id="process-title">UM PROBLEMA DO JOGO. UMA SEMANA DE DECISÕES.</h2>
+        <p>Imagine que você quer atacar após recuperar a bola. Defina o que os jogadores precisam perceber, escolha uma tarefa e planeje quando treiná-la. Na partida, registre o que observar; use essas evidências para decidir o que precisa de mais trabalho.</p>
       </div>
+
+      <div class="process-example reveal"><p class="example-label">EXEMPLO DE TRABALHO · ADAPTE À SUA EQUIPE</p><dl><div><dt>INTENÇÃO</dt><dd>Atacar após recuperar a bola.</dd></div><div><dt>COMPORTAMENTO</dt><dd>O apoio procura sair do campo visual do defensor.</dd></div><div><dt>TAREFA</dt><dd>Usar o 2x1 para decidir entre conduzir e passar conforme a resposta do defensor.</dd></div><div><dt>SEMANA</dt><dd>Planejar duas sessões com esse foco e o jogo no domingo.</dd></div><div><dt>OBSERVAR E REVISAR</dt><dd>Considerar quem treinou e quem estava disponível, registrar observações da partida e escolher a próxima prioridade.</dd></div></dl><p class="example-note">Você escolhe e revisa essas relações no produto. Este exemplo não representa um planejamento gerado automaticamente.</p></div>
     </section>
 
     <div id="product" class="product-story">
@@ -125,81 +127,92 @@
             <p class="step-number">01 / MODELO DE JOGO</p>
             <h2 id="model-title">DEFINA O QUE VOCÊ QUER VER.</h2>
             <p>Registre princípios e comportamentos observáveis usando a sua linguagem. O GamePlan organiza a ideia sem obrigar você a adotar uma metodologia pronta.</p>
-            <p class="step-footnote">A referência que você cria aqui pode acompanhar treino, planejamento e revisão da partida.</p>
+            <p class="step-footnote">Comece pela sua referência. Conexões e decisões dependem do contexto de cada trabalho.</p>
           </div>
-          <figure class="product-shot product-shot-light">
-            <img src="assets/images/home.png" alt="Interface real do GamePlan usada como referência do produto" loading="lazy" width="1440" height="900" />
-            <figcaption>UMA REFERÊNCIA PARA O RESTO DA SEMANA</figcaption>
-          </figure>
+          <dl class="reference-guide" aria-label="Perguntas para seu modelo de jogo">
+            <div><dt>PRINCÍPIO</dt><dd>O que você quer que a equipe faça?</dd></div>
+            <div><dt>COMPORTAMENTO</dt><dd>O que você vai observar em campo?</dd></div>
+            <div><dt>TREINO</dt><dd>Qual tarefa coloca esse problema em jogo?</dd></div>
+          </dl>
         </div>
       </section>
 
       <section class="story-step dark-section" data-flow-step="02" aria-labelledby="training-title">
         <div class="story-grid story-grid-reverse reveal">
-          <figure class="product-shot product-shot-dark">
-            <img src="assets/images/criacao-de-treino.png" alt="Tela real de criação de exercício no GamePlan" loading="lazy" width="1440" height="900" />
-            <figcaption>EXERCÍCIO / ORGANIZAÇÃO DO TREINO</figcaption>
-          </figure>
+          <figure class="product-shot product-shot-dark"><picture>
+            <source media="(max-width:760px)" srcset="assets/images/exercise-146-pt-mobile.webp" />
+            <img src="assets/images/exercise-146-pt-desktop.webp" alt="Exercício público de contra-ataque 2x1 no Preview, com objetivo e diagrama tático" loading="lazy" width="1425" height="891" />
+          </picture><figcaption>BIBLIOTECA PÚBLICA / PREVIEW · INTERFACE EM PORTUGUÊS</figcaption></figure>
           <div class="story-copy">
             <p class="step-number">02 / TREINO</p>
-            <h2 id="training-title">LEVE A IDEIA PARA O CAMPO.</h2>
-            <p>Crie sua própria tarefa ou parta de um exercício da Biblioteca GamePlan. Relacione o que quer observar sem transformar uma sugestão em verdade.</p>
-            <p class="step-footnote">Método de treino e Organização da atividade permanecem separados.</p>
+            <h2 id="training-title">ESCOLHA PELO PROBLEMA DO JOGO.</h2>
+            <p>Neste 2x1, o apoio procura sair do campo visual do defensor. Leia o objetivo, a organização e as possibilidades da tarefa antes de decidir como usá-la.</p>
+            <p class="step-footnote">Confira como conduzir a tarefa e como organizar jogadores, espaço e tempo.</p>
           </div>
         </div>
       </section>
+
+    <section id="demo" class="demo-editorial dark-section" aria-labelledby="demo-title">
+      <div class="demo-heading reveal">
+        <p class="section-code">DEMONSTRAÇÃO</p>
+        <h2 id="demo-title">CONHEÇA AS ÁREAS DO GAMEPLAN.</h2>
+        <p>Uma demonstração das áreas do GamePlan. O vídeo é uma gravação anterior; algumas telas diferem da interface atual.</p>
+      </div>
+      <div class="demo-stage reveal">
+        <video controls preload="metadata" playsinline poster="assets/images/gameplan-video-poster.svg" aria-label="Demonstração do GamePlan em português brasileiro">
+          <source src="assets/videos/gameplan-demo-ptbr.mp4" type="video/mp4" />
+          Seu navegador não conseguiu carregar o vídeo de demonstração.
+        </video>
+      </div>
+    </section>
 
       <section class="story-step light-section week-section" data-flow-step="03" aria-labelledby="week-title">
         <div class="story-grid reveal">
           <div class="story-copy">
             <p class="step-number">03 / PLANEJAMENTO</p>
             <h2 id="week-title">MONTE A SEMANA COM INTENÇÃO.</h2>
-            <p>Leve objetivos e exercícios para a semana e mantenha visível o motivo de cada sessão. Ajustes continuam sendo decisões do treinador.</p>
+            <p>Parta do jogo no fim de semana e organize os dias de treino. Defina um objetivo para cada sessão e escolha exercícios que coloquem esse objetivo em prática.</p>
           </div>
           <div class="week-editorial" aria-label="Representação editorial de uma semana de trabalho">
-            <div><span>SEG</span><strong>IDEIA</strong></div>
-            <div><span>TER</span><strong>SESSÃO</strong></div>
-            <div><span>QUA</span><strong>AJUSTE</strong></div>
-            <div><span>QUI</span><strong>SESSÃO</strong></div>
-            <div><span>SEX</span><strong>JOGO</strong></div>
+            <div><span>SEG</span><strong>REVISÃO</strong></div>
+            <div><span>TER</span><strong>TREINO</strong></div>
+            <div><span>QUA</span><strong>DESCANSO</strong></div>
+            <div><span>QUI</span><strong>TREINO</strong></div>
+            <div><span>SEX</span><strong>AJUSTE</strong></div>
+            <div><span>SÁB</span><strong>PREPARAR</strong></div>
+            <div><span>DOM</span><strong>JOGO</strong></div>
           </div>
         </div>
+        <p class="week-note">Semana ilustrativa com jogo no domingo. Se sua equipe joga no sábado, ajuste os dias à disponibilidade do grupo.</p>
       </section>
 
       <section class="story-step dark-section observe-section" aria-labelledby="observe-title">
         <div class="observe-grid reveal">
           <div class="story-copy" data-flow-step="04">
             <p class="step-number">04 / ATLETAS</p>
-            <h2 id="observe-title">GUARDE O CONTEXTO. NÃO UM RANKING.</h2>
-            <p>Observações, desenvolvimento, Teste Tático e assiduidade ajudam a reconstruir o contexto de cada atleta. Nenhum desses registros, sozinho, prova desenvolvimento.</p>
+            <h2 id="observe-title">SAIBA QUEM PRECISA DE UM OLHAR MAIS ATENTO.</h2>
+            <p>Reúna observações, respostas ao teste tático e histórico de presença de cada atleta. Considere seu contexto nos treinos e nas partidas antes de decidir qual apoio oferecer. Nenhum desses registros, sozinho, prova desenvolvimento.</p>
           </div>
           <div class="story-copy" data-flow-step="05">
             <p class="step-number">05 / PARTIDA</p>
-            <h2>VEJA O QUE REALMENTE APARECEU.</h2>
-            <p>Registre ações e observações da partida e volte às mesmas referências usadas no planejamento. O dado registrado e a interpretação do treinador permanecem coisas diferentes.</p>
+            <h2>OBSERVE A PARTIDA COM UM OBJETIVO.</h2>
+            <p>Use o relógio, as zonas do campo e os controles de ações para registrar o jogo. Retome o comportamento treinado: o apoio ficou disponível após a recuperação da bola? Interprete os registros considerando o contexto da partida.</p>
           </div>
         </div>
-        <figure class="match-shot reveal">
-          <img src="assets/images/estatistica-da-partida.png" alt="Tela real de estatísticas da partida no GamePlan" loading="lazy" width="1440" height="900" />
-          <figcaption>PARTIDA / EVIDÊNCIA PARA REVISÃO</figcaption>
-        </figure>
       </section>
 
       <section class="return-section" data-flow-step="06" aria-labelledby="return-title">
         <div class="return-copy reveal">
           <p class="step-number">06 / REFLEXÃO</p>
           <h2 id="return-title">TRAGA O JOGO DE VOLTA PARA A PRÓXIMA DECISÃO.</h2>
-          <p>A evidência pode voltar ao modelo, ao atleta ou à próxima semana. O GamePlan mostra de onde ela veio. Você decide se mantém, ajusta ou investiga mais.</p>
+          <p>Retome o que observou, considere o contexto e registre o próximo trabalho. Você decide o que manter, ajustar ou investigar.</p>
         </div>
         <div class="return-loop" aria-label="Ciclo de reflexão no GamePlan"><b>MODELO</b><span>→</span><b>TREINO</b><span>→</span><b>SEMANA</b><span>→</span><b>PARTIDA</b><span>→</span><b>REFLEXÃO</b><span>→</span><b>PRÓXIMA DECISÃO</b></div>
       </section>
 
       <section class="module-index light-section" aria-labelledby="modules-title">
-        <div class="module-index-head reveal">
-          <p class="section-code dark-code">DENTRO DO GAMEPLAN</p>
-          <h2 id="modules-title">UM PRODUTO. SEIS FRENTES DO MESMO TRABALHO.</h2>
-        </div>
-        <div class="module-list reveal">
+        <details><summary id="modules-title">CONHEÇA AS SEIS ÁREAS</summary>
+        <div class="module-list">
           <div><span>01</span><strong>Modelo de Jogo</strong><p>Princípios, comportamentos e referências do seu modelo.</p></div>
           <div><span>02</span><strong>Planejamento</strong><p>Semanas e meses construídos a partir do que você quer treinar.</p></div>
           <div><span>03</span><strong>Exercícios</strong><p>Tarefas próprias e Biblioteca GamePlan para clonar e adaptar.</p></div>
@@ -207,22 +220,10 @@
           <div><span>05</span><strong>Teste Tático</strong><p>Situações para observar leitura e decisão sem automatizar conclusões.</p></div>
           <div><span>06</span><strong>Partida</strong><p>Ações e evidências para voltar ao que foi planejado.</p></div>
         </div>
-      </section>
+      </details></section>
     </div>
 
-    <section id="demo" class="demo-editorial dark-section" aria-labelledby="demo-title">
-      <div class="demo-heading reveal">
-        <p class="section-code">DEMONSTRAÇÃO</p>
-        <h2 id="demo-title">VEJA O FLUXO DENTRO DO PRODUTO.</h2>
-        <p>Uma volta rápida pelo GamePlan, usando as próprias telas do produto — sem mockup fictício.</p>
-      </div>
-      <div class="demo-stage reveal">
-        <video controls preload="metadata" playsinline poster="assets/images/home.png" aria-label="Demonstração do GamePlan em português brasileiro">
-          <source src="assets/videos/gameplan-demo-ptbr.mp4" type="video/mp4" />
-          Seu navegador não conseguiu carregar o vídeo de demonstração.
-        </video>
-      </div>
-    </section>
+
 
     <section id="about" class="founder-editorial light-section" aria-labelledby="about-title">
       <figure class="founder-image reveal"><img src="assets/images/renan-founder-updated.png" alt="Renan Moniz, fundador do GamePlan" loading="lazy" width="1122" height="1402" /></figure>

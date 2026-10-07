@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 
 const pt = await fs.readFile('index.html', 'utf8');
 const en = await fs.readFile('en.html', 'utf8');
@@ -27,11 +28,16 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: legacy landing runtimes removed`, !/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html));
   check(`${label}: old SaaS feature grid removed`, !/features-grid|feature-card|connection-board|bg-blur|bg-grid/.test(html));
   check(`${label}: six flow steps`, (html.match(/data-flow-step=/g) || []).length === 6);
-  check(`${label}: real product assets`, ['assets/images/home.png', 'assets/images/criacao-de-treino.png', 'assets/images/estatistica-da-partida.png', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset)));
+  check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
+  check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
+  check(`${label}: branded video cover`, html.includes('poster="assets/images/gameplan-video-poster.svg"') && existsSync('assets/images/gameplan-video-poster.svg'));
+  check(`${label}: original GamePlan logo preserved`, !html.includes('gameplan-mark-review.svg') && (html.match(/src="assets\/images\/gameplan-logo\.png"/g) || []).length === 3);
+  check(`${label}: seven-day week with weekend match`, language === 'pt-BR' ? html.includes('<span>DOM</span><strong>JOGO</strong>') : html.includes('<span>SUN</span><strong>MATCH</strong>'));
+  check(`${label}: concrete process example`, html.includes('class="process-example reveal"'));
   check(`${label}: correct demo video`, html.includes(demoVideo));
   check(`${label}: hero copy`, heroLines.every((line) => html.includes(line)));
   check(`${label}: attendance remains context`, html.includes(attendanceText));
-  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('sem entregar a decisão ao software') && html.includes('decisão técnica continuam com o treinador') : html.includes('without handing the decision to the software') && html.includes('technical decisions stay with the coach'));
+  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('decisão técnica continuam com o treinador') : html.includes('decide how to use it in your coaching') && html.includes('technical decisions stay with the coach'));
   check(`${label}: privacy link`, html.includes(`href="${privacy}"`));
   check(`${label}: terms link`, html.includes(`href="${terms}"`));
   check(`${label}: canonical preserved`, html.includes('<link rel="canonical" href="https://gameplan-landing.vercel.app/"'));
@@ -56,7 +62,7 @@ validatePage({
   language: 'pt-BR',
   privacy: 'privacy.html',
   terms: 'terms.html',
-  heroLines: ['SEU JOGO.', 'SEU MODELO.', 'SUA SEMANA.'],
+  heroLines: ['PREPARE O TREINO.', 'SAIBA O QUE OBSERVAR', 'EM CAMPO.'],
   demoVideo: 'assets/videos/gameplan-demo-ptbr.mp4',
   attendanceText: 'Nenhum desses registros, sozinho, prova desenvolvimento',
 });
@@ -67,7 +73,7 @@ validatePage({
   language: 'en',
   privacy: 'privacy-en.html',
   terms: 'terms-en.html',
-  heroLines: ['YOUR GAME.', 'YOUR MODEL.', 'YOUR WEEK.'],
+  heroLines: ['PLAN TRAINING AROUND', 'WHAT YOU WANT TO', 'OBSERVE ON THE PITCH.'],
   demoVideo: 'assets/videos/gameplan-demo-en.mp4',
   attendanceText: 'None of those records, on its own, proves development',
 });

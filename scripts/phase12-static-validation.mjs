@@ -97,7 +97,7 @@ check('editorial CSS contains no decorative blur', !/filter\s*:\s*blur\s*\(/i.te
 check('editorial CSS contains no backdrop filter', !/backdrop-filter/i.test(files.editorialCss));
 check('editorial CSS preserves product module list', files.editorialCss.includes('.module-list'));
 check('both languages omit the old exercise screenshot', [files.pt, files.en].every(html => !/exercise-146-pt-(?:desktop|mobile|diagram)\\.webp/.test(html)));
-check('both languages preserve founder footnote and credentials', [files.pt, files.en].every(html => html.includes('class="founder-credentials"') && html.includes('logo-CBF-Academy-colorida-colorida.png')));
+check('both languages preserve founder credentials without dated note', [files.pt, files.en].every(html => html.includes('class="founder-credentials"') && html.includes('logo-CBF-Academy-colorida-colorida.png') && html.includes('Columbus Futsal') && !html.includes('class="founder-credentials-note"')));
 check('editorial runtime moves its CSS to final precedence', files.editorialJs.includes('document.head.appendChild(stylesheet)'));
 check('editorial runtime announces ready state', files.editorialJs.includes("document.body.classList.add('editorial-ready')"));
 check('editorial runtime observes coaching flow', files.editorialJs.includes("document.querySelectorAll('[data-flow-step]')"));

@@ -101,30 +101,30 @@ check('editorial runtime announces ready state', files.editorialJs.includes("doc
 check('editorial runtime observes coaching flow', files.editorialJs.includes("document.querySelectorAll('[data-flow-step]')"));
 check('editorial runtime respects reduced motion', files.editorialJs.includes('prefers-reduced-motion: reduce'));
 
-// Phase 13: canonical and hreflang must reflect deployed language routing.
-// '/' serves English; '/index.html' serves Portuguese. '/en.html' is an English alias.
+// Phase 13: '/' redirects to English /en.html; Portuguese is /index.html.
+// Each language is self-canonical with reciprocal hreflang and no redirect-only sitemap entry.
 const seoBase = 'https://gameplan-landing.vercel.app/';
 const seoSitemap = await fs.readFile('sitemap.xml', 'utf8');
 const seoEntries = Array.from(seoSitemap.matchAll(/<url>([\s\S]*?)<\/url>/g), match => match[1]);
-const enEntry = seoEntries.find(entry => entry.includes('<loc>' + seoBase + '</loc>'));
+const enEntry = seoEntries.find(entry => entry.includes('<loc>' + seoBase + 'en.html</loc>'));
 const ptEntry = seoEntries.find(entry => entry.includes('<loc>' + seoBase + 'index.html</loc>'));
 const reciprocalLocales = [
   'hreflang="pt-BR" href="' + seoBase + 'index.html"',
-  'hreflang="en" href="' + seoBase + '"',
-  'hreflang="x-default" href="' + seoBase + '"',
+  'hreflang="en" href="' + seoBase + 'en.html"',
+  'hreflang="x-default" href="' + seoBase + 'en.html"',
 ];
 check('PT-BR canonical is /index.html', files.pt.includes('<link rel="canonical" href="' + seoBase + 'index.html" />'));
-check('English canonical is /', files.en.includes('<link rel="canonical" href="' + seoBase + '" />'));
+check('English canonical is /en.html', files.en.includes('<link rel="canonical" href="' + seoBase + 'en.html" />'));
+check('English OG URL agrees with canonical', files.en.includes('<meta property="og:url" content="' + seoBase + 'en.html" />'));
 check('PT-BR alternate languages match routed URLs', reciprocalLocales.every(link => files.pt.includes(link)));
 check('English alternate languages match routed URLs', reciprocalLocales.every(link => files.en.includes(link)));
-check('Sitemap has exactly EN root and PT-BR index', seoEntries.length === 2 && Boolean(enEntry) && Boolean(ptEntry));
+check('Sitemap has exactly EN and PT-BR canonical pages', seoEntries.length === 2 && Boolean(enEntry) && Boolean(ptEntry));
 check('Sitemap EN and PT-BR hreflang are reciprocal', Boolean(enEntry && ptEntry) && [enEntry, ptEntry].every(entry => reciprocalLocales.every(link => entry.includes(link))));
-check('Sitemap has no duplicate English alias', !seoSitemap.includes('<loc>' + seoBase + 'en.html</loc>'));
+check('Sitemap excludes redirect-only root', !seoSitemap.includes('<loc>' + seoBase + '</loc>'));
 const seoRouting = JSON.parse(await fs.readFile('vercel.json', 'utf8'));
-check('English canonical root is rewritten to EN content',
-  seoRouting.rewrites?.some(route => route.source === '/' && route.destination === '/en.html'));
-check('English canonical root is not redirected',
-  !seoRouting.redirects?.some(route => route.source === '/'));
+check('English entrypoint redirects to canonical EN',
+  seoRouting.redirects?.some(route => route.source === '/' && route.destination === '/en.html' && route.permanent === false));
+check('English entrypoint has no conflicting rewrite', !seoRouting.rewrites?.some(route => route.source === '/'));
 
 const report = { generatedAt: new Date().toISOString(), checks, failures };
 await fs.mkdir('phase12-validation-evidence', { recursive: true });

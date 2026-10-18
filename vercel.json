@@ -3,11 +3,10 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "redirects": [
+  "rewrites": [
     {
       "source": "/",
-      "destination": "/en.html",
-      "permanent": false
+      "destination": "/en.html"
     }
   ]
 }

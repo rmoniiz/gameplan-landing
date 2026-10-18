@@ -46,7 +46,22 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: correct demo video`, html.includes(demoVideo));
   check(`${label}: hero copy`, heroLines.every((line) => html.includes(line)));
   check(`${label}: attendance remains context`, html.includes(attendanceText));
-  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('decisão técnica continuam com o treinador') : html.includes('decide how to use it in your coaching') && html.includes('technical decisions stay with the coach'));
+  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('sem definir metodologia nem tomar decisões pelo treinador') : html.includes('decide how to use it in your coaching') && html.includes('leaving the methodology and every coaching decision'));
+  const trainingStart = html.indexOf('id="training-title"');
+  const trainingEnd = html.indexOf('</section>', trainingStart);
+  const trainingCopy = html.slice(trainingStart, trainingEnd);
+  check(`${label}: training description works without a screenshot`, language === 'pt-BR'
+    ? trainingCopy.includes('Na Biblioteca GamePlan') && trainingCopy.includes('exercício público') && !/Neste 2x1|imagem|captura/.test(trainingCopy)
+    : trainingCopy.includes('In the GamePlan Library') && trainingCopy.includes('public exercise') && !/In this 2v1|screenshot|image shown/.test(trainingCopy));
+  const founderStart = html.indexOf('id="about-title"');
+  const founderEnd = html.indexOf('class="founder-credentials"', founderStart);
+  const founderCopy = html.slice(founderStart, founderEnd);
+  check(`${label}: founder starts with US career, not grandfather`, language === 'pt-BR'
+    ? founderCopy.includes('Minha carreira como treinador começou nos Estados Unidos') && !/meu avô|Adão|espalhado demais/i.test(founderCopy)
+    : founderCopy.includes('My coaching career began in the United States') && !/grandfather|Adão|spread across too many places/i.test(founderCopy));
+  check(`${label}: founder mentions both coaching and analysis roles`, language === 'pt-BR'
+    ? founderCopy.includes('análise de desempenho') && founderCopy.includes('Brasil, em Portugal e na Holanda')
+    : founderCopy.includes('performance analysis') && founderCopy.includes('Brazil, Portugal and the Netherlands'));
   check(`${label}: privacy link`, html.includes(`href="${privacy}"`));
   check(`${label}: terms link`, html.includes(`href="${terms}"`));
   check(`${label}: canonical preserved`, html.includes(`<link rel="canonical" href="https://gameplan-landing.vercel.app/${language === 'pt-BR' ? 'index.html' : 'en.html'}" />`));

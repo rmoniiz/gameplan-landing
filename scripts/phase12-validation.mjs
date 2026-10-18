@@ -185,6 +185,7 @@ async function runChecklistCase({ name, path, width, height, lang, expectedTrial
   const robots = await page.locator('meta[name=robots]').getAttribute('content');
   const articles = await page.locator('.checklist-item').count();
   const prompts = await page.locator('.checklist-prompt').count();
+  const reflectionLines = await page.locator('.checklist-reflection .checklist-write-line').count();
   const actualLang = await page.locator('html').getAttribute('lang');
   const trialHref = await page.locator('.checklist-actions a[href*="signup"]').getAttribute('href');
   const languageHref = await page.locator('.checklist-header a[lang]').getAttribute('href');
@@ -205,6 +206,7 @@ async function runChecklistCase({ name, path, width, height, lang, expectedTrial
   if (robots !== 'noindex, nofollow') errors.push(`robots=${robots}`);
   if (articles !== 10) errors.push(`checklist items=${articles}`);
   if (prompts !== 10) errors.push(`practical prompts=${prompts}`);
+  if (reflectionLines !== 3) errors.push(`reflection prompts=${reflectionLines}`);
   if (actualLang !== lang) errors.push(`language mismatch: ${actualLang}`);
   if (!trialHref?.includes(`lang=${expectedTrialLanguage}`)) errors.push(`trial language mismatch: ${trialHref}`);
   if (!languageHref) errors.push('equivalent-language link is missing');

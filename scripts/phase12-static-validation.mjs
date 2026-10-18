@@ -120,6 +120,11 @@ check('English alternate languages match routed URLs', reciprocalLocales.every(l
 check('Sitemap has exactly EN root and PT-BR index', seoEntries.length === 2 && Boolean(enEntry) && Boolean(ptEntry));
 check('Sitemap EN and PT-BR hreflang are reciprocal', Boolean(enEntry && ptEntry) && [enEntry, ptEntry].every(entry => reciprocalLocales.every(link => entry.includes(link))));
 check('Sitemap has no duplicate English alias', !seoSitemap.includes('<loc>' + seoBase + 'en.html</loc>'));
+const seoRouting = JSON.parse(await fs.readFile('vercel.json', 'utf8'));
+check('English canonical root is rewritten to EN content',
+  seoRouting.rewrites?.some(route => route.source === '/' && route.destination === '/en.html'));
+check('English canonical root is not redirected',
+  !seoRouting.redirects?.some(route => route.source === '/'));
 
 const report = { generatedAt: new Date().toISOString(), checks, failures };
 await fs.mkdir('phase12-validation-evidence', { recursive: true });

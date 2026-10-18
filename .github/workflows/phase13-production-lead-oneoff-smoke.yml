@@ -1,0 +1,54 @@
+name: Production checklist lead smoke (one-off synthetic)
+on:
+  push:
+    branches:
+      - qa/phase13-prod-lead-smoke-20261018
+permissions:
+  contents: read
+jobs:
+  production-lead-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify production CORS and a single synthetic consented lead
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.request
+          import urllib.error
+
+          endpoint = "https://ljuwnrbrneedzatbbslr.supabase.co/functions/v1/capture-marketing-lead"
+          origin = "https://gameplan-landing.vercel.app"
+          def call(method, test_origin, body=None):
+              headers = {"Origin": test_origin, "Accept": "application/json"}
+              if body is not None: headers["Content-Type"] = "application/json"
+              if method == "OPTIONS": headers["Access-Control-Request-Method"] = "POST"
+              req = urllib.request.Request(endpoint, data=body, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=15) as resp:
+                      return resp.status, resp.headers.get("Access-Control-Allow-Origin"), resp.read()
+              except urllib.error.HTTPError as e:
+                  return e.code, e.headers.get("Access-Control-Allow-Origin"), e.read()
+
+          status, acao, _ = call("OPTIONS", origin)
+          assert status == 204 and acao == origin, f"Preflight failed: {status}, {acao!r}"
+          print("Preflight from production domain: PASS")
+          status, _, data = call("POST", "https://example.invalid", b'{}')
+          assert status == 403 and json.loads(data).get("error") == "origin_not_allowed", f"Invalid origin failed: {status}"
+          print("Cross-origin rejection: PASS")
+          sample = {
+              "name": "GamePlan Synthetic Release QA",
+              "email": "gp-phase13-prod-smoke-20261018@example.invalid",
+              "company": "",
+              "language": "en",
+              "consentCapture": True,
+              "utmSource": "synthetic_qa",
+              "utmMedium": "release_smoke",
+              "utmCampaign": "phase13_checklist_release"
+          }
+          status, acao, response = call("POST", origin, json.dumps(sample).encode("utf-8"))
+          outcome = json.loads(response)
+          assert status == 200 and outcome.get("ok") is True and acao == origin, f"Lead request failed: status={status}, error={outcome.get('error')}"
+          print("Consented synthetic lead accepted: PASS (no email sent)")
+          PY

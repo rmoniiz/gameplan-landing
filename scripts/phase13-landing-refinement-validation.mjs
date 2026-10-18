@@ -28,7 +28,16 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: legacy landing runtimes removed`, !/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html));
   check(`${label}: old SaaS feature grid removed`, !/features-grid|feature-card|connection-board|bg-blur|bg-grid/.test(html));
   check(`${label}: six flow steps`, (html.match(/data-flow-step=/g) || []).length === 6);
-  check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
+  check(`${label}: exercise screenshot removed from hero and training`, !/exercise-146-pt-(?:desktop|mobile|diagram)\\.webp|class="hero-product reveal"|class="product-shot product-shot-dark"/.test(html));
+  check(`${label}: both story sections preserved without screenshot`, html.includes('class="hero-grid hero-grid-text-only"') && html.includes('class="story-grid story-grid-reverse story-grid-text-only reveal"'));
+  check(`${label}: original founder portrait preserved`, html.includes('assets/images/renan-founder-updated.png') && existsSync('assets/images/renan-founder-updated.png'));
+  check(`${label}: factual football-career footer and crests present`, html.includes('class="founder-credentials"') && ['tetrabrazil.png','psgacademy.png','boavista.png','fcdafoz.png','pantherforce.png','koninklijkehfc.png','logo-CBF-Academy-colorida-colorida.png'].every((file) => html.includes('assets/images/clubs/' + file) && existsSync('assets/images/clubs/' + file)));
+  check(`${label}: Boavista analyst role distinguished`, html.includes(language === 'pt-BR' ? 'Análise de desempenho' : 'Performance analyst'));
+  check(`${label}: experience label and C Licence shown`, html.includes(language === 'pt-BR' ? 'EXPERIÊNCIA E FORMAÇÃO' : 'EXPERIENCE & QUALIFICATIONS') && html.includes(language === 'pt-BR' ? 'Licença C' : 'C Licence'));
+  check(`${label}: Columbus and dating absent`, !/Columbus Futsal|SINCE 2017|DESDE 2017|founder-club-no-crest/.test(html));
+  check(`${label}: portrait byline`, /<figcaption class="founder-sign">RENAN MONIZ \/ (?:FUNDADOR|FOUNDER)<\/figcaption>/.test(html));
+  check(`${label}: experience spans the editorial columns`, /<\/div>\s*<aside class="founder-credentials"/.test(html.slice(html.indexOf('id="about"'),html.indexOf('id="pricing"'))));
+  check(`${label}: no dated club appointments or redundant note`, !/\d{4}[–-]\d{2,4}|· (?:19|20)\d{2}|since 2024|desde 2024|founder-credentials-note/.test(html.slice(html.indexOf('class="founder-club-list"'),html.indexOf('</aside>',html.indexOf('class="founder-club-list"')))));
   check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
   check(`${label}: branded video cover`, html.includes('poster="assets/images/gameplan-video-poster.svg"') && existsSync('assets/images/gameplan-video-poster.svg'));
   check(`${label}: original GamePlan logo preserved`, !html.includes('gameplan-mark-review.svg') && (html.match(/src="assets\/images\/gameplan-logo\.png"/g) || []).length === 3);
@@ -37,7 +46,22 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: correct demo video`, html.includes(demoVideo));
   check(`${label}: hero copy`, heroLines.every((line) => html.includes(line)));
   check(`${label}: attendance remains context`, html.includes(attendanceText));
-  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('decisão técnica continuam com o treinador') : html.includes('decide how to use it in your coaching') && html.includes('technical decisions stay with the coach'));
+  check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('sem definir metodologia nem tomar decisões pelo treinador') : html.includes('decide how to use it in your coaching') && html.includes('leaving the methodology and every coaching decision'));
+  const trainingStart = html.indexOf('id="training-title"');
+  const trainingEnd = html.indexOf('</section>', trainingStart);
+  const trainingCopy = html.slice(trainingStart, trainingEnd);
+  check(`${label}: training description works without a screenshot`, language === 'pt-BR'
+    ? trainingCopy.includes('Na Biblioteca GamePlan') && trainingCopy.includes('exercício público') && !/Neste 2x1|imagem|captura/.test(trainingCopy)
+    : trainingCopy.includes('In the GamePlan Library') && trainingCopy.includes('public exercise') && !/In this 2v1|screenshot|image shown/.test(trainingCopy));
+  const founderStart = html.indexOf('id="about-title"');
+  const founderEnd = html.indexOf('class="founder-credentials"', founderStart);
+  const founderCopy = html.slice(founderStart, founderEnd);
+  check(`${label}: founder starts with US career, not grandfather`, language === 'pt-BR'
+    ? founderCopy.includes('Minha carreira como treinador começou nos Estados Unidos') && !/meu avô|Adão|espalhado demais/i.test(founderCopy)
+    : founderCopy.includes('My coaching career began in the United States') && !/grandfather|Adão|spread across too many places/i.test(founderCopy));
+  check(`${label}: founder mentions both coaching and analysis roles`, language === 'pt-BR'
+    ? founderCopy.includes('análise de desempenho') && founderCopy.includes('Brasil, em Portugal e na Holanda')
+    : founderCopy.includes('performance analysis') && founderCopy.includes('Brazil, Portugal and the Netherlands'));
   check(`${label}: privacy link`, html.includes(`href="${privacy}"`));
   check(`${label}: terms link`, html.includes(`href="${terms}"`));
   check(`${label}: canonical preserved`, html.includes(`<link rel="canonical" href="https://gameplan-landing.vercel.app/${language === 'pt-BR' ? 'index.html' : 'en.html'}" />`));
@@ -78,6 +102,10 @@ validatePage({
   attendanceText: 'None of those records, on its own, proves development',
 });
 
+check('portrait retains 4/5 and original colors', css.includes('.founder-image{width:100%;max-width:240px;aspect-ratio:auto') && css.includes('height:auto;aspect-ratio:4/5') && css.includes('object-position:center 22%;filter:none'));
+check('credentials are visually secondary', css.includes('.founder-credentials{grid-column:1/-1;display:grid') && css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
+check('credentials respond on tablet and phone', css.includes('.founder-club-list{grid-template-columns:repeat(3,minmax(0,1fr))}') && css.includes('.founder-credentials{grid-template-columns:1fr;gap:20px'));
+check('screenshot-free editorial has responsive layouts', css.includes('.hero-grid.hero-grid-text-only') && css.includes('.story-grid.story-grid-text-only'));
 check('CSS has reduced-motion handling', css.includes('@media(prefers-reduced-motion:reduce)'));
 check('CSS has mobile layout', css.includes('@media(max-width:760px)'));
 check('CSS uses editorial module list', css.includes('.module-list'));

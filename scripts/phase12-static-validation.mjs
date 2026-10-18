@@ -47,6 +47,8 @@ for (const [language, html, expectedLang] of [
   check(`${language} checklist has 10 items`, (html.match(/class="checklist-item glass"/g) || []).length === 10);
   check(`${language} checklist has 10 practical prompts`, (html.match(/class="checklist-prompt"/g) || []).length === 10);
   check(`${language} checklist supports print`, html.includes('window.print()'));
+  check(`${language} checklist has a three-question reflection worksheet`, (html.match(/class="checklist-write-line"/g) || []).length === 3 && html.includes('class="checklist-next-step glass"'));
+  check(`${language} checklist declares notes are not sent`, html.includes(expectedLang === 'pt-BR' ? 'Nenhuma resposta é enviada ao GamePlan' : 'No answers are sent to GamePlan'));
 }
 
 check('capture has no literal Supabase endpoint', !/https:\/\/[^'"`\s]*supabase\.co/.test(files.capture));
@@ -83,6 +85,8 @@ check('PT-BR privacy states 12-month lead retention', files.privacyPt.includes('
 check('English privacy states 12-month lead retention', files.privacyEn.includes('for up to 12 months'));
 check('lead capture reduced-motion styles', files.styles.includes('@media(prefers-reduced-motion:reduce)'));
 check('lead capture mobile breakpoint styles', files.styles.includes('@media(max-width:820px)'));
+check('checklist worksheet stays printable', files.styles.includes('.checklist-next-step{') && files.styles.includes('@media print{.checklist-next-step')); 
+check('lead capture accurately states no automatic email', files.capture.includes('It is not sent by email.') && files.capture.includes('Ele não é enviado por e-mail.'));
 check('lead capture print styles', files.styles.includes('@media print'));
 check('ffmpeg-static is pinned', packageJson.dependencies?.['ffmpeg-static'] === '5.2.0');
 check('Playwright is pinned', packageJson.devDependencies?.playwright === '1.63.0');

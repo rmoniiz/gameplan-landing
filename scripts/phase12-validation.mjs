@@ -126,6 +126,15 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
     await submitButton.click();
     await page.locator('.lead-success').waitFor({ state: 'visible' });
 
+    if (await form.isVisible()) errors.push('confirmed capture still displays the original form');
+    if (await submitButton.isDisabled()) errors.push('confirmed capture leaves the submit button disabled');
+    if ((await form.getAttribute('aria-busy')) !== 'false') errors.push('confirmed capture leaves form aria-busy=true');
+    const restoredSubmitText = (await submitButton.innerText()).trim();
+    if (restoredSubmitText !== (lang === 'en' ? 'Get the free checklist' : 'Receber checklist gratuito')) {
+      errors.push('confirmed capture leaves the button in its loading state');
+    }
+    if (!(await page.locator('.lead-open').isVisible())) errors.push('checklist action not visible after confirmed capture');
+
     const focusedClass = await page.evaluate(() => document.activeElement?.className || '');
     const href = await page.locator('.lead-open').getAttribute('href');
     const trialHref = await page.locator('.lead-trial').getAttribute('href');
@@ -262,6 +271,8 @@ async function runStaticContractChecks() {
 await runStaticContractChecks();
 await runLandingCase({ name: 'pt-desktop-success', path: '/index.html?utm_source=phase12-test', width: 1440, height: 1000, lang: 'pt-BR', adapter: true, submit: true });
 await runLandingCase({ name: 'en-desktop-success', path: '/en.html?utm_source=phase12-test', width: 1440, height: 1000, lang: 'en', adapter: true, submit: true });
+await runLandingCase({ name: 'pt-mobile-success', path: '/index.html', width: 390, height: 844, lang: 'pt-BR', adapter: true, submit: true });
+await runLandingCase({ name: 'en-mobile-success', path: '/en.html', width: 390, height: 844, lang: 'en', adapter: true, submit: true });
 await runLandingCase({ name: 'pt-mobile-disabled', path: '/index.html', width: 390, height: 844, lang: 'pt-BR', reducedMotion: true, adapter: false });
 await runLandingCase({ name: 'en-mobile-disabled', path: '/en.html', width: 390, height: 844, lang: 'en', reducedMotion: true, adapter: false });
 await runChecklistCase({ name: 'checklist-pt-mobile', path: '/checklist-modelo-de-jogo.html', width: 390, height: 844, lang: 'pt-BR', expectedTrialLanguage: 'pt-BR' });

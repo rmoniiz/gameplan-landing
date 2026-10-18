@@ -33,9 +33,11 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: original founder portrait preserved`, html.includes('assets/images/renan-founder-updated.png') && existsSync('assets/images/renan-founder-updated.png'));
   check(`${label}: factual football-career footer and crests present`, html.includes('class="founder-credentials"') && ['tetrabrazil.png','psgacademy.png','boavista.png','fcdafoz.png','pantherforce.png','koninklijkehfc.png','logo-CBF-Academy-colorida-colorida.png'].every((file) => html.includes('assets/images/clubs/' + file) && existsSync('assets/images/clubs/' + file)));
   check(`${label}: Boavista analyst role distinguished`, html.includes(language === 'pt-BR' ? 'Análise de desempenho' : 'Performance analyst'));
-  check(`${label}: career starts 2017 and C Licence shown`, html.includes(language === 'pt-BR' ? 'DESDE 2017' : 'SINCE 2017') && html.includes(language === 'pt-BR' ? 'Licença C' : 'C Licence'));
+  check(`${label}: experience label and C Licence shown`, html.includes(language === 'pt-BR' ? 'EXPERIÊNCIA E FORMAÇÃO' : 'EXPERIENCE & QUALIFICATIONS') && html.includes(language === 'pt-BR' ? 'Licença C' : 'C Licence'));
+  check(`${label}: Columbus and dating absent`, !/Columbus Futsal|SINCE 2017|DESDE 2017|founder-club-no-crest/.test(html));
+  check(`${label}: portrait byline`, /<figcaption class="founder-sign">RENAN MONIZ \/ (?:FUNDADOR|FOUNDER)<\/figcaption>/.test(html));
+  check(`${label}: experience spans the editorial columns`, /<\/div>\s*<aside class="founder-credentials"/.test(html.slice(html.indexOf('id="about"'),html.indexOf('id="pricing"'))));
   check(`${label}: no dated club appointments or redundant note`, !/\d{4}[–-]\d{2,4}|· (?:19|20)\d{2}|since 2024|desde 2024|founder-credentials-note/.test(html.slice(html.indexOf('class="founder-club-list"'),html.indexOf('</aside>',html.indexOf('class="founder-club-list"')))));
-  check(`${label}: Columbus Futsal correctly included`, html.includes('class="founder-club-no-crest"') && html.includes('Columbus Futsal') && html.includes(language === 'pt-BR' ? 'Treinador de futsal' : 'Futsal coach'));
   check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
   check(`${label}: branded video cover`, html.includes('poster="assets/images/gameplan-video-poster.svg"') && existsSync('assets/images/gameplan-video-poster.svg'));
   check(`${label}: original GamePlan logo preserved`, !html.includes('gameplan-mark-review.svg') && (html.match(/src="assets\/images\/gameplan-logo\.png"/g) || []).length === 3);
@@ -85,7 +87,9 @@ validatePage({
   attendanceText: 'None of those records, on its own, proves development',
 });
 
-check('portrait smaller, original ratio and natural color', css.includes('.founder-image{width:100%;max-width:240px;aspect-ratio:4/5') && css.includes('object-position:center 22%;filter:none') && css.includes('.founder-club-list{display:grid'));
+check('portrait retains 4/5 and original colors', css.includes('.founder-image{width:100%;max-width:240px;aspect-ratio:auto') && css.includes('height:auto;aspect-ratio:4/5') && css.includes('object-position:center 22%;filter:none'));
+check('credentials are visually secondary', css.includes('.founder-credentials{grid-column:1/-1;display:grid') && css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
+check('credentials respond on tablet and phone', css.includes('.founder-club-list{grid-template-columns:repeat(3,minmax(0,1fr))}') && css.includes('.founder-credentials{grid-template-columns:1fr;gap:20px'));
 check('screenshot-free editorial has responsive layouts', css.includes('.hero-grid.hero-grid-text-only') && css.includes('.story-grid.story-grid-text-only'));
 check('CSS has reduced-motion handling', css.includes('@media(prefers-reduced-motion:reduce)'));
 check('CSS has mobile layout', css.includes('@media(max-width:760px)'));

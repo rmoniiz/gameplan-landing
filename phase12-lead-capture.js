@@ -267,6 +267,7 @@
     try {
       const result = await requestCapture(payload);
       capture('landing_lead_capture_succeeded', { duplicate: Boolean(result.duplicate) });
+      setBusy(false);
       form.hidden = true;
       success.hidden = false;
       success.focus({ preventScroll: true });

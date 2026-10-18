@@ -40,7 +40,7 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: coach remains decision maker`, language === 'pt-BR' ? html.includes('decida como usá-la no seu trabalho') && html.includes('decisão técnica continuam com o treinador') : html.includes('decide how to use it in your coaching') && html.includes('technical decisions stay with the coach'));
   check(`${label}: privacy link`, html.includes(`href="${privacy}"`));
   check(`${label}: terms link`, html.includes(`href="${terms}"`));
-  check(`${label}: canonical preserved`, html.includes('<link rel="canonical" href="https://gameplan-landing.vercel.app/"'));
+  check(`${label}: canonical preserved`, html.includes(`<link rel="canonical" href="https://gameplan-landing.vercel.app/${language === 'pt-BR' ? 'index.html' : 'en.html'}" />`));
   check(`${label}: hreflang PT-BR preserved`, html.includes('hreflang="pt-BR"'));
   check(`${label}: hreflang EN preserved`, html.includes('hreflang="en"'));
   check(`${label}: Starter price preserved`, html.includes('€9.99'));

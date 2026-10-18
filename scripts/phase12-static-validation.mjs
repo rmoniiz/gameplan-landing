@@ -101,6 +101,26 @@ check('editorial runtime announces ready state', files.editorialJs.includes("doc
 check('editorial runtime observes coaching flow', files.editorialJs.includes("document.querySelectorAll('[data-flow-step]')"));
 check('editorial runtime respects reduced motion', files.editorialJs.includes('prefers-reduced-motion: reduce'));
 
+// Phase 13: canonical and hreflang must reflect deployed language routing.
+// '/' serves English; '/index.html' serves Portuguese. '/en.html' is an English alias.
+const seoBase = 'https://gameplan-landing.vercel.app/';
+const seoSitemap = await fs.readFile('sitemap.xml', 'utf8');
+const seoEntries = Array.from(seoSitemap.matchAll(/<url>([\s\S]*?)<\/url>/g), match => match[1]);
+const enEntry = seoEntries.find(entry => entry.includes('<loc>' + seoBase + '</loc>'));
+const ptEntry = seoEntries.find(entry => entry.includes('<loc>' + seoBase + 'index.html</loc>'));
+const reciprocalLocales = [
+  'hreflang="pt-BR" href="' + seoBase + 'index.html"',
+  'hreflang="en" href="' + seoBase + '"',
+  'hreflang="x-default" href="' + seoBase + '"',
+];
+check('PT-BR canonical is /index.html', files.pt.includes('<link rel="canonical" href="' + seoBase + 'index.html" />'));
+check('English canonical is /', files.en.includes('<link rel="canonical" href="' + seoBase + '" />'));
+check('PT-BR alternate languages match routed URLs', reciprocalLocales.every(link => files.pt.includes(link)));
+check('English alternate languages match routed URLs', reciprocalLocales.every(link => files.en.includes(link)));
+check('Sitemap has exactly EN root and PT-BR index', seoEntries.length === 2 && Boolean(enEntry) && Boolean(ptEntry));
+check('Sitemap EN and PT-BR hreflang are reciprocal', Boolean(enEntry && ptEntry) && [enEntry, ptEntry].every(entry => reciprocalLocales.every(link => entry.includes(link))));
+check('Sitemap has no duplicate English alias', !seoSitemap.includes('<loc>' + seoBase + 'en.html</loc>'));
+
 const report = { generatedAt: new Date().toISOString(), checks, failures };
 await fs.mkdir('phase12-validation-evidence', { recursive: true });
 await fs.writeFile('phase12-validation-evidence/static-report.json', JSON.stringify(report, null, 2));

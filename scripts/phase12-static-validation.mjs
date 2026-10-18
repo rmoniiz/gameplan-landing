@@ -85,6 +85,8 @@ check('PT-BR privacy states 12-month lead retention', files.privacyPt.includes('
 check('English privacy states 12-month lead retention', files.privacyEn.includes('for up to 12 months'));
 check('lead capture reduced-motion styles', files.styles.includes('@media(prefers-reduced-motion:reduce)'));
 check('lead capture mobile breakpoint styles', files.styles.includes('@media(max-width:820px)'));
+check('successful lead capture genuinely hides form despite grid display', files.styles.includes('.lead-magnet-form[hidden]{display:none}'));
+check('successful lead capture clears button busy state', files.capture.includes("setBusy(false);\n      form.hidden = true;"));
 check('checklist worksheet stays printable', files.styles.includes('.checklist-next-step{') && files.styles.includes('@media print{.checklist-next-step')); 
 check('lead capture accurately states no automatic email', files.capture.includes('It is not sent by email.') && files.capture.includes('Ele não é enviado por e-mail.'));
 check('lead capture print styles', files.styles.includes('@media print'));

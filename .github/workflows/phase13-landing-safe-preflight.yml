@@ -1,0 +1,79 @@
+name: Phase 13 landing safe preflight (diagnostic only)
+
+# Runs only on the focused SEO branch. Not a replacement for Phase 12
+# production readiness or the Rehearsal capture-contract test.
+on:
+  push:
+    branches:
+      - fix/phase13-landing-seo-locale-20261018
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-landing-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact branch SHA
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate static contracts including PT-BR and EN canonical URLs
+        run: npm run test:phase12:static
+
+      - name: Validate Phase 13 editorial landing contracts
+        run: node scripts/phase13-landing-refinement-validation.mjs
+
+      - name: Start isolated landing server
+        run: |
+          python3 -m http.server 4173 >/tmp/gameplan-phase13-landing-server.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/gameplan-phase13-landing-server.log
+          exit 1
+
+      - name: Validate consented synthetic lead form PT-BR EN desktop mobile
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: npm run test:phase12
+
+      - name: Validate accessibility and mobile layouts
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/phase13-editorial-a11y.mjs
+
+      - name: Validate continuous scroll
+        env:
+          BASE_URL: http://127.0.0.1:4173
+        run: node scripts/phase12-scroll-stability.mjs
+
+      # The historical scripts/phase12-rehearsal-smoke.mjs targets deleted
+      # project dyhkhnjmnmktpjlqcqej and performs writes. It remains an
+      # independent BLOCKED release gate until its replacement contract is
+      # approved for the current Rehearsal. Do not silently replace/skip that
+      # gate in the canonical Phase 12 workflow.
+      - name: Validate production build
+        run: npm run build
+
+      - name: Preserve test evidence (mandatory for this diagnostic workflow)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase13-landing-safe-preflight-${{ github.sha }}
+          path: phase12-validation-evidence/
+          if-no-files-found: error
+          retention-days: 7

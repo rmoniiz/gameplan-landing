@@ -28,7 +28,12 @@ const validatePage = ({ label, html, language, privacy, terms, heroLines, demoVi
   check(`${label}: legacy landing runtimes removed`, !/landing-final-polish\.js|landing-latest-connection\.js|phase13-landing-refinement\.js/.test(html));
   check(`${label}: old SaaS feature grid removed`, !/features-grid|feature-card|connection-board|bg-blur|bg-grid/.test(html));
   check(`${label}: six flow steps`, (html.match(/data-flow-step=/g) || []).length === 6);
-  check(`${label}: real product assets`, ['assets/images/exercise-146-pt-desktop.webp', 'assets/images/exercise-146-pt-mobile.webp', 'assets/images/exercise-146-pt-diagram.webp', 'assets/images/renan-founder-updated.png'].every((asset) => html.includes(asset) && existsSync(asset)));
+  check(`${label}: exercise screenshot removed from hero and training`, !/exercise-146-pt-(?:desktop|mobile|diagram)\\.webp|class="hero-product reveal"|class="product-shot product-shot-dark"/.test(html));
+  check(`${label}: both story sections preserved without screenshot`, html.includes('class="hero-grid hero-grid-text-only"') && html.includes('class="story-grid story-grid-reverse story-grid-text-only reveal"'));
+  check(`${label}: original founder portrait preserved`, html.includes('assets/images/renan-founder-updated.png') && existsSync('assets/images/renan-founder-updated.png'));
+  check(`${label}: factual football-career footer and crests present`, html.includes('class="founder-credentials"') && ['tetrabrazil.png','psgacademy.png','boavista.png','fcdafoz.png','pantherforce.png','koninklijkehfc.png','logo-CBF-Academy-colorida-colorida.png'].every((file) => html.includes('assets/images/clubs/' + file) && existsSync('assets/images/clubs/' + file)));
+  check(`${label}: Boavista analyst role distinguished`, html.includes(language === 'pt-BR' ? 'Análise de desempenho' : 'Performance analyst'));
+  check(`${label}: career starts 2017 and C Licence shown`, html.includes('2017–19') && html.includes(language === 'pt-BR' ? 'Licença C' : 'C Licence'));
   check(`${label}: obsolete match screenshot removed pending authenticated capture`, !html.includes('assets/images/estatistica-da-partida.png'));
   check(`${label}: branded video cover`, html.includes('poster="assets/images/gameplan-video-poster.svg"') && existsSync('assets/images/gameplan-video-poster.svg'));
   check(`${label}: original GamePlan logo preserved`, !html.includes('gameplan-mark-review.svg') && (html.match(/src="assets\/images\/gameplan-logo\.png"/g) || []).length === 3);
@@ -78,6 +83,8 @@ validatePage({
   attendanceText: 'None of those records, on its own, proves development',
 });
 
+check('portrait reduced without hiding founder copy', css.includes('.founder-image{width:100%;max-width:320px') && css.includes('.founder-club-list{display:grid'));
+check('screenshot-free editorial has responsive layouts', css.includes('.hero-grid.hero-grid-text-only') && css.includes('.story-grid.story-grid-text-only'));
 check('CSS has reduced-motion handling', css.includes('@media(prefers-reduced-motion:reduce)'));
 check('CSS has mobile layout', css.includes('@media(max-width:760px)'));
 check('CSS uses editorial module list', css.includes('.module-list'));

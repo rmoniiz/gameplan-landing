@@ -387,3 +387,42 @@ section[id]{scroll-margin-top:calc(var(--header) + 20px)}
 .week-editorial div:last-child strong{color:#0b745a}
 @media(max-width:1080px){.process-example dl{grid-template-columns:1fr 1fr}.week-editorial strong{font-size:1.25rem}}
 @media(max-width:760px){.process-example dl{grid-template-columns:1fr;gap:14px}.process-example dl>div{display:grid;grid-template-columns:110px 1fr;gap:16px}.process-example dd{margin:0}.week-editorial{grid-template-columns:1fr}.week-editorial div{min-height:0;padding:14px 0}.week-editorial strong{font-size:1.5rem}}
+
+
+/* Phase 13 founder review: remove the exercise screenshot from the landing,
+   retain the full editorial story, and reduce the portrait to a supporting image. */
+.hero-grid.hero-grid-text-only{grid-template-columns:minmax(0,1fr)}
+.hero-grid-text-only .hero-copy{max-width:940px;padding-bottom:42px}
+.story-grid.story-grid-text-only{grid-template-columns:minmax(0,1fr)}
+.story-grid-text-only .story-copy{width:100%;max-width:800px;margin-inline:auto}
+.founder-editorial{grid-template-columns:minmax(0,320px) minmax(0,780px);gap:clamp(32px,5vw,76px);align-items:start;justify-content:center;padding:clamp(48px,6vw,88px) clamp(20px,4vw,64px)}
+.founder-image{width:100%;max-width:320px;aspect-ratio:4/5;border:0;align-self:start}
+.founder-image img{display:block;width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center 22%}
+.founder-copy{min-width:0;padding:0;align-self:start}
+.founder-credentials{margin-top:24px;padding-top:22px;border-top:1px solid var(--line-light)}
+.founder-credentials-title{margin:0 0 16px;color:#0b745a;font-size:.72rem;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+.founder-club-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 24px;margin:0;padding:0;list-style:none}
+.founder-club-list li{display:flex;gap:10px;align-items:center;min-width:0}
+.founder-club-list img{width:42px;height:42px;flex:0 0 42px;object-fit:contain}
+.founder-club-list span{min-width:0}
+.founder-club-list strong{display:block;font-size:.84rem;line-height:1.25;font-weight:750;color:var(--ink)}
+.founder-club-list small{display:block;margin-top:3px;font-size:.72rem;line-height:1.35;color:var(--muted-dark)}
+.founder-credentials-note{margin:15px 0 0;font-size:.74rem;line-height:1.6;color:var(--muted-dark)}
+@media(max-width:1080px){
+  .founder-editorial{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+  .founder-image{max-width:260px}
+}
+@media(max-width:760px){
+  .hero-grid.hero-grid-text-only{grid-template-columns:1fr}
+  .story-grid.story-grid-text-only{grid-template-columns:1fr}
+  .story-grid-text-only .story-copy{max-width:100%}
+  .founder-editorial{grid-template-columns:1fr;gap:26px;padding:42px 20px 56px}
+  .founder-image{width:min(100%,220px);max-width:220px;max-height:none;aspect-ratio:4/5;border:0}
+  .founder-image img{height:100%;max-height:none;min-height:0}
+  .founder-copy{padding:0}
+  .founder-club-list{grid-template-columns:1fr 1fr;gap:16px 12px}
+  .founder-club-list img{width:36px;height:36px;flex-basis:36px}
+}
+@media(max-width:440px){
+  .founder-club-list{grid-template-columns:1fr}
+}

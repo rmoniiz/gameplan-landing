@@ -49,7 +49,10 @@
     privacy: 'Privacy Policy',
     submit: 'Get the free checklist',
     submitting: 'Unlocking checklist…',
-    unavailable: 'Checklist requests are disabled on this Preview. No personal details have been sent.',
+    unavailable: 'This Preview does not collect leads. Use the production website to request the checklist.',
+    previewTitle: 'Preview only',
+    previewText: 'Lead registration is disabled here. You can view the checklist without entering personal details. No request will be recorded.',
+    previewOpen: 'View sample checklist',
     successTitle: 'Checklist unlocked',
     successText: 'Your request was recorded. Open the checklist below in your browser, then print or save it as a PDF. It is not sent by email.',
     open: 'Open checklist',
@@ -70,7 +73,10 @@
     privacy: 'Política de Privacidade',
     submit: 'Receber checklist gratuito',
     submitting: 'Liberando checklist…',
-    unavailable: 'As solicitações estão desativadas neste Preview. Nenhum dado pessoal foi enviado.',
+    unavailable: 'Este Preview não captura leads. Use o site oficial para solicitar o checklist.',
+    previewTitle: 'Somente visualização',
+    previewText: 'O cadastro de leads está desativado aqui. Você pode visualizar o checklist sem informar dados pessoais. Nenhuma solicitação será registrada.',
+    previewOpen: 'Visualizar checklist',
     successTitle: 'Checklist liberado',
     successText: 'Sua solicitação foi registrada. Abra o checklist abaixo e imprima ou salve em PDF. Ele não é enviado por e-mail.',
     open: 'Abrir checklist',
@@ -150,6 +156,12 @@
           <p id="leadFormNote" class="lead-magnet-note">${copy.note}</p>
           <p id="leadFormStatus" class="lead-form-status" role="status" aria-live="polite"></p>
         </form>
+        <div class="lead-preview" hidden aria-labelledby="leadPreviewTitle">
+          <p class="lead-preview-kicker">${copy.previewTitle}</p>
+          <h3 id="leadPreviewTitle">${copy.previewTitle}</h3>
+          <p>${copy.previewText}</p>
+          <a class="btn btn-primary btn-large lead-preview-open" href="${checklistUrl}">${copy.previewOpen}</a>
+        </div>
         <div class="lead-success" hidden tabindex="-1">
           <span class="lead-success-mark" aria-hidden="true">✓</span>
           <h3>${copy.successTitle}</h3>
@@ -167,6 +179,7 @@
 
   const form = section.querySelector('.lead-magnet-form');
   const success = section.querySelector('.lead-success');
+  const preview = section.querySelector('.lead-preview');
   const submit = section.querySelector('.lead-submit');
   const status = section.querySelector('.lead-form-status');
   const open = section.querySelector('.lead-open');
@@ -279,6 +292,9 @@
     }
   });
 
-  if (!canSubmit) statusMessage(copy.unavailable, 'info');
   setBusy(false);
+  if (!canSubmit) {
+    form.hidden = true;
+    preview.hidden = false;
+  }
 })();

@@ -111,12 +111,10 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
   if (!adapter) {
     if (!(await form.isVisible())) errors.push('Preview demonstration must show the registration form for review');
     if (await page.locator('.lead-preview').isVisible()) errors.push('Preview shows read-only card instead of demo form');
-    if (!(await page.locator('.lead-demo-notice').isVisible())) errors.push('Preview missing explicit demo notice');
+    if (await page.locator('.lead-demo-notice').count()) errors.push('Preview still includes the unwanted demo banner');
+    if (await page.locator('#leadFormNote').isVisible()) errors.push('Preview still displays the redundant simulated-request note');
+    if ((await form.getAttribute('aria-describedby')) !== 'leadFormStatus') errors.push('Preview retains a hidden explanatory note in aria-describedby');
     if (await page.locator('.lead-success').isVisible()) errors.push('Preview shows success before submission');
-    const caption = (await page.locator('.lead-demo-notice').innerText()).trim();
-    if (!(lang === 'en' ? caption.includes('No name or email is sent or saved') : caption.includes('Nenhum nome ou e-mail é enviado ou salvo'))) {
-      errors.push('Preview lacks no-data disclosure');
-    }
     const buttonText = await submitButton.textContent();
     if (buttonText.trim() !== (lang === 'en' ? 'Test checklist access' : 'Testar acesso ao checklist')) errors.push('Preview misleadingly uses live conversion copy');
     const explicitDemoConsent = await form.locator('.lead-consent span').innerText();

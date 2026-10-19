@@ -29,7 +29,11 @@
     endpoint: typeof runtimeConfig.endpoint === 'string' ? runtimeConfig.endpoint.trim() : '',
   });
   const hasLiveAdapter = captureConfig.enabled && /^https:\/\/[^\s]+$/.test(captureConfig.endpoint);
-  const canSubmit = hasLiveAdapter || typeof testAdapter === 'function';
+  // Preview demos are interactive but must never create leads or mimic a live Production integration.
+  const hostname = window.location.hostname;
+  const isPreviewSimulation = !hasLiveAdapter && typeof testAdapter !== 'function' && !isProductionHost
+    && (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app'));
+  const canSubmit = hasLiveAdapter || typeof testAdapter === 'function' || isPreviewSimulation;
   const checklistUrl = isEnglish ? 'game-model-checklist.html' : 'checklist-modelo-de-jogo.html';
   const privacyUrl = isEnglish ? 'privacy-en.html' : 'privacy.html';
   const trialUrl = isEnglish
@@ -49,7 +53,16 @@
     privacy: 'Privacy Policy',
     submit: 'Get the free checklist',
     submitting: 'Unlocking checklist…',
-    unavailable: 'Checklist requests are disabled on this Preview. No personal details have been sent.',
+    unavailable: 'This Preview does not collect leads. Use the production website to request the checklist.',
+    previewTitle: 'Review the checklist',
+    previewEyebrow: 'Preview only',
+    previewText: 'Lead registration is disabled here. You can view the checklist without entering personal details. No request will be recorded.',
+    previewOpen: 'View sample checklist',
+    demoConsent: 'I understand this is a demonstration and no personal details will be sent or recorded.',
+    demoSubmit: 'Test checklist access',
+    demoSubmitting: 'Preparing demo…',
+    demoSuccessTitle: 'Demo: checklist ready',
+    demoSuccessText: 'The form flow worked in demonstration mode. No lead was registered. Open the checklist below.',
     successTitle: 'Checklist unlocked',
     successText: 'Your request was recorded. Open the checklist below in your browser, then print or save it as a PDF. It is not sent by email.',
     open: 'Open checklist',
@@ -70,7 +83,16 @@
     privacy: 'Política de Privacidade',
     submit: 'Receber checklist gratuito',
     submitting: 'Liberando checklist…',
-    unavailable: 'As solicitações estão desativadas neste Preview. Nenhum dado pessoal foi enviado.',
+    unavailable: 'Este Preview não captura leads. Use o site oficial para solicitar o checklist.',
+    previewTitle: 'Conheça o checklist',
+    previewEyebrow: 'Somente visualização',
+    previewText: 'O cadastro de leads está desativado aqui. Você pode visualizar o checklist sem informar dados pessoais. Nenhuma solicitação será registrada.',
+    previewOpen: 'Visualizar checklist',
+    demoConsent: 'Entendo que esta é uma demonstração e que nenhum dado pessoal será enviado ou registrado.',
+    demoSubmit: 'Testar acesso ao checklist',
+    demoSubmitting: 'Preparando demonstração…',
+    demoSuccessTitle: 'Demonstração: checklist pronto',
+    demoSuccessText: 'O fluxo funcionou em modo de demonstração. Nenhum lead foi registrado. Abra o checklist abaixo.',
     successTitle: 'Checklist liberado',
     successText: 'Sua solicitação foi registrada. Abra o checklist abaixo e imprima ou salve em PDF. Ele não é enviado por e-mail.',
     open: 'Abrir checklist',
@@ -95,6 +117,7 @@
   ]);
 
   const capture = (eventName, properties = {}) => {
+    if (isPreviewSimulation) return; // Demo interactions are not real lead/conversion analytics.
     try {
       if (localStorage.getItem(analyticsConsentKey) !== 'granted') return;
       const safeProperties = {
@@ -150,6 +173,12 @@
           <p id="leadFormNote" class="lead-magnet-note">${copy.note}</p>
           <p id="leadFormStatus" class="lead-form-status" role="status" aria-live="polite"></p>
         </form>
+        <div class="lead-preview" hidden aria-labelledby="leadPreviewTitle">
+          <p class="lead-preview-kicker">${copy.previewEyebrow}</p>
+          <h3 id="leadPreviewTitle">${copy.previewTitle}</h3>
+          <p>${copy.previewText}</p>
+          <a class="btn btn-primary btn-large lead-preview-open" href="${checklistUrl}">${copy.previewOpen}</a>
+        </div>
         <div class="lead-success" hidden tabindex="-1">
           <span class="lead-success-mark" aria-hidden="true">✓</span>
           <h3>${copy.successTitle}</h3>
@@ -167,6 +196,7 @@
 
   const form = section.querySelector('.lead-magnet-form');
   const success = section.querySelector('.lead-success');
+  const preview = section.querySelector('.lead-preview');
   const submit = section.querySelector('.lead-submit');
   const status = section.querySelector('.lead-form-status');
   const open = section.querySelector('.lead-open');
@@ -178,7 +208,9 @@
   };
   const setBusy = (busy) => {
     submit.disabled = busy || !canSubmit;
-    submit.textContent = busy ? copy.submitting : copy.submit;
+    submit.textContent = busy
+      ? (isPreviewSimulation ? copy.demoSubmitting : copy.submitting)
+      : (isPreviewSimulation ? copy.demoSubmit : copy.submit);
     form.setAttribute('aria-busy', String(busy));
   };
   const campaignValue = (key) => {
@@ -188,6 +220,7 @@
   };
   const requestCapture = async (payload) => {
     if (typeof testAdapter === 'function') return testAdapter(payload);
+    if (isPreviewSimulation) return { ok: true, duplicate: false, demonstration: true };
     if (!hasLiveAdapter) throw new Error('integration_unavailable');
 
     const controller = new AbortController();
@@ -267,6 +300,7 @@
     try {
       const result = await requestCapture(payload);
       capture('landing_lead_capture_succeeded', { duplicate: Boolean(result.duplicate) });
+      setBusy(false);
       form.hidden = true;
       success.hidden = false;
       success.focus({ preventScroll: true });
@@ -278,6 +312,15 @@
     }
   });
 
-  if (!canSubmit) statusMessage(copy.unavailable, 'info');
   setBusy(false);
+  if (isPreviewSimulation) {
+    form.querySelector('.lead-consent span').textContent = copy.demoConsent;
+    form.querySelector('#leadFormNote').hidden = true;
+    form.setAttribute('aria-describedby', 'leadFormStatus');
+    success.querySelector('h3').textContent = copy.demoSuccessTitle;
+    success.querySelector('p').textContent = copy.demoSuccessText;
+  } else if (!canSubmit) {
+    form.hidden = true;
+    preview.hidden = false;
+  }
 })();

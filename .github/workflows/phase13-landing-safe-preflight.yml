@@ -7,6 +7,7 @@ on:
     branches:
       - fix/phase13-landing-seo-locale-20261018
       - fix/phase13-landing-visual-founder-career-20261018
+      - fix/phase13-lead-confirmation-hidden-20261018
 
 permissions:
   contents: read

@@ -50,7 +50,8 @@
     submit: 'Get the free checklist',
     submitting: 'Unlocking checklist…',
     unavailable: 'This Preview does not collect leads. Use the production website to request the checklist.',
-    previewTitle: 'Preview only',
+    previewTitle: 'Review the checklist',
+    previewEyebrow: 'Preview only',
     previewText: 'Lead registration is disabled here. You can view the checklist without entering personal details. No request will be recorded.',
     previewOpen: 'View sample checklist',
     successTitle: 'Checklist unlocked',
@@ -74,7 +75,8 @@
     submit: 'Receber checklist gratuito',
     submitting: 'Liberando checklist…',
     unavailable: 'Este Preview não captura leads. Use o site oficial para solicitar o checklist.',
-    previewTitle: 'Somente visualização',
+    previewTitle: 'Conheça o checklist',
+    previewEyebrow: 'Somente visualização',
     previewText: 'O cadastro de leads está desativado aqui. Você pode visualizar o checklist sem informar dados pessoais. Nenhuma solicitação será registrada.',
     previewOpen: 'Visualizar checklist',
     successTitle: 'Checklist liberado',
@@ -157,7 +159,7 @@
           <p id="leadFormStatus" class="lead-form-status" role="status" aria-live="polite"></p>
         </form>
         <div class="lead-preview" hidden aria-labelledby="leadPreviewTitle">
-          <p class="lead-preview-kicker">${copy.previewTitle}</p>
+          <p class="lead-preview-kicker">${copy.previewEyebrow}</p>
           <h3 id="leadPreviewTitle">${copy.previewTitle}</h3>
           <p>${copy.previewText}</p>
           <a class="btn btn-primary btn-large lead-preview-open" href="${checklistUrl}">${copy.previewOpen}</a>

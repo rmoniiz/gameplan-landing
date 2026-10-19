@@ -88,9 +88,9 @@ check('lead capture mobile breakpoint styles', files.styles.includes('@media(max
 check('successful lead capture genuinely hides form despite grid display', files.styles.includes('.lead-magnet-form[hidden]{display:none}'));
 check('successful lead capture clears button busy state', files.capture.includes("setBusy(false);\n      form.hidden = true;"));
 check('unconfigured Vercel Preview simulates interaction but not persistence', files.capture.includes('isPreviewSimulation') && files.capture.includes('if (isPreviewSimulation) return { ok: true, duplicate: false, demonstration: true }') && files.capture.includes('if (isPreviewSimulation) return; // Demo interactions are not real lead/conversion analytics.'));
-check('Preview explicitly marks form as simulation', files.capture.includes('No name or email is sent or saved') && files.capture.includes('Nenhum nome ou e-mail é enviado ou salvo'));
+check('Preview identifies simulation through consent and confirmation', files.capture.includes('I understand this is a demonstration') && files.capture.includes('Entendo que esta é uma demonstração') && files.capture.includes('No lead was registered') && files.capture.includes('Nenhum lead foi registrado'));
 check('Preview demonstration never activates on Production', files.capture.includes('!isProductionHost') && files.capture.includes("productionHost = 'gameplan-landing.vercel.app'"));
-check('Preview demo disclosure respects hidden state', files.styles.includes('.lead-demo-notice[hidden]{display:none}'));
+check('Preview removes redundant notes without hiding consent', files.capture.includes("form.querySelector('#leadFormNote').hidden = true;") && !files.capture.includes('leadDemoNote') && !files.capture.includes('demoNotice:') && !files.capture.includes('demoNote:'));
 check('checklist worksheet stays printable', files.styles.includes('.checklist-next-step{') && files.styles.includes('@media print{.checklist-next-step')); 
 check('lead capture accurately states no automatic email', files.capture.includes('It is not sent by email.') && files.capture.includes('Ele não é enviado por e-mail.'));
 check('lead capture print styles', files.styles.includes('@media print'));

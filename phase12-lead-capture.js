@@ -29,7 +29,11 @@
     endpoint: typeof runtimeConfig.endpoint === 'string' ? runtimeConfig.endpoint.trim() : '',
   });
   const hasLiveAdapter = captureConfig.enabled && /^https:\/\/[^\s]+$/.test(captureConfig.endpoint);
-  const canSubmit = hasLiveAdapter || typeof testAdapter === 'function';
+  // Preview demos are interactive but must never create leads or mimic a live Production integration.
+  const hostname = window.location.hostname;
+  const isPreviewSimulation = !hasLiveAdapter && typeof testAdapter !== 'function' && !isProductionHost
+    && (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.vercel.app'));
+  const canSubmit = hasLiveAdapter || typeof testAdapter === 'function' || isPreviewSimulation;
   const checklistUrl = isEnglish ? 'game-model-checklist.html' : 'checklist-modelo-de-jogo.html';
   const privacyUrl = isEnglish ? 'privacy-en.html' : 'privacy.html';
   const trialUrl = isEnglish
@@ -54,6 +58,13 @@
     previewEyebrow: 'Preview only',
     previewText: 'Lead registration is disabled here. You can view the checklist without entering personal details. No request will be recorded.',
     previewOpen: 'View sample checklist',
+    demoNotice: 'DEMO ONLY — You can test the form. No name or email is sent or saved. Please use test details.',
+    demoConsent: 'I understand this is a demonstration and no personal details will be sent or recorded.',
+    demoNote: 'This is a simulated request. For a real checklist request, use the official GamePlan landing page.',
+    demoSubmit: 'Test checklist access',
+    demoSubmitting: 'Preparing demo…',
+    demoSuccessTitle: 'Demo: checklist ready',
+    demoSuccessText: 'The form flow worked in demonstration mode. No lead was registered. Open the checklist below.',
     successTitle: 'Checklist unlocked',
     successText: 'Your request was recorded. Open the checklist below in your browser, then print or save it as a PDF. It is not sent by email.',
     open: 'Open checklist',
@@ -79,6 +90,13 @@
     previewEyebrow: 'Somente visualização',
     previewText: 'O cadastro de leads está desativado aqui. Você pode visualizar o checklist sem informar dados pessoais. Nenhuma solicitação será registrada.',
     previewOpen: 'Visualizar checklist',
+    demoNotice: 'APENAS DEMONSTRAÇÃO — Teste o formulário. Nenhum nome ou e-mail é enviado ou salvo. Use dados de teste.',
+    demoConsent: 'Entendo que esta é uma demonstração e que nenhum dado pessoal será enviado ou registrado.',
+    demoNote: 'Solicitação simulada. Para pedir o checklist de verdade, use a landing oficial do GamePlan.',
+    demoSubmit: 'Testar acesso ao checklist',
+    demoSubmitting: 'Preparando demonstração…',
+    demoSuccessTitle: 'Demonstração: checklist pronto',
+    demoSuccessText: 'O fluxo funcionou em modo de demonstração. Nenhum lead foi registrado. Abra o checklist abaixo.',
     successTitle: 'Checklist liberado',
     successText: 'Sua solicitação foi registrada. Abra o checklist abaixo e imprima ou salve em PDF. Ele não é enviado por e-mail.',
     open: 'Abrir checklist',
@@ -103,6 +121,7 @@
   ]);
 
   const capture = (eventName, properties = {}) => {
+    if (isPreviewSimulation) return; // Demo interactions are not real lead/conversion analytics.
     try {
       if (localStorage.getItem(analyticsConsentKey) !== 'granted') return;
       const safeProperties = {
@@ -137,7 +156,8 @@
         <ul class="lead-magnet-benefits">${copy.bullets.map((item) => `<li>${item}</li>`).join('')}</ul>
       </div>
       <div class="lead-magnet-form-wrap">
-        <form class="lead-magnet-form" novalidate aria-describedby="leadFormNote leadFormStatus">
+        <form class="lead-magnet-form" novalidate aria-describedby="leadDemoNote leadFormNote leadFormStatus">
+          <p id="leadDemoNote" class="lead-demo-notice" hidden>${copy.demoNotice}</p>
           <div class="lead-field">
             <label for="leadName">${copy.name}</label>
             <input id="leadName" name="name" type="text" autocomplete="name" minlength="2" maxlength="120" required placeholder="${copy.namePlaceholder}" />
@@ -193,7 +213,9 @@
   };
   const setBusy = (busy) => {
     submit.disabled = busy || !canSubmit;
-    submit.textContent = busy ? copy.submitting : copy.submit;
+    submit.textContent = busy
+      ? (isPreviewSimulation ? copy.demoSubmitting : copy.submitting)
+      : (isPreviewSimulation ? copy.demoSubmit : copy.submit);
     form.setAttribute('aria-busy', String(busy));
   };
   const campaignValue = (key) => {
@@ -203,6 +225,7 @@
   };
   const requestCapture = async (payload) => {
     if (typeof testAdapter === 'function') return testAdapter(payload);
+    if (isPreviewSimulation) return { ok: true, duplicate: false, demonstration: true };
     if (!hasLiveAdapter) throw new Error('integration_unavailable');
 
     const controller = new AbortController();
@@ -295,7 +318,13 @@
   });
 
   setBusy(false);
-  if (!canSubmit) {
+  if (isPreviewSimulation) {
+    form.querySelector('.lead-demo-notice').hidden = false;
+    form.querySelector('.lead-consent span').textContent = copy.demoConsent;
+    form.querySelector('#leadFormNote').textContent = copy.demoNote;
+    success.querySelector('h3').textContent = copy.demoSuccessTitle;
+    success.querySelector('p').textContent = copy.demoSuccessText;
+  } else if (!canSubmit) {
     form.hidden = true;
     preview.hidden = false;
   }

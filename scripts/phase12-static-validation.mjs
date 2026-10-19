@@ -87,8 +87,10 @@ check('lead capture reduced-motion styles', files.styles.includes('@media(prefer
 check('lead capture mobile breakpoint styles', files.styles.includes('@media(max-width:820px)'));
 check('successful lead capture genuinely hides form despite grid display', files.styles.includes('.lead-magnet-form[hidden]{display:none}'));
 check('successful lead capture clears button busy state', files.capture.includes("setBusy(false);\n      form.hidden = true;"));
-check('disabled Preview replaces form with read-only checklist CTA', files.capture.includes('form.hidden = true;\n    preview.hidden = false;') && files.capture.includes('class="lead-preview" hidden') && files.capture.includes('No request will be recorded.'));
-check('disabled Preview read-only panel respects hidden state', files.styles.includes('.lead-preview[hidden]{display:none}'));
+check('unconfigured Vercel Preview simulates interaction but not persistence', files.capture.includes('isPreviewSimulation') && files.capture.includes('if (isPreviewSimulation) return { ok: true, duplicate: false, demonstration: true }') && files.capture.includes('if (isPreviewSimulation) return; // Demo interactions are not real lead/conversion analytics.'));
+check('Preview explicitly marks form as simulation', files.capture.includes('No name or email is sent or saved') && files.capture.includes('Nenhum nome ou e-mail é enviado ou salvo'));
+check('Preview demonstration never activates on Production', files.capture.includes('!isProductionHost') && files.capture.includes("productionHost = 'gameplan-landing.vercel.app'"));
+check('Preview demo disclosure respects hidden state', files.styles.includes('.lead-demo-notice[hidden]{display:none}'));
 check('checklist worksheet stays printable', files.styles.includes('.checklist-next-step{') && files.styles.includes('@media print{.checklist-next-step')); 
 check('lead capture accurately states no automatic email', files.capture.includes('It is not sent by email.') && files.capture.includes('Ele não é enviado por e-mail.'));
 check('lead capture print styles', files.styles.includes('@media print'));

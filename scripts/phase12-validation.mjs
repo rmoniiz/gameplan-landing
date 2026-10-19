@@ -117,7 +117,7 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
     if (!(lang === 'en' ? caption.includes('No name or email is sent or saved') : caption.includes('Nenhum nome ou e-mail é enviado ou salvo'))) {
       errors.push('Preview lacks no-data disclosure');
     }
-    const buttonText = await submitButton.innerText();
+    const buttonText = await submitButton.textContent();
     if (buttonText.trim() !== (lang === 'en' ? 'Test checklist access' : 'Testar acesso ao checklist')) errors.push('Preview misleadingly uses live conversion copy');
     const explicitDemoConsent = await form.locator('.lead-consent span').innerText();
     if (!(lang === 'en' ? explicitDemoConsent.includes('demonstration') : explicitDemoConsent.includes('demonstração'))) errors.push('Preview consent copy suggests real capture');

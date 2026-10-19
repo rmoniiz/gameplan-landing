@@ -109,18 +109,18 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
   let success = null;
 
   if (!adapter) {
-    const preview = page.locator('.lead-preview');
-    if (await form.isVisible()) errors.push('disabled Preview still asks for personal details');
-    if (!(await preview.isVisible())) errors.push('disabled Preview has no read-only checklist panel');
-    if (await page.locator('.lead-success').isVisible()) errors.push('disabled Preview misleadingly shows recorded success');
-    const previewCopy = (await preview.innerText()).trim();
-    if (!(lang === 'en' ? previewCopy.includes('No request will be recorded.') : previewCopy.includes('Nenhuma solicitação será registrada.'))) {
-      errors.push('disabled Preview lacks explicit no-lead disclosure');
+    if (!(await form.isVisible())) errors.push('Preview demonstration must show the registration form for review');
+    if (await page.locator('.lead-preview').isVisible()) errors.push('Preview shows read-only card instead of demo form');
+    if (!(await page.locator('.lead-demo-notice').isVisible())) errors.push('Preview missing explicit demo notice');
+    if (await page.locator('.lead-success').isVisible()) errors.push('Preview shows success before submission');
+    const caption = (await page.locator('.lead-demo-notice').innerText()).trim();
+    if (!(lang === 'en' ? caption.includes('No name or email is sent or saved') : caption.includes('Nenhum nome ou e-mail é enviado ou salvo'))) {
+      errors.push('Preview lacks no-data disclosure');
     }
-    const sample = page.locator('.lead-preview-open');
-    if (!(await sample.isVisible())) errors.push('disabled Preview checklist CTA missing');
-    const link = await sample.getAttribute('href');
-    if (!link?.endsWith(lang === 'en' ? 'game-model-checklist.html' : 'checklist-modelo-de-jogo.html')) errors.push('disabled Preview checklist link mismatch');
+    const buttonText = await submitButton.innerText();
+    if (buttonText.trim() !== (lang === 'en' ? 'Test checklist access' : 'Testar acesso ao checklist')) errors.push('Preview misleadingly uses live conversion copy');
+    const explicitDemoConsent = await form.locator('.lead-consent span').innerText();
+    if (!(lang === 'en' ? explicitDemoConsent.includes('demonstration') : explicitDemoConsent.includes('demonstração'))) errors.push('Preview consent copy suggests real capture');
   }
 
   if (submit) {
@@ -139,7 +139,10 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
     if (await submitButton.isDisabled()) errors.push('confirmed capture leaves the submit button disabled');
     if ((await form.getAttribute('aria-busy')) !== 'false') errors.push('confirmed capture leaves form aria-busy=true');
     const restoredSubmitText = (await submitButton.innerText()).trim();
-    if (restoredSubmitText !== (lang === 'en' ? 'Get the free checklist' : 'Receber checklist gratuito')) {
+    const expectedText = !adapter
+      ? (lang === 'en' ? 'Test checklist access' : 'Testar acesso ao checklist')
+      : (lang === 'en' ? 'Get the free checklist' : 'Receber checklist gratuito');
+    if (restoredSubmitText !== expectedText) {
       errors.push('confirmed capture leaves the button in its loading state');
     }
     if (!(await page.locator('.lead-open').isVisible())) errors.push('checklist action not visible after confirmed capture');
@@ -149,8 +152,16 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
     const trialHref = await page.locator('.lead-trial').getAttribute('href');
     const payload = await page.evaluate(() => window.__GAMEPLAN_PHASE12_TEST_PAYLOAD__);
     if (!focusedClass.includes('lead-success')) errors.push('focus did not move to the success state');
-    if (payload?.email?.endsWith('@example.invalid') !== true) errors.push('test adapter did not receive the synthetic payload');
-    if (payload?.company !== '') errors.push('honeypot value was not normalized');
+    if (adapter) {
+      if (payload?.email?.endsWith('@example.invalid') !== true) errors.push('test adapter did not receive the synthetic payload');
+      if (payload?.company !== '') errors.push('honeypot value was not normalized');
+    } else {
+      if (payload !== undefined) errors.push('Preview demo forwarded payload to test adapter');
+      const successCopy = await page.locator('.lead-success').innerText();
+      if (!(lang === 'en' ? successCopy.includes('No lead was registered') : successCopy.includes('Nenhum lead foi registrado'))) {
+        errors.push('Preview success misrepresents lead persistence');
+      }
+    }
     if (!trialHref?.includes(`lang=${lang}`)) errors.push(`trial did not preserve language: ${trialHref}`);
 
     await page.locator('.lead-open').evaluate((element) => element.addEventListener('click', (event) => event.preventDefault(), { once: true }));
@@ -162,8 +173,12 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
       (window.__GAMEPLAN_PHASE12_ANALYTICS__ || []).filter((entry) => entry.eventName.startsWith('landing_lead_'))
     );
     const eventNames = new Set(leadAnalytics.map((entry) => entry.eventName));
-    for (const required of ['landing_lead_capture_started', 'landing_lead_capture_submitted', 'landing_lead_capture_succeeded', 'landing_lead_magnet_opened', 'landing_lead_magnet_trial_clicked']) {
-      if (!eventNames.has(required)) errors.push(`missing analytics event ${required}`);
+    if (adapter) {
+      for (const required of ['landing_lead_capture_started', 'landing_lead_capture_submitted', 'landing_lead_capture_succeeded', 'landing_lead_magnet_opened', 'landing_lead_magnet_trial_clicked']) {
+        if (!eventNames.has(required)) errors.push(`missing analytics event ${required}`);
+      }
+    } else if (eventNames.size) {
+      errors.push('Preview demo produced real lead conversion analytics');
     }
     for (const entry of leadAnalytics) {
       for (const key of Object.keys(entry.properties || {})) {
@@ -282,8 +297,8 @@ await runLandingCase({ name: 'pt-desktop-success', path: '/index.html?utm_source
 await runLandingCase({ name: 'en-desktop-success', path: '/en.html?utm_source=phase12-test', width: 1440, height: 1000, lang: 'en', adapter: true, submit: true });
 await runLandingCase({ name: 'pt-mobile-success', path: '/index.html', width: 390, height: 844, lang: 'pt-BR', adapter: true, submit: true });
 await runLandingCase({ name: 'en-mobile-success', path: '/en.html', width: 390, height: 844, lang: 'en', adapter: true, submit: true });
-await runLandingCase({ name: 'pt-mobile-disabled', path: '/index.html', width: 390, height: 844, lang: 'pt-BR', reducedMotion: true, adapter: false });
-await runLandingCase({ name: 'en-mobile-disabled', path: '/en.html', width: 390, height: 844, lang: 'en', reducedMotion: true, adapter: false });
+await runLandingCase({ name: 'pt-mobile-demo', path: '/index.html', width: 390, height: 844, lang: 'pt-BR', reducedMotion: true, adapter: false, submit: true });
+await runLandingCase({ name: 'en-mobile-demo', path: '/en.html', width: 390, height: 844, lang: 'en', reducedMotion: true, adapter: false, submit: true });
 await runChecklistCase({ name: 'checklist-pt-mobile', path: '/checklist-modelo-de-jogo.html', width: 390, height: 844, lang: 'pt-BR', expectedTrialLanguage: 'pt-BR' });
 await runChecklistCase({ name: 'checklist-en-mobile', path: '/game-model-checklist.html', width: 390, height: 844, lang: 'en', expectedTrialLanguage: 'en' });
 

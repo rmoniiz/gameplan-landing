@@ -109,9 +109,18 @@ async function runLandingCase({ name, path, width, height, lang, reducedMotion =
   let success = null;
 
   if (!adapter) {
-    if (!(await submitButton.isDisabled())) errors.push('submit must remain disabled while the audited endpoint is unavailable');
-    const status = (await page.locator('#leadFormStatus').innerText()).trim();
-    if (!status) errors.push('disabled integration status is missing');
+    const preview = page.locator('.lead-preview');
+    if (await form.isVisible()) errors.push('disabled Preview still asks for personal details');
+    if (!(await preview.isVisible())) errors.push('disabled Preview has no read-only checklist panel');
+    if (await page.locator('.lead-success').isVisible()) errors.push('disabled Preview misleadingly shows recorded success');
+    const previewCopy = (await preview.innerText()).trim();
+    if (!(lang === 'en' ? previewCopy.includes('No request will be recorded.') : previewCopy.includes('Nenhuma solicitação será registrada.'))) {
+      errors.push('disabled Preview lacks explicit no-lead disclosure');
+    }
+    const sample = page.locator('.lead-preview-open');
+    if (!(await sample.isVisible())) errors.push('disabled Preview checklist CTA missing');
+    const link = await sample.getAttribute('href');
+    if (!link?.endsWith(lang === 'en' ? 'game-model-checklist.html' : 'checklist-modelo-de-jogo.html')) errors.push('disabled Preview checklist link mismatch');
   }
 
   if (submit) {

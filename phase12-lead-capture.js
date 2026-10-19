@@ -58,9 +58,7 @@
     previewEyebrow: 'Preview only',
     previewText: 'Lead registration is disabled here. You can view the checklist without entering personal details. No request will be recorded.',
     previewOpen: 'View sample checklist',
-    demoNotice: 'DEMO ONLY — You can test the form. No name or email is sent or saved. Please use test details.',
     demoConsent: 'I understand this is a demonstration and no personal details will be sent or recorded.',
-    demoNote: 'This is a simulated request. For a real checklist request, use the official GamePlan landing page.',
     demoSubmit: 'Test checklist access',
     demoSubmitting: 'Preparing demo…',
     demoSuccessTitle: 'Demo: checklist ready',
@@ -90,9 +88,7 @@
     previewEyebrow: 'Somente visualização',
     previewText: 'O cadastro de leads está desativado aqui. Você pode visualizar o checklist sem informar dados pessoais. Nenhuma solicitação será registrada.',
     previewOpen: 'Visualizar checklist',
-    demoNotice: 'APENAS DEMONSTRAÇÃO — Teste o formulário. Nenhum nome ou e-mail é enviado ou salvo. Use dados de teste.',
     demoConsent: 'Entendo que esta é uma demonstração e que nenhum dado pessoal será enviado ou registrado.',
-    demoNote: 'Solicitação simulada. Para pedir o checklist de verdade, use a landing oficial do GamePlan.',
     demoSubmit: 'Testar acesso ao checklist',
     demoSubmitting: 'Preparando demonstração…',
     demoSuccessTitle: 'Demonstração: checklist pronto',
@@ -156,8 +152,7 @@
         <ul class="lead-magnet-benefits">${copy.bullets.map((item) => `<li>${item}</li>`).join('')}</ul>
       </div>
       <div class="lead-magnet-form-wrap">
-        <form class="lead-magnet-form" novalidate aria-describedby="leadDemoNote leadFormNote leadFormStatus">
-          <p id="leadDemoNote" class="lead-demo-notice" hidden>${copy.demoNotice}</p>
+        <form class="lead-magnet-form" novalidate aria-describedby="leadFormNote leadFormStatus">
           <div class="lead-field">
             <label for="leadName">${copy.name}</label>
             <input id="leadName" name="name" type="text" autocomplete="name" minlength="2" maxlength="120" required placeholder="${copy.namePlaceholder}" />
@@ -319,9 +314,9 @@
 
   setBusy(false);
   if (isPreviewSimulation) {
-    form.querySelector('.lead-demo-notice').hidden = false;
     form.querySelector('.lead-consent span').textContent = copy.demoConsent;
-    form.querySelector('#leadFormNote').textContent = copy.demoNote;
+    form.querySelector('#leadFormNote').hidden = true;
+    form.setAttribute('aria-describedby', 'leadFormStatus');
     success.querySelector('h3').textContent = copy.demoSuccessTitle;
     success.querySelector('p').textContent = copy.demoSuccessText;
   } else if (!canSubmit) {
